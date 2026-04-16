@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg" type="image/x-icon">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style/style.css">
     <title>Nathaniel Faborada</title>
 </head>
 <body>
@@ -24,7 +24,7 @@
             </div>
             <div class="details">
                 <div class="name-row">
-                    <h1 class="name">Nathaniel Faborada <span class="nickname">( Niel )</span> 👋</h1>
+                    <h1 class="name">Nathaniel Faborada <span class="nickname">( Niel )</span> <span class="wave">👋</span></h1>
                     <a class="resume-btn" href="#" target="_blank">
                         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707L9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zm0 2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zm0 2a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1h-4z"/>
@@ -33,9 +33,9 @@
                     </a>
                 </div>
                 <p class="bio">
-                    Junior software developer based in Pandi, Bulacan, specializing in React,
+                    Aspiring Junior software developer based in Pandi, Bulacan, specializing in React,
                     Node.js, and REST API development. Builds clean, responsive applications with a
-                    focus on automation, racism and performance.
+                    focus on automation, and performance.
                 </p>
             </div>
         </div>
@@ -45,17 +45,17 @@
     <!-- Sticky Nav -->
     <nav class="profile-nav">
         <ul>
-            <li class="active"><a href="#">All</a></li>
-            <li><a href="#">Work</a></li>
-            <li><a href="#">Collaborators</a></li>
+            <li class="active" data-tab="all"><a href="#">All</a></li>
+            <li data-tab="about" class="mobile-only"><a href="#">About</a></li>
+            <li data-tab="collaborators"><a href="#">Collaborators</a></li>
         </ul>
     </nav>
 
-    <!-- Two-Column Layout -->
-    <div class="page-layout">
+    <!-- Two-Column Layout (All / Work view) -->
+    <div id="view-default" class="page-layout">
 
         <!-- Left Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
 
             <!-- Personal Details -->
             <div class="section-card">
@@ -194,6 +194,17 @@
                 </ul>
             </div>
 
+            <!-- Collaborators -->
+
+            <!-- 3 Github lang kapag andito  -->
+            <div class="section-card">
+                <div class="collaborators-header">
+                    <h2 class="section-title" style="margin-bottom:0">Collaborators</h2>
+                    <a class="see-all-link" href="#" id="see-all-collabs">See all collaborators</a>
+                </div>
+                <div id="collaborators-grid" class="collaborators-grid"></div>
+            </div>
+
         </aside>
 
         <!-- Right: My Creations -->
@@ -201,14 +212,22 @@
 
             <div class="creations-header">
                 <h2 class="creations-title">My Creations</h2>
-                <button class="filter-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-                    Filter
-                </button>
+                <div class="filter-wrapper">
+                    <button class="filter-btn" id="filter-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+                        Filter
+                    </button>
+                    <div class="filter-dropdown" id="filter-dropdown">
+                        <button class="filter-option active" data-filter="all">All</button>
+                        <button class="filter-option" data-filter="personal">Personal Projects</button>
+                        <button class="filter-option" data-filter="organization">Organization</button>
+                        <button class="filter-option" data-filter="internship">iNTERNSHIP</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Project Card 1 -->
-            <div class="project-card">
+            <div class="project-card" data-category="organization">
                 <div class="project-author">
                     <img class="project-avatar" src="https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg" alt="Nathaniel Faborada">
                     <span class="project-author-name">Nathaniel Faborada</span>
@@ -255,7 +274,36 @@
             </div>
 
             <!-- Project Card 2 -->
-            <div class="project-card">
+            <div class="project-card" data-category="internship">
+                <div class="project-author">
+                    <img class="project-avatar" src="https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg" alt="Nathaniel Faborada">
+                    <span class="project-author-name">Nathaniel Faborada</span>
+                    <span class="badge-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="#aaa" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                    </span>
+                    <span class="badge-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="#aaa" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+                    </span>
+                </div>
+                <p class="project-headline">
+                    <span class="pin">📌</span>
+                    <strong>Kamada Logistics</strong>
+                    <span class="project-category"> · Internship</span>
+                </p>
+                <p class="project-desc">
+                    <span class="monitor">💻</span>
+                    Contributed to the development of an HR module and Driver’s Companion App, focusing on UI/UX design, frontend development, and backend logic to improve user experience and navigation. Designed wireframes and interfaces using Balsamiq and FlutterFlow, enhancing usability and reducing complexity. Integrated frontend with Supabase backend.
+                </p>
+                <div class="project-tags">
+                    <span class="tag">#FlutterFlow</span>
+                    <span class="tag">#Supabase</span>
+                    <span class="tag">#Balsamiq</span>
+                </div>
+                
+            </div>
+
+            <!-- Project Card 2 -->
+            <div class="project-card" data-category="personal">
                 <div class="project-author">
                     <img class="project-avatar" src="https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg" alt="Nathaniel Faborada">
                     <span class="project-author-name">Nathaniel Faborada</span>
@@ -299,7 +347,7 @@
             </div>
 
             <!-- Project Card 2 -->
-            <div class="project-card">
+            <div class="project-card" data-category="personal">
                 <div class="project-author">
                     <img class="project-avatar" src="https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg" alt="Nathaniel Faborada">
                     <span class="project-author-name">Nathaniel Faborada</span>
@@ -343,7 +391,7 @@
             </div>
 
             <!-- Project Card 2 -->
-            <div class="project-card">
+            <div class="project-card" data-category="personal">
                 <div class="project-author">
                     <img class="project-avatar" src="https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg" alt="Nathaniel Faborada">
                     <span class="project-author-name">Nathaniel Faborada</span>
@@ -387,51 +435,7 @@
             </div>
 
             <!-- Project Card 2 -->
-            <div class="project-card">
-                <div class="project-author">
-                    <img class="project-avatar" src="https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg" alt="Nathaniel Faborada">
-                    <span class="project-author-name">Nathaniel Faborada</span>
-                    <span class="badge-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="#aaa" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-                    </span>
-                    <span class="badge-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="#aaa" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
-                    </span>
-                </div>
-                <p class="project-headline">
-                    <span class="pin">📌</span>
-                    <strong>ai-driven-post-creator</strong>
-                    <span class="project-category"> · Personal Project</span>
-                </p>
-                <p class="project-desc">
-                    <span class="monitor">💻</span>
-                    This service automatically creates and publishes content to your Facebook page powered by AI. No more writer's block. No more missed posting days. Just consistent, engaging content on autopilot.
-                </p>
-                <div class="project-tags">
-                    <span class="tag">#javascript</span>
-                    <span class="tag">#node.js</span>
-                    <span class="tag">#axios</span>
-                    <span class="tag">#google gemini api</span>
-                    <span class="tag">#mlbb hero api</span>
-                    <span class="tag">#facebook graph api v24.0</span>
-                </div>
-                <div class="project-footer">
-                    <span class="project-stars">⭐ 11,029</span>
-                    <div class="project-links">
-                        <a href="#" class="project-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-                            Source
-                        </a>
-                        <a href="#" class="project-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                            Visit
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project Card 2 -->
-            <div class="project-card">
+            <div class="project-card" data-category="personal">
                 <div class="project-author">
                     <img class="project-avatar" src="https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg" alt="Nathaniel Faborada">
                     <span class="project-author-name">Nathaniel Faborada</span>
@@ -478,5 +482,96 @@
 
     </div>
 
+    <!-- Collaborators Full-Page View -->
+    <div id="view-collaborators" class="collaborators-full-view" style="display:none">
+        <div class="collab-full-header">
+            <h2 class="collab-full-title">Collaborators</h2>
+        
+        <div id="collaborators-grid-full" class="collaborators-grid-full"></div>
+
+        </div>
+    </div>
+
+    <script type="module" src="./function/renderGithubUser.js"></script>
+    <script>
+        // Tab switching
+        const navItems = document.querySelectorAll('.profile-nav li[data-tab]');
+        const viewDefault = document.getElementById('view-default');
+        const viewCollaborators = document.getElementById('view-collaborators');
+        const sidebar = document.getElementById('sidebar');
+
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        function switchTab(tab) {
+            navItems.forEach(i => i.classList.remove('active'));
+            document.querySelector(`.profile-nav li[data-tab="${tab}"]`).classList.add('active');
+
+            if (tab === 'collaborators') {
+                viewDefault.style.display = 'none';
+                viewCollaborators.style.display = 'block';
+            } else if (tab === 'about' && isMobile()) {
+                viewDefault.style.display = 'grid';
+                viewCollaborators.style.display = 'none';
+                sidebar.style.display = 'flex';
+                sidebar.querySelector('.main-content') && (sidebar.querySelector('.main-content').style.display = 'none');
+                document.querySelector('.main-content').style.display = 'none';
+            } else {
+                viewDefault.style.display = '';
+                viewCollaborators.style.display = 'none';
+                if (isMobile()) {
+                    sidebar.style.display = 'none';
+                    document.querySelector('.main-content').style.display = 'flex';
+                } else {
+                    sidebar.style.display = '';
+                    document.querySelector('.main-content').style.display = '';
+                }
+            }
+        }
+
+        function switchToCollaboratorsTab() {
+            switchTab('collaborators');
+        }
+
+        navItems.forEach(li => {
+            li.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab(li.dataset.tab);
+            });
+        });
+
+        // "See all collaborators" → switch to Collaborators tab
+        document.getElementById('see-all-collabs').addEventListener('click', (e) => {
+            e.preventDefault();
+            switchToCollaboratorsTab();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Filter dropdown
+        const filterBtn = document.getElementById('filter-btn');
+        const filterDropdown = document.getElementById('filter-dropdown');
+
+        filterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterDropdown.classList.toggle('open');
+        });
+
+        document.addEventListener('click', () => filterDropdown.classList.remove('open'));
+
+        document.querySelectorAll('.filter-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('.filter-option').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                filterDropdown.classList.remove('open');
+
+                const filter = opt.dataset.filter;
+                document.querySelectorAll('.project-card').forEach(card => {
+                    const match = filter === 'all' || card.dataset.category === filter;
+                    card.style.display = match ? '' : 'none';
+                });
+            });
+        });
+    </script>
 </body>
 </html>

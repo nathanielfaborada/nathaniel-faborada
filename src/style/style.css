@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -17,7 +21,6 @@ body {
     max-width: 860px;
     margin: 0 auto;
     background: #fff;
-    border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
@@ -80,6 +83,23 @@ body {
 .nickname {
     font-weight: 400;
     color: #555;
+}
+
+.wave {
+    display: inline-block;
+    transform-origin: 70% 70%;
+    animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+    0%   { transform: rotate(0deg); }
+    10%  { transform: rotate(14deg); }
+    20%  { transform: rotate(-8deg); }
+    30%  { transform: rotate(14deg); }
+    40%  { transform: rotate(-4deg); }
+    50%  { transform: rotate(10deg); }
+    60%  { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
 }
 
 .resume-btn {
@@ -373,6 +393,47 @@ body {
 
 .filter-btn:hover { background: #f5f5f5; }
 
+.filter-wrapper {
+    position: relative;
+}
+
+.filter-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    min-width: 160px;
+    z-index: 200;
+    overflow: hidden;
+}
+
+.filter-dropdown.open { display: block; }
+
+.filter-option {
+    display: block;
+    width: 100%;
+    padding: 9px 16px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    font-size: 0.85rem;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.filter-option:hover { background: #f5f5f5; }
+
+.filter-option.active {
+    color: #4a90d9;
+    font-weight: 600;
+    background: #eaf2fb;
+}
+
 /* ════════════════════════════
    PROJECT CARDS
 ════════════════════════════ */
@@ -503,3 +564,231 @@ body {
 }
 
 .project-link:hover { color: #4a90d9; }
+
+/* ════════════════════════════
+   COLLABORATORS
+════════════════════════════ */
+.collaborators-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.see-all-link {
+    font-size: 0.82rem;
+    color: #4a90d9;
+    text-decoration: none;
+}
+
+.see-all-link:hover { text-decoration: underline; }
+
+.collaborators-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.collab-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #fafafa;
+    min-width: 0;
+}
+
+.collab-avatar {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+}
+
+.collab-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 8px 6px;
+    flex: 1;
+}
+
+.collab-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #111;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.collab-stat {
+    font-size: 0.72rem;
+    color: #666;
+    white-space: nowrap;
+}
+
+.collab-visit {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 8px 8px;
+    font-size: 0.78rem;
+    color: #444;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+.collab-visit:hover { color: #4a90d9; }
+
+/* ════════════════════════════
+   COLLABORATORS FULL PAGE VIEW
+════════════════════════════ */
+.collaborators-full-view {
+    max-width: 860px;
+    margin: 16px auto 40px;
+}
+
+.collab-full-header {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 12px;
+}
+
+.collab-full-title {
+    font-size: 0.975rem;
+    font-weight: 700;
+    padding: 10px 0;
+    color: #111;
+}
+
+.collaborators-grid-full {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.collab-group-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #eee;
+}
+
+.collab-group-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+}
+
+/* Skeleton loader */
+.collab-skeleton .skeleton-avatar {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite;
+}
+
+.skeleton-line {
+    height: 12px;
+    border-radius: 6px;
+    margin: 4px 0;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ════════════════════════════
+   MOBILE
+════════════════════════════ */
+.mobile-only { display: none; }
+
+@media (max-width: 768px) {
+    .mobile-only { display: block; }
+
+    .profile-card,
+    .profile-nav,
+    .page-layout,
+    .collaborators-full-view {
+        max-width: 100%;
+        border-radius: 0;
+    }
+
+    .page-layout {
+        grid-template-columns: 1fr;
+        margin: 8px 10px 40px;
+        gap: 8px;
+    }
+
+    /* On mobile: sidebar hidden by default, shown via About tab */
+    .sidebar {
+        display: none;
+        position: static;
+        top: unset;
+    }
+
+    .main-content {
+        display: flex;
+    }
+
+    .collaborators-full-view {
+        margin: 12px 10px 40px;
+    }
+
+    .collaborators-grid-full,
+    .collab-group-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .banner img {
+        height: 100px;
+        object-fit: cover;
+    }
+
+    .avatar-wrapper {
+        width: 80px;
+        height: 80px;
+        margin-top: -40px;
+    }
+
+    .profile-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 0 14px 16px;
+    }
+
+    .details { padding-top: 6px; width: 100%; }
+
+    .name-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .name { font-size: 0.95rem; }
+
+    .resume-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 9px 16px;
+    }
+
+    .bio {
+        max-width: 100%;
+        text-align: left;
+        font-size: 0.82rem;
+    }
+}
