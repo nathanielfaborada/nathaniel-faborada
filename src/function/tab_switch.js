@@ -44,7 +44,6 @@ const navItems = document.querySelectorAll('.profile-nav li[data-tab]');
             });
         });
 
-        // "See all collaborators" → switch to Collaborators tab
         document.getElementById('see-all-collabs').addEventListener('click', (e) => {
             e.preventDefault();
             switchToCollaboratorsTab();
