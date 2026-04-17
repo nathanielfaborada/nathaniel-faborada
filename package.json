@@ -99,7 +99,7 @@
     "parcel": "2.12.0"
   },
   "scripts": {
-    "build": "parcel build --public-url https://nathaniel-faborada.github.io --dist-dir docs src/index.html",
+    "build": "parcel build --public-url https://nathaniel-faborada.github.io/ --dist-dir docs src/index.html",
     "start": "parcel serve src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
