@@ -510,7 +510,7 @@ body {
     border: 1px solid #eee;
     position: relative;
     min-height: 160px;
-    background: #f0f4f8;
+  
 }
 
 .project-screenshot img {
@@ -845,4 +845,18 @@ body {
     #organization-grid-full {
         grid-template-columns: 1fr;
     }
+
+
+    .project-screenshot {
+    border-radius: 10px;
+    overflow: hidden;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 160px;
+    
+}
+
+
 }
