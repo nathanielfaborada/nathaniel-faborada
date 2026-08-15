@@ -56,9 +56,8 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-// Middlewares
+// Middlewares (CORS middleware handles all routes and OPTIONS preflight globally)
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
