@@ -14,7 +14,7 @@ import uploadRoutes from './routes/uploadRoutes.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.SERVER_PORT || process.env.PORT || 5000;
+const PORT = process.env.PORT || process.env.SERVER_PORT || 8080;
 
 // Allowed Origins for CORS with credentials
 const allowedOrigins = [
@@ -66,11 +66,7 @@ app.use(cookieParser());
 
 // Root & Health Check Endpoints
 app.get('/', (req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    message: 'Portfolio API Backend is Running',
-    docs: '/api/health',
-  });
+  res.status(200).send('Backend API Running');
 });
 
 app.get(['/health', '/api/health'], (req, res) => {
@@ -106,8 +102,8 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server & Test Database Connection
-app.listen(PORT, async () => {
-  console.log(`🚀 Portfolio API Server listening on port http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', async () => {
+  console.log(`🚀 Portfolio API Server listening on port http://0.0.0.0:${PORT}`);
   await testDbConnection();
 });
 
