@@ -55,11 +55,17 @@ export default function LoginModal() {
     setIsSubmitting(true);
     setError(null);
 
-    const result = await login(username.trim(), password);
-    setIsSubmitting(false);
+    try {
+      const result = await login(username.trim(), password);
+      setIsSubmitting(false);
 
-    if (!result.success) {
-      setError(result.message || 'Login failed. Please check credentials.');
+      if (!result.success) {
+        setError(result.message || 'Login failed. Please check credentials.');
+      }
+    } catch (err) {
+      console.error('Login Error in LoginModal:', err);
+      setIsSubmitting(false);
+      setError(err.message || 'An unexpected error occurred during login.');
     }
   };
 

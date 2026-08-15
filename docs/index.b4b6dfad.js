@@ -27369,7 +27369,9 @@ function AuthProvider({ children }) {
                 message: response.message || "Login failed."
             };
         } catch (err) {
-            const msg = err.data?.message || err.message || "Unable to connect to server.";
+            console.error("Login Error in AuthContext:", err);
+            const isNetworkError = err instanceof TypeError || err.message?.includes("Failed to fetch") || err.message?.includes("NetworkError");
+            const msg = isNetworkError ? "Cannot connect to backend server. Please check your network connection or API URL configuration." : err.data?.message || err.message || "Unable to connect to server.";
             return {
                 success: false,
                 message: msg
@@ -27404,7 +27406,7 @@ function AuthProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "src/context/AuthContext.jsx",
-        lineNumber: 103,
+        lineNumber: 110,
         columnNumber: 10
     }, this);
 }
@@ -27432,7 +27434,34 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "api", ()=>api);
 var _projectsData = require("../data/projectsData");
 var _profileData = require("../data/profileData");
-const API_BASE_URL = "http://localhost:5000/api";
+var $7249661eaca54f48$import_meta = Object.assign(Object.create(null), {
+    url: "file:///src/services/api.js"
+});
+var process = require("c7a5217433b80353");
+/**
+ * Resolves and sanitizes API Base URL from environment variables
+ */ function resolveApiBaseUrl() {
+    let envUrl = "";
+    // 1. Check Vite / ESM standard import.meta.env
+    try {
+        if (typeof $7249661eaca54f48$import_meta !== "undefined" && $7249661eaca54f48$import_meta.env && $7249661eaca54f48$import_meta.env.VITE_API_URL) envUrl = $7249661eaca54f48$import_meta.env.VITE_API_URL;
+    } catch (e) {}
+    // 2. Check Node / Bundler process.env fallback
+    if (!envUrl && typeof process !== "undefined" && process.env) envUrl = "";
+    if (envUrl && typeof envUrl === "string") {
+        let clean = envUrl.trim().replace(/\/+$/, "");
+        // Ensure the path ends with /api if not already present
+        if (!clean.endsWith("/api")) clean = `${clean}/api`;
+        return clean;
+    }
+    // 3. Fallback for localhost in dev vs default remote URL in production
+    if (typeof window !== "undefined") {
+        const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+        if (!isLocalhost) return "/api";
+    }
+    return "http://localhost:5000/api";
+}
+const API_BASE_URL = resolveApiBaseUrl();
 /**
  * Helper to build auth headers
  */ function getAuthHeaders() {
@@ -27446,7 +27475,8 @@ const API_BASE_URL = "http://localhost:5000/api";
 /**
  * Generic API request wrapper
  */ async function request(endpoint, options = {}) {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    const url = `${API_BASE_URL}${cleanEndpoint}`;
     const config = {
         ...options,
         headers: {
@@ -27466,8 +27496,7 @@ const API_BASE_URL = "http://localhost:5000/api";
         }
         return data;
     } catch (error) {
-        // If backend is unreachable or CORS blocked, log and bubble error
-        console.warn(`API request to ${endpoint} failed:`, error.message);
+        console.error(`API request error [${options.method || "GET"} ${url}]:`, error);
         throw error;
     }
 }
@@ -27477,10 +27506,15 @@ const api = {
     // ==========================================
     auth: {
         login: async (credentials)=>{
-            return request("/auth/login", {
-                method: "POST",
-                body: JSON.stringify(credentials)
-            });
+            try {
+                return await request("/auth/login", {
+                    method: "POST",
+                    body: JSON.stringify(credentials)
+                });
+            } catch (error) {
+                console.error("Login Error in api.auth.login:", error);
+                throw error;
+            }
         },
         logout: async ()=>{
             return request("/auth/logout", {
@@ -27633,7 +27667,7 @@ const api = {
 };
 exports.default = api;
 
-},{"../data/projectsData":"lJCRJ","../data/profileData":"4Fkgj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lJCRJ":[function(require,module,exports) {
+},{"../data/projectsData":"lJCRJ","../data/profileData":"4Fkgj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","c7a5217433b80353":"d5jf4"}],"lJCRJ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "PROJECTS_DATA", ()=>PROJECTS_DATA);
@@ -32294,9 +32328,15 @@ function LoginModal() {
         }
         setIsSubmitting(true);
         setError(null);
-        const result = await login(username.trim(), password);
-        setIsSubmitting(false);
-        if (!result.success) setError(result.message || "Login failed. Please check credentials.");
+        try {
+            const result = await login(username.trim(), password);
+            setIsSubmitting(false);
+            if (!result.success) setError(result.message || "Login failed. Please check credentials.");
+        } catch (err) {
+            console.error("Login Error in LoginModal:", err);
+            setIsSubmitting(false);
+            setError(err.message || "An unexpected error occurred during login.");
+        }
     };
     const handleForgotSubmit = async (e)=>{
         e.preventDefault();
@@ -32336,18 +32376,18 @@ function LoginModal() {
                                         size: 18
                                     }, void 0, false, {
                                         fileName: "src/components/auth/LoginModal.jsx",
-                                        lineNumber: 101,
+                                        lineNumber: 107,
                                         columnNumber: 35
                                     }, this) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _icons.MailIcon), {
                                         size: 18
                                     }, void 0, false, {
                                         fileName: "src/components/auth/LoginModal.jsx",
-                                        lineNumber: 101,
+                                        lineNumber: 107,
                                         columnNumber: 60
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 100,
+                                    lineNumber: 106,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
@@ -32355,13 +32395,13 @@ function LoginModal() {
                                     children: mode === "login" ? "Admin Sign In" : "Reset Password"
                                 }, void 0, false, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 103,
+                                    lineNumber: 109,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 99,
+                            lineNumber: 105,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -32372,13 +32412,13 @@ function LoginModal() {
                             children: "\u2715"
                         }, void 0, false, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 107,
+                            lineNumber: 113,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/auth/LoginModal.jsx",
-                    lineNumber: 98,
+                    lineNumber: 104,
                     columnNumber: 9
                 }, this),
                 mode === "login" ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("form", {
@@ -32390,7 +32430,7 @@ function LoginModal() {
                             children: error
                         }, void 0, false, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 120,
+                            lineNumber: 126,
                             columnNumber: 23
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -32402,7 +32442,7 @@ function LoginModal() {
                                     children: "Username or Email"
                                 }, void 0, false, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 123,
+                                    lineNumber: 129,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -32417,13 +32457,13 @@ function LoginModal() {
                                     required: true
                                 }, void 0, false, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 126,
+                                    lineNumber: 132,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 122,
+                            lineNumber: 128,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -32438,7 +32478,7 @@ function LoginModal() {
                                             children: "Password"
                                         }, void 0, false, {
                                             fileName: "src/components/auth/LoginModal.jsx",
-                                            lineNumber: 141,
+                                            lineNumber: 147,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -32452,13 +32492,13 @@ function LoginModal() {
                                             children: "Forgot password?"
                                         }, void 0, false, {
                                             fileName: "src/components/auth/LoginModal.jsx",
-                                            lineNumber: 144,
+                                            lineNumber: 150,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 140,
+                                    lineNumber: 146,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -32472,13 +32512,13 @@ function LoginModal() {
                                     required: true
                                 }, void 0, false, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 156,
+                                    lineNumber: 162,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 139,
+                            lineNumber: 145,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -32488,7 +32528,7 @@ function LoginModal() {
                             children: isSubmitting ? "Authenticating..." : "Sign In"
                         }, void 0, false, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 168,
+                            lineNumber: 174,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -32499,7 +32539,7 @@ function LoginModal() {
                                     children: "Ctrl"
                                 }, void 0, false, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 177,
+                                    lineNumber: 183,
                                     columnNumber: 25
                                 }, this),
                                 " + ",
@@ -32507,7 +32547,7 @@ function LoginModal() {
                                     children: "Shift"
                                 }, void 0, false, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 177,
+                                    lineNumber: 183,
                                     columnNumber: 43
                                 }, this),
                                 " + ",
@@ -32515,19 +32555,19 @@ function LoginModal() {
                                     children: "L"
                                 }, void 0, false, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 177,
+                                    lineNumber: 183,
                                     columnNumber: 62
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 176,
+                            lineNumber: 182,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/auth/LoginModal.jsx",
-                    lineNumber: 119,
+                    lineNumber: 125,
                     columnNumber: 11
                 }, this) : /* Mode: Forgot Password Form */ /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("form", {
                     className: "login-modal-form",
@@ -32538,7 +32578,7 @@ function LoginModal() {
                             children: error
                         }, void 0, false, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 183,
+                            lineNumber: 189,
                             columnNumber: 23
                         }, this),
                         resetSuccessMessage && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -32549,20 +32589,20 @@ function LoginModal() {
                                     children: "\u2713"
                                 }, void 0, false, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 187,
+                                    lineNumber: 193,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                                     children: resetSuccessMessage
                                 }, void 0, false, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 188,
+                                    lineNumber: 194,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 186,
+                            lineNumber: 192,
                             columnNumber: 15
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -32570,7 +32610,7 @@ function LoginModal() {
                             children: "Enter your registered email address. We will send you a secure link to reset your password via Brevo."
                         }, void 0, false, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 192,
+                            lineNumber: 198,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -32582,7 +32622,7 @@ function LoginModal() {
                                     children: "Registered Email"
                                 }, void 0, false, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 197,
+                                    lineNumber: 203,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -32597,13 +32637,13 @@ function LoginModal() {
                                     autoFocus: true
                                 }, void 0, false, {
                                     fileName: "src/components/auth/LoginModal.jsx",
-                                    lineNumber: 200,
+                                    lineNumber: 206,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 196,
+                            lineNumber: 202,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -32613,7 +32653,7 @@ function LoginModal() {
                             children: isSubmitting ? "Sending Link..." : "Send Reset Link"
                         }, void 0, false, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 213,
+                            lineNumber: 219,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -32629,29 +32669,29 @@ function LoginModal() {
                                 children: "\u2190 Back to Sign In"
                             }, void 0, false, {
                                 fileName: "src/components/auth/LoginModal.jsx",
-                                lineNumber: 222,
+                                lineNumber: 228,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "src/components/auth/LoginModal.jsx",
-                            lineNumber: 221,
+                            lineNumber: 227,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/auth/LoginModal.jsx",
-                    lineNumber: 182,
+                    lineNumber: 188,
                     columnNumber: 11
                 }, this)
             ]
         }, void 0, true, {
             fileName: "src/components/auth/LoginModal.jsx",
-            lineNumber: 96,
+            lineNumber: 102,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/components/auth/LoginModal.jsx",
-        lineNumber: 90,
+        lineNumber: 96,
         columnNumber: 5
     }, this);
 }

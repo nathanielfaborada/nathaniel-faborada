@@ -69,7 +69,14 @@ export function AuthProvider({ children }) {
       }
       return { success: false, message: response.message || 'Login failed.' };
     } catch (err) {
-      const msg = err.data?.message || err.message || 'Unable to connect to server.';
+      console.error('Login Error in AuthContext:', err);
+      const isNetworkError =
+        err instanceof TypeError ||
+        err.message?.includes('Failed to fetch') ||
+        err.message?.includes('NetworkError');
+      const msg = isNetworkError
+        ? 'Cannot connect to backend server. Please check your network connection or API URL configuration.'
+        : err.data?.message || err.message || 'Unable to connect to server.';
       return { success: false, message: msg };
     }
   }, []);

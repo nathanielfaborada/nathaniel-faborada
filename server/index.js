@@ -19,36 +19,63 @@ const PORT = process.env.SERVER_PORT || process.env.PORT || 5000;
 // Allowed Origins for CORS with credentials
 const allowedOrigins = [
   process.env.CLIENT_URL,
+  'https://nathanielfaborada.netlify.app',
+  'https://nathanielfaborada.github.io',
   'http://localhost:1234',
+  'http://localhost:5173',
   'http://localhost:3000',
   'http://127.0.0.1:1234',
+  'http://127.0.0.1:5173',
   'http://127.0.0.1:3000',
 ].filter(Boolean);
 
-// Middlewares
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps, curl, or Postman)
-      if (!origin || allowedOrigins.includes(origin)) {
+// CORS configuration options
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, server-to-server, Postman)
+    if (!origin) return callback(null, true);
+
+    // Check exact match
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // Check subdomain matches (e.g. Netlify deploy previews or custom domains)
+    try {
+      const url = new URL(origin);
+      if (url.hostname.endsWith('.netlify.app') || url.hostname.endsWith('.github.io')) {
         return callback(null, true);
       }
-      return callback(new Error(`CORS policy does not allow access from origin: ${origin}`));
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  })
-);
+    } catch (e) {}
+
+    return callback(new Error(`CORS policy does not allow access from origin: ${origin}`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 200,
+};
+
+// Middlewares
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Health Check
-app.get('/api/health', (req, res) => {
+// Root & Health Check Endpoints
+app.get('/', (req, res) => {
   res.status(200).json({
-    status: 'online',
+    status: 'ok',
+    message: 'Portfolio API Backend is Running',
+    docs: '/api/health',
+  });
+});
+
+app.get(['/health', '/api/health'], (req, res) => {
+  res.status(200).json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
     service: 'portfolio-backend-api',
   });

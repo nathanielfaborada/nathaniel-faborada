@@ -1,11 +1,51 @@
 import { PROJECTS_DATA } from '../data/projectsData';
 import { PROFILE_DATA } from '../data/profileData';
 
-const API_BASE_URL =
-  process.env.REACT_APP_API_URL ||
-  process.env.VITE_API_URL ||
-  process.env.API_URL ||
-  'http://localhost:5000/api';
+/**
+ * Resolves and sanitizes API Base URL from environment variables
+ */
+function resolveApiBaseUrl() {
+  let envUrl = '';
+
+  // 1. Check Vite / ESM standard import.meta.env
+  try {
+    if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL) {
+      envUrl = import.meta.env.VITE_API_URL;
+    }
+  } catch (e) {}
+
+  // 2. Check Node / Bundler process.env fallback
+  if (!envUrl && typeof process !== 'undefined' && process.env) {
+    envUrl =
+      process.env.VITE_API_URL ||
+      process.env.REACT_APP_API_URL ||
+      process.env.API_URL ||
+      '';
+  }
+
+  if (envUrl && typeof envUrl === 'string') {
+    let clean = envUrl.trim().replace(/\/+$/, '');
+    // Ensure the path ends with /api if not already present
+    if (!clean.endsWith('/api')) {
+      clean = `${clean}/api`;
+    }
+    return clean;
+  }
+
+  // 3. Fallback for localhost in dev vs default remote URL in production
+  if (typeof window !== 'undefined') {
+    const isLocalhost =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1';
+    if (!isLocalhost) {
+      return '/api';
+    }
+  }
+
+  return 'http://localhost:5000/api';
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 /**
  * Helper to build auth headers
@@ -25,7 +65,8 @@ function getAuthHeaders() {
  * Generic API request wrapper
  */
 async function request(endpoint, options = {}) {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = `${API_BASE_URL}${cleanEndpoint}`;
   const config = {
     ...options,
     headers: {
@@ -48,8 +89,7 @@ async function request(endpoint, options = {}) {
 
     return data;
   } catch (error) {
-    // If backend is unreachable or CORS blocked, log and bubble error
-    console.warn(`API request to ${endpoint} failed:`, error.message);
+    console.error(`API request error [${options.method || 'GET'} ${url}]:`, error);
     throw error;
   }
 }
@@ -60,10 +100,15 @@ export const api = {
   // ==========================================
   auth: {
     login: async (credentials) => {
-      return request('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify(credentials),
-      });
+      try {
+        return await request('/auth/login', {
+          method: 'POST',
+          body: JSON.stringify(credentials),
+        });
+      } catch (error) {
+        console.error('Login Error in api.auth.login:', error);
+        throw error;
+      }
     },
     logout: async () => {
       return request('/auth/logout', {
