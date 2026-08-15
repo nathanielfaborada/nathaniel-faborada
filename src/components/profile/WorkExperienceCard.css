@@ -86,6 +86,44 @@
     margin-top: 1px;
 }
 
+.experience-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.experience-action-btn.edit-btn {
+    background: #f0f2f5;
+    border-color: #ced0d4;
+    color: #1877f2;
+}
+
+.experience-action-btn.edit-btn:hover {
+    background: #e4e6eb;
+}
+
+.experience-action-btn.delete-btn {
+    background: #ffebe8;
+    border-color: #f2ab99;
+    color: #c92a2a;
+}
+
+.experience-action-btn.delete-btn:hover {
+    background: #fcdbd5;
+}
+
+.work-company-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
 @media (max-width: 768px) {
     .work-experience-item {
         gap: 12px;

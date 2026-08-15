@@ -30,7 +30,7 @@ export default function ProjectFilter({
   }, [isOpen, onCloseDropdown]);
 
   return (
-    <div className="filter-wrapper" ref={wrapperRef}>
+    <div className="filter-wrapper relative" ref={wrapperRef}>
       <button
         type="button"
         className="filter-btn"
@@ -45,7 +45,9 @@ export default function ProjectFilter({
       </button>
 
       <div
-        className={`filter-dropdown ${isOpen ? 'open' : ''}`.trim()}
+        className={`filter-dropdown absolute right-0 top-full mt-1.5 z-50 origin-top-right ${
+          isOpen ? 'open' : ''
+        }`.trim()}
         id="filter-dropdown"
       >
         {CATEGORY_FILTERS.map((filter) => (

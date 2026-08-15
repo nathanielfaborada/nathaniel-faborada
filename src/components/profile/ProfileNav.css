@@ -9,6 +9,13 @@
     top: 0;
     z-index: 100;
     box-sizing: border-box;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.profile-nav::-webkit-scrollbar {
+    display: none;
 }
 
 .profile-nav ul {
@@ -70,12 +77,19 @@
 
     .profile-nav ul {
         padding: 0 8px;
-        justify-content: space-around;
         gap: 4px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .profile-nav ul::-webkit-scrollbar {
+        display: none;
     }
 
     .profile-nav ul li {
         flex: 1;
+        min-width: 80px;
         text-align: center;
     }
 

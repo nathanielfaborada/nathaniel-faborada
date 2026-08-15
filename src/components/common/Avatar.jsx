@@ -5,6 +5,8 @@ export default function Avatar({
   alt = 'Avatar',
   className = 'avatar',
   fallbackSrc,
+  loading = 'eager',
+  fetchPriority = 'high',
   style = {},
   ...props
 }) {
@@ -22,7 +24,10 @@ export default function Avatar({
     <img
       src={imageSrc}
       alt={alt}
-      className={className}
+      className={`w-full h-full object-cover ${className}`.trim()}
+      loading={loading}
+      fetchPriority={fetchPriority}
+      decoding="async"
       onError={handleImageError}
       style={style}
       {...props}

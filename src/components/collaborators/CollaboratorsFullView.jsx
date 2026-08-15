@@ -3,6 +3,8 @@ import CollaboratorCard from './CollaboratorCard';
 import OrganizationCard from './OrganizationCard';
 import SkeletonCard from '../common/SkeletonCard';
 import SkeletonOrgCard from '../common/SkeletonOrgCard';
+import { useAuth } from '../../context/AuthContext';
+import { PlusIcon } from '../common/Icons';
 import { GITHUB_GROUPS, GITHUB_ORGANIZATIONS } from '../../data/collaboratorsData';
 import './Collaborators.css';
 
@@ -11,7 +13,12 @@ export default function CollaboratorsFullView({
   isUsersLoading = false,
   organizations = [],
   isOrgsLoading = false,
+  onOpenCreateModal,
+  onEditOrganization,
+  onDeleteOrganization,
 }) {
+  const { isLoggedIn } = useAuth();
+
   return (
     <div id="view-collaborators" className="collaborators-full-view">
       {/* Collaborators Section */}
@@ -41,7 +48,31 @@ export default function CollaboratorsFullView({
 
       {/* Organization Section */}
       <div className="collab-full-header" style={{ marginTop: '16px' }}>
-        <h2 className="collab-full-title">Organization</h2>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <h2 className="collab-full-title" style={{ margin: 0 }}>Organization</h2>
+          {isLoggedIn && (
+            <button
+              type="button"
+              onClick={() => onOpenCreateModal && onOpenCreateModal('organization')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 10px',
+                background: '#1877f2',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '6px',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              <PlusIcon size={12} />
+              Add Org
+            </button>
+          )}
+        </div>
 
         <div id="organization-grid-full">
           {isOrgsLoading ? (
@@ -53,6 +84,8 @@ export default function CollaboratorsFullView({
               <OrganizationCard
                 key={org.id || org.login}
                 org={org}
+                onEdit={onEditOrganization}
+                onDelete={onDeleteOrganization}
               />
             ))
           ) : (

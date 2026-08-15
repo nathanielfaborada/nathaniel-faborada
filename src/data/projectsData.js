@@ -3,6 +3,7 @@ export const PROJECTS_DATA = [
     id: "immaculearn",
     category: "organization",
     categoryLabel: "College Thesis Capstone",
+    project_date: "Apr 2026",
     author: {
       name: "Nathaniel Faborada",
       avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
@@ -32,6 +33,7 @@ export const PROJECTS_DATA = [
     id: "kamada-logistics",
     category: "internship",
     categoryLabel: "Internship",
+    project_date: "May 2025",
     author: {
       name: "Nathaniel Faborada",
       avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
@@ -50,6 +52,7 @@ export const PROJECTS_DATA = [
     id: "jenather-auto-shop",
     category: "organization",
     categoryLabel: "Organization Project",
+    project_date: "Feb 2025",
     author: {
       name: "Nathaniel Faborada",
       avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
@@ -77,6 +80,7 @@ export const PROJECTS_DATA = [
     id: "threads-clone",
     category: "organization",
     categoryLabel: "Organization Project",
+    project_date: "Nov 2024",
     author: {
       name: "Nathaniel Faborada",
       avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
@@ -103,6 +107,7 @@ export const PROJECTS_DATA = [
     id: "new-york-times",
     category: "personal",
     categoryLabel: "Personal Project",
+    project_date: "Sep 2024",
     author: {
       name: "Nathaniel Faborada",
       avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
@@ -128,6 +133,7 @@ export const PROJECTS_DATA = [
     id: "weather-website",
     category: "personal",
     categoryLabel: "Personal Project",
+    project_date: "Jul 2024",
     author: {
       name: "Nathaniel Faborada",
       avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
@@ -153,6 +159,7 @@ export const PROJECTS_DATA = [
     id: "ai-driven-post-creator",
     category: "personal",
     categoryLabel: "Personal Project",
+    project_date: "Jan 2025",
     author: {
       name: "Nathaniel Faborada",
       avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",

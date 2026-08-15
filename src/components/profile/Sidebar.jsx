@@ -13,12 +13,23 @@ export default function Sidebar({
   profileMap = {},
   isCollaboratorsLoading = false,
   onSeeAllCollaborators,
+  workExperiences,
+  refreshTrigger,
+  onOpenCreateModal,
+  onEditExperience,
+  onDeleteExperience,
   children,
 }) {
   return (
     <aside className={className} id="sidebar" style={style}>
       <PersonalDetailsCard />
-      <WorkExperienceCard />
+      <WorkExperienceCard
+        experiences={workExperiences}
+        refreshTrigger={refreshTrigger}
+        onOpenCreateModal={onOpenCreateModal}
+        onEditExperience={onEditExperience}
+        onDeleteExperience={onDeleteExperience}
+      />
       <LearnedSkillsCard />
       <EducationCard />
       <SocialLinksCard />

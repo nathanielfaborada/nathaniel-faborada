@@ -118,11 +118,20 @@
     display: inline-block;
 }
 
+.profile-actions-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 14px;
+}
+
 .resume-btn {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    width: 100%;
     padding: 8px 16px;
     height: 38px;
     min-height: 38px;
@@ -134,7 +143,6 @@
     text-decoration: none;
     border: 1px solid #1877f2;
     white-space: nowrap;
-    flex-shrink: 0;
     transition: all 0.2s ease-in-out;
     cursor: pointer;
     box-shadow: 0 1px 2px rgba(24, 119, 242, 0.15);
@@ -149,10 +157,135 @@
     box-shadow: 0 4px 12px rgba(24, 119, 242, 0.25);
 }
 
-@media (max-width: 768px) {
+.admin-trigger-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.admin-login-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    min-height: 38px;
+    background: #f0f2f5;
+    border: 1px solid #e4e6eb;
+    border-radius: 8px;
+    color: #65676b;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.admin-login-trigger:hover {
+    background: #e4e6eb;
+    color: #1c1e21;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.admin-login-trigger-active {
+    background: #e7f3ff;
+    border-color: #1877f2;
+    color: #1877f2;
+}
+
+.admin-login-trigger-active:hover {
+    background: #dbe7f2;
+    color: #166fe5;
+}
+
+.admin-status-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 7px;
+    height: 7px;
+    background: #31a24c;
+    border-radius: 50%;
+    border: 1.5px solid #ffffff;
+}
+
+.admin-status-popover {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 180px;
+    background: #ffffff;
+    border: 1px solid #e4e6eb;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    padding: 12px;
+    z-index: 1000;
+    animation: fadeInDown 0.15s ease-out;
+}
+
+.admin-popover-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.admin-popover-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #31a24c;
+}
+
+.admin-popover-user {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1c1e21;
+}
+
+.admin-popover-divider {
+    height: 1px;
+    background: #e4e6eb;
+    margin: 8px 0;
+}
+
+.admin-popover-logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 10px;
+    background: #fff0f0;
+    border: 1px solid #ffd6d6;
+    border-radius: 6px;
+    color: #dc3545;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.admin-popover-logout-btn:hover {
+    background: #ffe0e0;
+    border-color: #ffc2c2;
+    color: #bd2130;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 640px) {
     .banner {
-        height: 75px !important;
-        max-height: 80px !important;
+        height: 90px !important;
+        max-height: 90px !important;
     }
 
     .banner img {
@@ -162,50 +295,63 @@
     }
 
     .avatar-wrapper {
-        width: 84px;
-        height: 84px;
-        margin-top: -42px;
-        border-width: 3px;
+        width: 96px;
+        height: 96px;
+        margin-top: -48px;
+        border-width: 4px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .profile-info {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-        padding: 0 14px 14px;
+        align-items: center;
+        text-align: center;
+        gap: 12px;
+        padding: 0 16px 18px;
     }
 
     .details {
-        padding-top: 4px;
+        padding-top: 0;
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .name-row {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
+        align-items: center;
+        text-align: center;
+        gap: 14px;
+    }
+
+    .name-col {
+        align-items: center;
+        text-align: center;
     }
 
     .name {
-        font-size: 1.15rem;
+        font-size: 1.25rem;
+        justify-content: center;
     }
 
     .nickname {
-        font-size: 0.95rem;
-    }
-
-    .resume-btn {
-        width: 100%;
-        justify-content: center;
-        height: 38px;
-        min-height: 38px;
-        padding: 8px 16px;
-        font-size: 0.875rem;
+        font-size: 0.98rem;
     }
 
     .bio {
         max-width: 100%;
         font-size: 0.875rem;
-        line-height: 1.45;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    .resume-btn {
+        width: 100%;
+        max-width: 100%;
+        justify-content: center;
+        height: 38px;
+        min-height: 38px;
     }
 }

@@ -13,6 +13,10 @@ export default function ProjectScreenshot({
         <img
           src={src}
           alt={alt}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          className="w-full h-full object-cover"
           onError={() => setHasError(true)}
           style={{ display: 'block' }}
         />
