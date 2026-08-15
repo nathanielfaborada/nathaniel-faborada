@@ -57,13 +57,10 @@
     flex: 1;
     min-width: 0;
     padding-top: 10px;
-}
-
-.name-row {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 20px;
+    gap: 24px;
     width: 100%;
 }
 
@@ -121,11 +118,12 @@
 .profile-actions-wrapper {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: flex-end;
     gap: 8px;
     width: auto;
     max-width: 100%;
-    margin-top: 12px;
+    margin-top: 2px;
+    flex-shrink: 0;
 }
 
 .resume-btn {
@@ -285,6 +283,26 @@
     }
 }
 
+@media (max-width: 768px) {
+    .details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .profile-actions-wrapper {
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 8px;
+    }
+
+    .resume-btn {
+        width: 100%;
+        max-width: 100%;
+        justify-content: center;
+    }
+}
+
 @media (max-width: 640px) {
     .banner {
         height: 90px !important;
@@ -320,13 +338,8 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
-
-    .name-row {
-        flex-direction: column;
-        align-items: center;
         text-align: center;
-        gap: 14px;
+        gap: 12px;
     }
 
     .name-col {
@@ -353,7 +366,7 @@
     .profile-actions-wrapper {
         width: 100%;
         justify-content: center;
-        margin-top: 8px;
+        margin-top: 6px;
     }
 
     .resume-btn {

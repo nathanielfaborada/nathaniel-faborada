@@ -97,15 +97,12 @@
 
 .details {
   flex: 1;
-  min-width: 0;
-  padding-top: 10px;
-}
-
-.name-row {
   justify-content: space-between;
   align-items: flex-start;
-  gap: 20px;
+  gap: 24px;
   width: 100%;
+  min-width: 0;
+  padding-top: 10px;
   display: flex;
 }
 
@@ -161,12 +158,13 @@
 }
 
 .profile-actions-wrapper {
-  justify-content: flex-start;
+  flex-shrink: 0;
+  justify-content: flex-end;
   align-items: center;
   gap: 8px;
   width: auto;
   max-width: 100%;
-  margin-top: 12px;
+  margin-top: 2px;
   display: flex;
 }
 
@@ -328,6 +326,26 @@
   }
 }
 
+@media (width <= 768px) {
+  .details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .profile-actions-wrapper {
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .resume-btn {
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 @media (width <= 640px) {
   .banner {
     height: 90px !important;
@@ -358,18 +376,13 @@
   }
 
   .details {
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding-top: 0;
-    display: flex;
-  }
-
-  .name-row {
     text-align: center;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
+    width: 100%;
+    padding-top: 0;
+    display: flex;
   }
 
   .name-col {
@@ -396,7 +409,7 @@
   .profile-actions-wrapper {
     justify-content: center;
     width: 100%;
-    margin-top: 8px;
+    margin-top: 6px;
   }
 
   .resume-btn {

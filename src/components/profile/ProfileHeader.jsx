@@ -39,27 +39,25 @@ export default function ProfileHeader({
             className="avatar"
           />
         </div>
-        <div className="details">
-          <div className="name-row">
-            <div className="name-col">
-              <h1 className="name">
-                {profile.name} <span className="nickname">{profile.nickname}</span>
-                <span className="wave">{profile.waveEmoji}</span>
-              </h1>
-              <p className="bio">
-                Aspiring Junior software developer based in Pandi, Bulacan, specializing in{' '}
-                <span className="bio-highlight">React</span>,{' '}
-                <span className="bio-highlight">Node.js</span>, and{' '}
-                <span className="bio-highlight">REST API</span> development. Builds clean,
-                responsive applications with a focus on automation, and performance.
-              </p>
-            </div>
+        <div className="details flex flex-col md:flex-row md:justify-between md:items-start md:gap-6 w-full">
+          <div className="name-col flex flex-col flex-1 min-w-0">
+            <h1 className="name">
+              {profile.name} <span className="nickname">{profile.nickname}</span>
+              <span className="wave">{profile.waveEmoji}</span>
+            </h1>
+            <p className="bio">
+              Aspiring Junior software developer based in Pandi, Bulacan, specializing in{' '}
+              <span className="bio-highlight">React</span>,{' '}
+              <span className="bio-highlight">Node.js</span>, and{' '}
+              <span className="bio-highlight">REST API</span> development. Builds clean,
+              responsive applications with a focus on automation, and performance.
+            </p>
           </div>
 
-          <div className="profile-actions-wrapper flex items-center justify-start gap-2 w-full sm:w-auto mt-3">
+          <div className="profile-actions-wrapper flex items-center justify-start md:justify-end gap-2 w-full md:w-auto md:shrink-0 mt-3 md:mt-0">
             <Button
               href={profile.resumeUrl}
-              className="resume-btn flex items-center justify-center w-full sm:w-auto px-6 py-2.5 rounded-lg"
+              className="resume-btn flex items-center justify-center w-full md:w-auto px-6 py-2.5 rounded-lg"
               target="_blank"
             >
               <ResumeDocIcon size={16} />

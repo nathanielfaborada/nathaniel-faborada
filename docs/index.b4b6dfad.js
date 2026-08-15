@@ -28228,117 +28228,110 @@ function ProfileHeader({ profile = (0, _profileData.PROFILE_DATA) }) {
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                        className: "details",
+                        className: "details flex flex-col md:flex-row md:justify-between md:items-start md:gap-6 w-full",
                         children: [
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                className: "name-row",
-                                children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                    className: "name-col",
-                                    children: [
-                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h1", {
-                                            className: "name",
-                                            children: [
-                                                profile.name,
-                                                " ",
-                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                                                    className: "nickname",
-                                                    children: profile.nickname
-                                                }, void 0, false, {
-                                                    fileName: "src/components/profile/ProfileHeader.jsx",
-                                                    lineNumber: 46,
-                                                    columnNumber: 32
-                                                }, this),
-                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                                                    className: "wave",
-                                                    children: profile.waveEmoji
-                                                }, void 0, false, {
-                                                    fileName: "src/components/profile/ProfileHeader.jsx",
-                                                    lineNumber: 47,
-                                                    columnNumber: 17
-                                                }, this)
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "src/components/profile/ProfileHeader.jsx",
-                                            lineNumber: 45,
-                                            columnNumber: 15
-                                        }, this),
-                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                                            className: "bio",
-                                            children: [
-                                                "Aspiring Junior software developer based in Pandi, Bulacan, specializing in",
-                                                " ",
-                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                                                    className: "bio-highlight",
-                                                    children: "React"
-                                                }, void 0, false, {
-                                                    fileName: "src/components/profile/ProfileHeader.jsx",
-                                                    lineNumber: 51,
-                                                    columnNumber: 17
-                                                }, this),
-                                                ",",
-                                                " ",
-                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                                                    className: "bio-highlight",
-                                                    children: "Node.js"
-                                                }, void 0, false, {
-                                                    fileName: "src/components/profile/ProfileHeader.jsx",
-                                                    lineNumber: 52,
-                                                    columnNumber: 17
-                                                }, this),
-                                                ", and",
-                                                " ",
-                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                                                    className: "bio-highlight",
-                                                    children: "REST API"
-                                                }, void 0, false, {
-                                                    fileName: "src/components/profile/ProfileHeader.jsx",
-                                                    lineNumber: 53,
-                                                    columnNumber: 17
-                                                }, this),
-                                                " development. Builds clean, responsive applications with a focus on automation, and performance."
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "src/components/profile/ProfileHeader.jsx",
-                                            lineNumber: 49,
-                                            columnNumber: 15
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "src/components/profile/ProfileHeader.jsx",
-                                    lineNumber: 44,
-                                    columnNumber: 13
-                                }, this)
-                            }, void 0, false, {
+                                className: "name-col flex flex-col flex-1 min-w-0",
+                                children: [
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h1", {
+                                        className: "name",
+                                        children: [
+                                            profile.name,
+                                            " ",
+                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                                className: "nickname",
+                                                children: profile.nickname
+                                            }, void 0, false, {
+                                                fileName: "src/components/profile/ProfileHeader.jsx",
+                                                lineNumber: 45,
+                                                columnNumber: 30
+                                            }, this),
+                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                                className: "wave",
+                                                children: profile.waveEmoji
+                                            }, void 0, false, {
+                                                fileName: "src/components/profile/ProfileHeader.jsx",
+                                                lineNumber: 46,
+                                                columnNumber: 15
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "src/components/profile/ProfileHeader.jsx",
+                                        lineNumber: 44,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                                        className: "bio",
+                                        children: [
+                                            "Aspiring Junior software developer based in Pandi, Bulacan, specializing in",
+                                            " ",
+                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                                className: "bio-highlight",
+                                                children: "React"
+                                            }, void 0, false, {
+                                                fileName: "src/components/profile/ProfileHeader.jsx",
+                                                lineNumber: 50,
+                                                columnNumber: 15
+                                            }, this),
+                                            ",",
+                                            " ",
+                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                                className: "bio-highlight",
+                                                children: "Node.js"
+                                            }, void 0, false, {
+                                                fileName: "src/components/profile/ProfileHeader.jsx",
+                                                lineNumber: 51,
+                                                columnNumber: 15
+                                            }, this),
+                                            ", and",
+                                            " ",
+                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                                className: "bio-highlight",
+                                                children: "REST API"
+                                            }, void 0, false, {
+                                                fileName: "src/components/profile/ProfileHeader.jsx",
+                                                lineNumber: 52,
+                                                columnNumber: 15
+                                            }, this),
+                                            " development. Builds clean, responsive applications with a focus on automation, and performance."
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "src/components/profile/ProfileHeader.jsx",
+                                        lineNumber: 48,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "src/components/profile/ProfileHeader.jsx",
                                 lineNumber: 43,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                className: "profile-actions-wrapper flex items-center justify-start gap-2 w-full sm:w-auto mt-3",
+                                className: "profile-actions-wrapper flex items-center justify-start md:justify-end gap-2 w-full md:w-auto md:shrink-0 mt-3 md:mt-0",
                                 children: [
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _buttonDefault.default), {
                                         href: profile.resumeUrl,
-                                        className: "resume-btn flex items-center justify-center w-full sm:w-auto px-6 py-2.5 rounded-lg",
+                                        className: "resume-btn flex items-center justify-center w-full md:w-auto px-6 py-2.5 rounded-lg",
                                         target: "_blank",
                                         children: [
                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _icons.ResumeDocIcon), {
                                                 size: 16
                                             }, void 0, false, {
                                                 fileName: "src/components/profile/ProfileHeader.jsx",
-                                                lineNumber: 65,
+                                                lineNumber: 63,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
                                                 children: "Resume"
                                             }, void 0, false, {
                                                 fileName: "src/components/profile/ProfileHeader.jsx",
-                                                lineNumber: 66,
+                                                lineNumber: 64,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "src/components/profile/ProfileHeader.jsx",
-                                        lineNumber: 60,
+                                        lineNumber: 58,
                                         columnNumber: 13
                                     }, this),
                                     isAdminRoute && !isLoggedIn && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -28351,18 +28344,18 @@ function ProfileHeader({ profile = (0, _profileData.PROFILE_DATA) }) {
                                             size: 15
                                         }, void 0, false, {
                                             fileName: "src/components/profile/ProfileHeader.jsx",
-                                            lineNumber: 78,
+                                            lineNumber: 76,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "src/components/profile/ProfileHeader.jsx",
-                                        lineNumber: 71,
+                                        lineNumber: 69,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/profile/ProfileHeader.jsx",
-                                lineNumber: 59,
+                                lineNumber: 57,
                                 columnNumber: 11
                             }, this)
                         ]
