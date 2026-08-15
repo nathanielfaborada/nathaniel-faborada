@@ -126,6 +126,11 @@ export const api = {
         body: JSON.stringify({ email }),
       });
     },
+    verifyResetToken: async (token) => {
+      return request(`/auth/verify-reset-token?token=${encodeURIComponent(token)}`, {
+        method: 'GET',
+      });
+    },
     resetPassword: async ({ token, newPassword }) => {
       return request('/auth/reset-password', {
         method: 'POST',

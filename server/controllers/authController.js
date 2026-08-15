@@ -186,8 +186,8 @@ export async function forgotPassword(req, res) {
     const resetToken = crypto.randomBytes(32).toString('hex');
     const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
-    // 3. Set expiration to 1 hour from now
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+    // 3. Set expiration to 24 hours from now (timezone-safe)
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     // 4. Update user record in database
     await pool.execute(
@@ -196,7 +196,7 @@ export async function forgotPassword(req, res) {
     );
 
     // 5. Build reset URL
-    const clientUrl = process.env.CLIENT_URL || 'http://localhost:1234';
+    const clientUrl = (process.env.CLIENT_URL || 'http://localhost:1234').replace(/\/+$/, '');
     const resetLink = `${clientUrl}/reset-password?token=${resetToken}`;
 
     // 6. Send transactional email via Brevo REST API
@@ -211,6 +211,62 @@ export async function forgotPassword(req, res) {
     return res.status(500).json({
       success: false,
       message: error.message || 'Failed to process forgot password request.',
+    });
+  }
+}
+
+/**
+ * GET /api/auth/verify-reset-token
+ * Verifies whether a token is valid and not expired on initial page load.
+ */
+export async function verifyResetToken(req, res) {
+  try {
+    const token = req.query.token || req.body?.token;
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token is required.',
+      });
+    }
+
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    const [users] = await pool.execute(
+      'SELECT id, username, email, reset_password_expires, (reset_password_expires > UTC_TIMESTAMP() OR reset_password_expires > NOW()) as is_valid_time FROM users WHERE reset_password_token = ? LIMIT 1',
+      [hashedToken]
+    );
+
+    if (users.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or already used password reset token. Please request a new link.',
+      });
+    }
+
+    const user = users[0];
+    const expiryMs = user.reset_password_expires
+      ? new Date(user.reset_password_expires).getTime()
+      : 0;
+
+    const isStillValid = user.is_valid_time === 1 || expiryMs > (Date.now() - 3600000);
+
+    if (!isStillValid) {
+      return res.status(400).json({
+        success: false,
+        message: 'This password reset link has expired. Please request a new one.',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      email: user.email,
+      message: 'Token is valid.',
+    });
+  } catch (error) {
+    console.error('Error in verifyResetToken:', error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to verify reset token.',
     });
   }
 }
@@ -242,21 +298,27 @@ export async function resetPassword(req, res) {
 
     // 2. Query user with matching token
     const [users] = await pool.execute(
-      'SELECT id, username, email, reset_password_expires FROM users WHERE reset_password_token = ? LIMIT 1',
+      'SELECT id, username, email, reset_password_expires, (reset_password_expires > UTC_TIMESTAMP() OR reset_password_expires > NOW()) as is_valid_time FROM users WHERE reset_password_token = ? LIMIT 1',
       [hashedToken]
     );
 
     if (users.length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid or already used password reset token.',
+        message: 'Invalid or already used password reset token. Please request a new link.',
       });
     }
 
     const user = users[0];
 
     // 3. Verify token expiration
-    if (!user.reset_password_expires || new Date(user.reset_password_expires).getTime() < Date.now()) {
+    const expiryMs = user.reset_password_expires
+      ? new Date(user.reset_password_expires).getTime()
+      : 0;
+
+    const isStillValid = user.is_valid_time === 1 || expiryMs > (Date.now() - 3600000);
+
+    if (!isStillValid) {
       return res.status(400).json({
         success: false,
         message: 'This password reset link has expired. Please request a new one.',

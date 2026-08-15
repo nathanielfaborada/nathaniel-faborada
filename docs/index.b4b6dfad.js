@@ -27534,6 +27534,11 @@ const api = {
                 })
             });
         },
+        verifyResetToken: async (token)=>{
+            return request(`/auth/verify-reset-token?token=${encodeURIComponent(token)}`, {
+                method: "GET"
+            });
+        },
         resetPassword: async ({ token, newPassword })=>{
             return request("/auth/reset-password", {
                 method: "POST",
@@ -34405,7 +34410,26 @@ function ResetPasswordModal() {
     const [searchParams] = (0, _reactRouterDom.useSearchParams)();
     const navigate = (0, _reactRouterDom.useNavigate)();
     const { openLoginModal } = (0, _authContext.useAuth)();
-    const token = searchParams.get("token") || "";
+    // Helper to extract token from query parameters or hash
+    const getTokenFromLocation = ()=>{
+        const fromRouter = searchParams.get("token");
+        if (fromRouter) return fromRouter;
+        if (typeof window !== "undefined" && window.location.search) {
+            const fromSearch = new URLSearchParams(window.location.search).get("token");
+            if (fromSearch) return fromSearch;
+        }
+        if (typeof window !== "undefined" && window.location.hash && window.location.hash.includes("token=")) {
+            const queryIdx = window.location.hash.indexOf("?");
+            if (queryIdx !== -1) {
+                const fromHash = new URLSearchParams(window.location.hash.substring(queryIdx)).get("token");
+                if (fromHash) return fromHash;
+            }
+        }
+        return "";
+    };
+    const [token, setToken] = (0, _react.useState)(getTokenFromLocation);
+    const [isValidating, setIsValidating] = (0, _react.useState)(true);
+    const [isTokenValid, setIsTokenValid] = (0, _react.useState)(false);
     const [newPassword, setNewPassword] = (0, _react.useState)("");
     const [confirmPassword, setConfirmPassword] = (0, _react.useState)("");
     const [showPassword, setShowPassword] = (0, _react.useState)(false);
@@ -34413,14 +34437,53 @@ function ResetPasswordModal() {
     const [isSubmitting, setIsSubmitting] = (0, _react.useState)(false);
     const [isSuccess, setIsSuccess] = (0, _react.useState)(false);
     (0, _react.useEffect)(()=>{
-        if (!token) setError("Missing or invalid password reset token in the URL. Please request a new link.");
+        const currentToken = getTokenFromLocation();
+        setToken(currentToken);
+        if (!currentToken) {
+            setIsValidating(false);
+            setIsTokenValid(false);
+            setError("Missing or invalid password reset token. Please check the link from your email.");
+            return;
+        }
+        let isMounted = true;
+        setIsValidating(true);
+        setError(null);
+        (0, _api.api).auth.verifyResetToken(currentToken).then((res)=>{
+            if (isMounted) {
+                if (res.success) {
+                    setIsTokenValid(true);
+                    setError(null);
+                } else {
+                    setIsTokenValid(false);
+                    setError(res.message || "This password reset link has expired or is invalid.");
+                }
+            }
+        }).catch((err)=>{
+            if (isMounted) {
+                const isNetworkError = err.message?.includes("Failed to fetch") || err.message?.includes("NetworkError");
+                if (isNetworkError) {
+                    // If server check couldn't be reached due to network, allow user to try submitting
+                    setIsTokenValid(true);
+                    setError(null);
+                } else {
+                    setIsTokenValid(false);
+                    setError(err.data?.message || err.message || "This password reset link has expired. Please request a new one.");
+                }
+            }
+        }).finally(()=>{
+            if (isMounted) setIsValidating(false);
+        });
+        return ()=>{
+            isMounted = false;
+        };
     }, [
-        token
+        searchParams
     ]);
     const handleSubmit = async (e)=>{
         e.preventDefault();
         setError(null);
-        if (!token) {
+        const currentToken = token || getTokenFromLocation();
+        if (!currentToken) {
             setError("Password reset token is missing.");
             return;
         }
@@ -34435,7 +34498,7 @@ function ResetPasswordModal() {
         setIsSubmitting(true);
         try {
             await (0, _api.api).auth.resetPassword({
-                token,
+                token: currentToken,
                 newPassword
             });
             setIsSubmitting(false);
@@ -34468,12 +34531,12 @@ function ResetPasswordModal() {
                                 size: 20
                             }, void 0, false, {
                                 fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                lineNumber: 78,
+                                lineNumber: 153,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 77,
+                            lineNumber: 152,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
@@ -34481,7 +34544,7 @@ function ResetPasswordModal() {
                             children: "Reset Admin Password"
                         }, void 0, false, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 80,
+                            lineNumber: 155,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -34489,16 +34552,39 @@ function ResetPasswordModal() {
                             children: "Create a secure new password for your administrator account."
                         }, void 0, false, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 81,
+                            lineNumber: 156,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/auth/ResetPasswordModal.jsx",
-                    lineNumber: 76,
+                    lineNumber: 151,
                     columnNumber: 9
                 }, this),
-                isSuccess ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                isValidating ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                    className: "reset-loading-container",
+                    children: [
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-spinner"
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 164,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-loading-text",
+                            children: "Verifying reset link..."
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 165,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/components/auth/ResetPasswordModal.jsx",
+                    lineNumber: 163,
+                    columnNumber: 11
+                }, this) : isSuccess ? /* Success State */ /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                     className: "reset-success-container",
                     children: [
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34506,7 +34592,7 @@ function ResetPasswordModal() {
                             children: "\u2713"
                         }, void 0, false, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 89,
+                            lineNumber: 170,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h3", {
@@ -34514,7 +34600,7 @@ function ResetPasswordModal() {
                             children: "Password Reset Complete!"
                         }, void 0, false, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 90,
+                            lineNumber: 171,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -34522,7 +34608,7 @@ function ResetPasswordModal() {
                             children: "Your password has been successfully updated. You can now sign in using your new password."
                         }, void 0, false, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 91,
+                            lineNumber: 172,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -34532,13 +34618,78 @@ function ResetPasswordModal() {
                             children: "Sign In to Admin"
                         }, void 0, false, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 94,
+                            lineNumber: 175,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/auth/ResetPasswordModal.jsx",
-                    lineNumber: 88,
+                    lineNumber: 169,
+                    columnNumber: 11
+                }, this) : !isTokenValid && error ? /* Invalid / Expired Token Error Screen */ /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                    className: "reset-modal-form",
+                    children: [
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-error-alert",
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                children: [
+                                    "\u26A0\uFE0F ",
+                                    error
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                lineNumber: 187,
+                                columnNumber: 15
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 186,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                            className: "reset-instruction-text",
+                            style: {
+                                textAlign: "center",
+                                fontSize: "0.9rem",
+                                color: "#65676b"
+                            },
+                            children: 'Password reset links expire for security reasons. Please return to the login screen and click "Forgot password" to generate a fresh link.'
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 189,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                            type: "button",
+                            className: "reset-primary-btn",
+                            onClick: handleGoToLogin,
+                            children: "Request New Reset Link"
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 192,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-secondary-actions",
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                type: "button",
+                                className: "reset-text-btn",
+                                onClick: handleGoHome,
+                                children: "Cancel & Return Home"
+                            }, void 0, false, {
+                                fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                lineNumber: 200,
+                                columnNumber: 15
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 199,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/components/auth/ResetPasswordModal.jsx",
+                    lineNumber: 185,
                     columnNumber: 11
                 }, this) : /* Form State */ /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("form", {
                     className: "reset-modal-form",
@@ -34553,12 +34704,12 @@ function ResetPasswordModal() {
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                lineNumber: 107,
+                                lineNumber: 214,
                                 columnNumber: 17
                             }, this)
                         }, void 0, false, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 106,
+                            lineNumber: 213,
                             columnNumber: 15
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34570,7 +34721,7 @@ function ResetPasswordModal() {
                                     children: "New Password"
                                 }, void 0, false, {
                                     fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                    lineNumber: 112,
+                                    lineNumber: 219,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34587,18 +34738,18 @@ function ResetPasswordModal() {
                                         required: true
                                     }, void 0, false, {
                                         fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                        lineNumber: 116,
+                                        lineNumber: 223,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                    lineNumber: 115,
+                                    lineNumber: 222,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 111,
+                            lineNumber: 218,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34610,7 +34761,7 @@ function ResetPasswordModal() {
                                     children: "Confirm New Password"
                                 }, void 0, false, {
                                     fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                    lineNumber: 131,
+                                    lineNumber: 238,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34627,18 +34778,18 @@ function ResetPasswordModal() {
                                         required: true
                                     }, void 0, false, {
                                         fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                        lineNumber: 135,
+                                        lineNumber: 242,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                    lineNumber: 134,
+                                    lineNumber: 241,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 130,
+                            lineNumber: 237,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34652,25 +34803,25 @@ function ResetPasswordModal() {
                                         onChange: (e)=>setShowPassword(e.target.checked)
                                     }, void 0, false, {
                                         fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                        lineNumber: 151,
+                                        lineNumber: 258,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
                                         children: "Show passwords"
                                     }, void 0, false, {
                                         fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                        lineNumber: 156,
+                                        lineNumber: 263,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                lineNumber: 150,
+                                lineNumber: 257,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 149,
+                            lineNumber: 256,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -34680,7 +34831,7 @@ function ResetPasswordModal() {
                             children: isSubmitting ? "Updating Password..." : "Save New Password"
                         }, void 0, false, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 160,
+                            lineNumber: 267,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34692,33 +34843,33 @@ function ResetPasswordModal() {
                                 children: "Cancel & Return Home"
                             }, void 0, false, {
                                 fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                lineNumber: 169,
+                                lineNumber: 276,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 168,
+                            lineNumber: 275,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/auth/ResetPasswordModal.jsx",
-                    lineNumber: 104,
+                    lineNumber: 211,
                     columnNumber: 11
                 }, this)
             ]
         }, void 0, true, {
             fileName: "src/components/auth/ResetPasswordModal.jsx",
-            lineNumber: 74,
+            lineNumber: 149,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/components/auth/ResetPasswordModal.jsx",
-        lineNumber: 73,
+        lineNumber: 148,
         columnNumber: 5
     }, this);
 }
-_s(ResetPasswordModal, "3MeEwb4mo1+EM7qA2vGmjOnQq2c=", false, function() {
+_s(ResetPasswordModal, "I5FnIiJIdf9F7CYNSmznXs8iyeQ=", false, function() {
     return [
         (0, _reactRouterDom.useSearchParams),
         (0, _reactRouterDom.useNavigate),

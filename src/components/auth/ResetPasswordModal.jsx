@@ -10,7 +10,30 @@ export default function ResetPasswordModal() {
   const navigate = useNavigate();
   const { openLoginModal } = useAuth();
 
-  const token = searchParams.get('token') || '';
+  // Helper to extract token from query parameters or hash
+  const getTokenFromLocation = () => {
+    const fromRouter = searchParams.get('token');
+    if (fromRouter) return fromRouter;
+
+    if (typeof window !== 'undefined' && window.location.search) {
+      const fromSearch = new URLSearchParams(window.location.search).get('token');
+      if (fromSearch) return fromSearch;
+    }
+
+    if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('token=')) {
+      const queryIdx = window.location.hash.indexOf('?');
+      if (queryIdx !== -1) {
+        const fromHash = new URLSearchParams(window.location.hash.substring(queryIdx)).get('token');
+        if (fromHash) return fromHash;
+      }
+    }
+
+    return '';
+  };
+
+  const [token, setToken] = useState(getTokenFromLocation);
+  const [isValidating, setIsValidating] = useState(true);
+  const [isTokenValid, setIsTokenValid] = useState(false);
 
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,16 +43,68 @@ export default function ResetPasswordModal() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
-    if (!token) {
-      setError('Missing or invalid password reset token in the URL. Please request a new link.');
+    const currentToken = getTokenFromLocation();
+    setToken(currentToken);
+
+    if (!currentToken) {
+      setIsValidating(false);
+      setIsTokenValid(false);
+      setError('Missing or invalid password reset token. Please check the link from your email.');
+      return;
     }
-  }, [token]);
+
+    let isMounted = true;
+    setIsValidating(true);
+    setError(null);
+
+    api.auth
+      .verifyResetToken(currentToken)
+      .then((res) => {
+        if (isMounted) {
+          if (res.success) {
+            setIsTokenValid(true);
+            setError(null);
+          } else {
+            setIsTokenValid(false);
+            setError(res.message || 'This password reset link has expired or is invalid.');
+          }
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          const isNetworkError =
+            err.message?.includes('Failed to fetch') ||
+            err.message?.includes('NetworkError');
+
+          if (isNetworkError) {
+            // If server check couldn't be reached due to network, allow user to try submitting
+            setIsTokenValid(true);
+            setError(null);
+          } else {
+            setIsTokenValid(false);
+            setError(
+              err.data?.message ||
+                err.message ||
+                'This password reset link has expired. Please request a new one.'
+            );
+          }
+        }
+      })
+      .finally(() => {
+        if (isMounted) setIsValidating(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [searchParams]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    if (!token) {
+    const currentToken = token || getTokenFromLocation();
+    if (!currentToken) {
       setError('Password reset token is missing.');
       return;
     }
@@ -47,7 +122,7 @@ export default function ResetPasswordModal() {
     setIsSubmitting(true);
 
     try {
-      await api.auth.resetPassword({ token, newPassword });
+      await api.auth.resetPassword({ token: currentToken, newPassword });
       setIsSubmitting(false);
       setIsSuccess(true);
     } catch (err) {
@@ -83,8 +158,14 @@ export default function ResetPasswordModal() {
           </p>
         </div>
 
-        {/* Success State */}
-        {isSuccess ? (
+        {/* Loading State during validation */}
+        {isValidating ? (
+          <div className="reset-loading-container">
+            <div className="reset-spinner" />
+            <div className="reset-loading-text">Verifying reset link...</div>
+          </div>
+        ) : isSuccess ? (
+          /* Success State */
           <div className="reset-success-container">
             <div className="reset-success-badge">✓</div>
             <h3 className="reset-success-title">Password Reset Complete!</h3>
@@ -98,6 +179,32 @@ export default function ResetPasswordModal() {
             >
               Sign In to Admin
             </button>
+          </div>
+        ) : !isTokenValid && error ? (
+          /* Invalid / Expired Token Error Screen */
+          <div className="reset-modal-form">
+            <div className="reset-error-alert">
+              <span>⚠️ {error}</span>
+            </div>
+            <p className="reset-instruction-text" style={{ textAlign: 'center', fontSize: '0.9rem', color: '#65676b' }}>
+              Password reset links expire for security reasons. Please return to the login screen and click "Forgot password" to generate a fresh link.
+            </p>
+            <button
+              type="button"
+              className="reset-primary-btn"
+              onClick={handleGoToLogin}
+            >
+              Request New Reset Link
+            </button>
+            <div className="reset-secondary-actions">
+              <button
+                type="button"
+                className="reset-text-btn"
+                onClick={handleGoHome}
+              >
+                Cancel & Return Home
+              </button>
+            </div>
           </div>
         ) : (
           /* Form State */
