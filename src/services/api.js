@@ -1,7 +1,11 @@
 import { PROJECTS_DATA } from '../data/projectsData';
 import { PROFILE_DATA } from '../data/profileData';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL =
+  process.env.REACT_APP_API_URL ||
+  process.env.VITE_API_URL ||
+  process.env.API_URL ||
+  'http://localhost:5000/api';
 
 /**
  * Helper to build auth headers

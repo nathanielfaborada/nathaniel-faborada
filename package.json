@@ -4,7 +4,6 @@
   "type": "module",
   "dependencies": {
     "@getbrevo/brevo": "^6.0.3",
-    "@parcel/watcher-win32-x64": "^2.6.0",
     "abortcontroller-polyfill": "^1.7.5",
     "ansi-styles": "^4.3.0",
     "argparse": "^2.0.1",
@@ -110,12 +109,20 @@
     "utility-types": "^3.11.0",
     "weak-lru-cache": "^1.2.2"
   },
+  "optionalDependencies": {
+    "@parcel/watcher-linux-x64-glibc": "^2.5.1",
+    "@parcel/watcher-linux-x64-musl": "^2.5.1",
+    "@parcel/watcher-win32-x64": "^2.5.1",
+    "lightningcss-linux-x64-gnu": "^1.29.3",
+    "lightningcss-linux-x64-musl": "^1.29.3",
+    "lightningcss-win32-x64-msvc": "^1.29.3"
+  },
   "devDependencies": {
     "parcel": "2.12.0",
     "process": "^0.11.10"
   },
   "scripts": {
-    "build": "parcel build --public-url / --dist-dir docs src/index.html",
+    "build": "parcel build --public-url / --dist-dir dist src/index.html && node server/scripts/syncDocs.js",
     "start": "parcel serve --port 1234 src/index.html",
     "server": "node server/index.js",
     "server:dev": "node --watch server/index.js",
