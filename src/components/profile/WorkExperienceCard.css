@@ -1,0 +1,110 @@
+.work-experience-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: 4px;
+}
+
+.work-experience-item:not(:last-child) {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.work-company-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid #e4e6eb;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #1877f2;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.work-company-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.work-company-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #050505;
+    margin: 0 0 10px 0;
+    line-height: 1.3;
+}
+
+/* Timeline Structure for Roles */
+.work-timeline {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-left: 14px;
+    margin-left: 4px;
+    border-left: 2px solid #e4e6eb;
+    gap: 14px;
+}
+
+.timeline-role-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -19px;
+    top: 5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1877f2;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 1px #e4e6eb;
+}
+
+.timeline-role-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.timeline-role-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1c1e21;
+    line-height: 1.35;
+}
+
+.timeline-role-period {
+    font-size: 0.85rem;
+    color: #65676b;
+    margin-top: 1px;
+}
+
+@media (max-width: 768px) {
+    .work-experience-item {
+        gap: 12px;
+    }
+
+    .work-company-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    .work-company-title {
+        font-size: 1rem;
+    }
+
+    .timeline-role-title {
+        font-size: 0.9rem;
+    }
+
+    .timeline-role-period {
+        font-size: 0.8rem;
+    }
+}

@@ -1,0 +1,164 @@
+#organization-grid-full {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#organization-grid-full .group-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+    background: #ffffff;
+    border: 1px solid #e4e6eb;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    min-width: 0;
+    width: 100%;
+}
+
+#organization-grid-full .group-card:hover {
+    border-color: #bcc0c4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.group-card-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+#organization-grid-full .group-thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    border: 1px solid #e4e6eb;
+    background: #ffffff;
+    object-fit: contain;
+    padding: 4px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+#organization-grid-full .group-info {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+#organization-grid-full .group-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #050505;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#organization-grid-full .group-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #65676b;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#organization-grid-full .globe-icon {
+    width: 14px;
+    height: 14px;
+    color: #65676b;
+    opacity: 0.85;
+    flex-shrink: 0;
+}
+
+.org-visit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: #f0f2f5;
+    border: 1px solid #e4e6eb;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #050505;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.org-visit-btn:hover {
+    background-color: #e4e6eb;
+    border-color: #d8dadf;
+    transform: translateY(-1px);
+    color: #000000;
+}
+
+@media (max-width: 768px) {
+    #organization-grid-full {
+        grid-template-columns: 1fr !important;
+        width: 100%;
+        max-width: 100%;
+        gap: 12px;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    #organization-grid-full .group-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .group-card-main {
+        gap: 10px;
+        min-width: 0;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    #organization-grid-full .group-thumb {
+        width: 44px;
+        height: 44px;
+    }
+
+    #organization-grid-full .group-name {
+        font-size: 0.9rem;
+    }
+
+    #organization-grid-full .group-meta {
+        font-size: 0.78rem;
+    }
+
+    .org-visit-btn {
+        flex-shrink: 0;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        min-height: 34px;
+    }
+}

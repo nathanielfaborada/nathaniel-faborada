@@ -1,0 +1,43 @@
+.project-screenshot {
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    position: relative;
+}
+
+.project-screenshot img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.screenshot-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 32px 16px;
+    color: #65676b;
+    width: 100%;
+    min-height: 180px;
+    background: #f0f2f5;
+}
+
+.placeholder-text {
+    font-size: 0.85rem;
+    color: #8a8d91;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .project-screenshot {
+        border-radius: 10px;
+        min-height: 160px;
+    }
+}

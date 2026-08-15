@@ -1,0 +1,218 @@
+/* Personal Details */
+.detail-list,
+.details-list {
+    list-style: none;
+    list-style-type: none;
+    padding: 0;
+    padding-left: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detail-list li,
+.details-list li,
+.detail-item {
+    list-style: none;
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: #4b4d52;
+}
+
+.detail-list li svg,
+.detail-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: #65676b;
+}
+
+.detail-text {
+    word-break: break-all;
+}
+
+/* Work Experience & Education */
+.work-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+}
+
+.work-item:last-child {
+    margin-bottom: 0;
+}
+
+.work-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #65676b;
+}
+
+.work-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.work-company {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #111;
+}
+
+.work-roles {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: #65676b;
+}
+
+.work-role {
+    color: #4b4d52;
+}
+
+.work-dot {
+    color: #8a8d91;
+}
+
+.work-period {
+    color: #65676b;
+}
+
+.experience-list,
+.education-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.exp-item,
+.edu-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.exp-dot {
+    font-size: 0.9rem;
+    line-height: 1.2;
+    flex-shrink: 0;
+}
+
+.exp-title,
+.edu-school {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #111;
+}
+
+.exp-date,
+.edu-degree {
+    font-size: 0.78rem;
+    color: #65676b;
+    margin-top: 2px;
+}
+
+/* Learned Skills */
+.skills-desc {
+    font-size: 0.82rem;
+    color: #65676b;
+    line-height: 1.45;
+    margin-bottom: 12px;
+}
+
+.skill-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.skill-scroll {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.skill-divider {
+    height: 1px;
+    background: #f0f0f0;
+    margin: 10px 0;
+}
+
+.skills-category {
+    margin-bottom: 14px;
+}
+
+.skills-category:last-child {
+    margin-bottom: 0;
+}
+
+.skills-category-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #65676b;
+    margin-bottom: 8px;
+}
+
+.skills-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Social Links */
+.social-list {
+    list-style: none;
+    list-style-type: none;
+    padding: 0;
+    padding-left: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.social-list li {
+    list-style: none;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: #4a90d9;
+    text-decoration: none;
+    transition: color 0.15s;
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+.social-link:hover {
+    text-decoration: underline;
+    color: #3479c2;
+    background: none;
+}

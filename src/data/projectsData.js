@@ -1,0 +1,187 @@
+export const PROJECTS_DATA = [
+  {
+    id: "immaculearn",
+    category: "organization",
+    categoryLabel: "College Thesis Capstone",
+    author: {
+      name: "Nathaniel Faborada",
+      avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
+    },
+    headline: "Immacullearn — Collaborative Learning System",
+    description: "Immacullearn is a learning management system (LMS) built as a thesis project, designed for academic institutions. It supports three user roles — students, professors, and admin — each with their own dashboards, spaces, and task management tools. Core features include collaborative document editing, activity/quiz creation, file sharing, class spaces, calendars, chat, and grade viewing.",
+    notice: "Interested in the full version? Email me at faboradanathaniel@gmail.com to get access.",
+    contributions: [
+      "Architected and built the Admin, Student, and Teacher dashboards from scratch, each with role-specific tools for managing courses, records, and monitoring activity.",
+      "Built REST APIs that auto-send invitation emails via Brevo, turning account onboarding into a one-click sign-up flow for students and teachers.",
+      "Wrote the search, filtering, and role-based announcement logic so each user only sees data relevant to their role.",
+      "Secured the platform with credential-based admin authentication and login.",
+      "Mapped the entire system's data flow across Level 0–2 DFDs before writing a single line of backend code.",
+    ],
+    tags: ["#javascript", "#supabase", "#mysql", "#postgresql", "#expressJS"],
+    screenshots: [
+      "https://res.cloudinary.com/diwwqfwjb/image/upload/v1777214107/image_23_mho4xg.png",
+      "https://res.cloudinary.com/diwwqfwjb/image/upload/v1777214093/image_25_bsmxwh.png",
+    ],
+    links: [
+      { type: "source", url: "https://github.com/Immaculearn", label: "Source" },
+      { type: "visit", url: "https://immaculearn.online/", label: "Visit" },
+    ],
+    stars: "⭐",
+  },
+  {
+    id: "kamada-logistics",
+    category: "internship",
+    categoryLabel: "Internship",
+    author: {
+      name: "Nathaniel Faborada",
+      avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
+    },
+    headline: "Kamada Logistics",
+    description: "Contributed to the development of an HR module and Driver’s Companion App, focusing on UI/UX design, frontend development, and backend logic to improve user experience and navigation. Designed wireframes and interfaces using Balsamiq and FlutterFlow, enhancing usability and reducing complexity. Integrated frontend with Supabase backend.",
+    contributions: [],
+    tags: ["#FlutterFlow", "#Supabase", "#Balsamiq"],
+    screenshots: [
+      "https://res.cloudinary.com/diwwqfwjb/image/upload/v1784537972/Screenshot_2026-07-20_165850_nsmyvj.png",
+    ],
+    links: [],
+    stars: null,
+  },
+  {
+    id: "jenather-auto-shop",
+    category: "organization",
+    categoryLabel: "Organization Project",
+    author: {
+      name: "Nathaniel Faborada",
+      avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
+    },
+    headline: "Jenather Auto Shop",
+    description: "Jenather Auto Shop is a web-based system for managing an auto shop built with PHP, HTML, CSS, and MySQL. It allows customers to browse cars, while admins can manage inventory and update statuses through a dashboard. The system streamlines the shop's operations by keeping customer records, services, organized in one place.",
+    contributions: [
+      "Built the customer-facing car browsing interface, letting shoppers explore available inventory in real time.",
+      "Developed the admin dashboard for managing inventory and updating service/vehicle statuses.",
+      "Designed the MySQL database schema to keep customer records, service history, and inventory organized in one place.",
+      "Handled both frontend (HTML/CSS) and backend (PHP) integration end-to-end, connecting the UI to live database operations.",
+    ],
+    tags: ["#php", "#mysql", "#supabase", "#html/css", "#Railway"],
+    screenshots: [
+      "https://res.cloudinary.com/diwwqfwjb/image/upload/v1777215842/image_27_nh2swg.png",
+      "https://res.cloudinary.com/diwwqfwjb/image/upload/v1777215843/image_28_drrmbv.png",
+      "https://res.cloudinary.com/diwwqfwjb/image/upload/v1777215854/image_29_usqjtf.png",
+    ],
+    links: [
+      { type: "source", url: "https://github.com/orgs/Jenather-Auto-Shop", label: "Source" },
+    ],
+    stars: "⭐",
+  },
+  {
+    id: "threads-clone",
+    category: "organization",
+    categoryLabel: "Organization Project",
+    author: {
+      name: "Nathaniel Faborada",
+      avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
+    },
+    headline: "Threads Clone",
+    description: "Threads Clone is a RESTful API that replicates the core features of the Threads social media platform, built with JWT-based authentication for secure user sessions. It supports full social interactions including posting threads, replying, liking, reposting, and following/unfollowing other users. The API also includes account management features such as registration, login, profile updates, password reset via OTP, and a search functionality for users, posts, and hashtags.",
+    contributions: [
+      "Designed and built the RESTful API architecture for the entire platform — posting, replying, liking, reposting, and follow/unfollow logic.",
+      "Implemented JWT-based authentication to secure user sessions across all protected endpoints.",
+      "Built account management endpoints covering registration, login, profile updates, and OTP-based password reset.",
+      "Developed search functionality for users, posts, and hashtags with query-based filtering.",
+    ],
+    tags: ["#javascript", "#node.js", "#html/css", "#MySQL"],
+    screenshots: [
+      "https://res.cloudinary.com/diwwqfwjb/image/upload/v1784539422/Landing_Page_pbsfka.png",
+      "https://res.cloudinary.com/diwwqfwjb/image/upload/v1784539415/Home_fdthib.png",
+    ],
+    links: [
+      { type: "source", url: "https://github.com/Treads-Clone", label: "Source" },
+    ],
+    stars: "⭐",
+  },
+  {
+    id: "new-york-times",
+    category: "personal",
+    categoryLabel: "Personal Project",
+    author: {
+      name: "Nathaniel Faborada",
+      avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
+    },
+    headline: "New York Times",
+    description: "A web application that fetches and displays articles from the New York Times API.",
+    contributions: [
+      "Designed and developed a pixel-art themed news aggregator using the New York Times API.",
+      "Implemented responsive card-based grid layout for article display.",
+    ],
+    tags: ["#nyt_api", "#html/css", "#javascript"],
+    screenshots: [
+      "https://res.cloudinary.com/diwwqfwjb/image/upload/v1777216379/image_30_tnmion.png",
+      "https://res.cloudinary.com/diwwqfwjb/image/upload/v1777216387/image_31_avhzq0.png",
+    ],
+    links: [
+      { type: "source", url: "https://github.com/nathanielfaborada/appsdev-newyork-times", label: "Source" },
+      { type: "visit", url: "https://nathanielfaborada.github.io/appsdev-newyork-times", label: "Visit" },
+    ],
+    stars: "⭐",
+  },
+  {
+    id: "weather-website",
+    category: "personal",
+    categoryLabel: "Personal Project",
+    author: {
+      name: "Nathaniel Faborada",
+      avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
+    },
+    headline: "Weather Website",
+    description: "Built a responsive news application inspired by the New York Times, fetching live articles via REST API and rendering them into clean, editorial-style layouts using vanilla JavaScript.",
+    contributions: [
+      "Built a weather forecasting app from the ground up with real-time, city-based search — type a city, get live conditions instantly.",
+      "Wired up a third-party Weather API to pull and render live weather data on the fly.",
+      "Designed a custom retro-pixel UI theme from scratch, giving the app a distinct visual identity instead of a generic weather-widget look.",
+    ],
+    tags: ["#html/css", "#javascript"],
+    screenshots: [
+      "https://res.cloudinary.com/diwwqfwjb/image/upload/v1784541342/Screenshot_2026-07-20_175423_smhi4h.png",
+    ],
+    links: [
+      { type: "source", url: "https://github.com/nathanielfaborada/WeatherWeb", label: "Source" },
+      { type: "visit", url: "https://panahon-mo.netlify.app/", label: "Visit" },
+    ],
+    stars: "⭐",
+  },
+  {
+    id: "ai-driven-post-creator",
+    category: "personal",
+    categoryLabel: "Personal Project",
+    author: {
+      name: "Nathaniel Faborada",
+      avatar: "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg",
+    },
+    headline: "ai-driven-post-creator",
+    description: "This service automatically creates and publishes content to your Facebook page powered by AI. No more writer's block. No more missed posting days. Just consistent, engaging content on autopilot.",
+    contributions: [],
+    tags: [
+      "#javascript",
+      "#node.js",
+      "#axios",
+      "#google gemini api",
+      "#mlbb hero api",
+      "#facebook graph api v24.0",
+    ],
+    screenshots: [
+      "https://res.cloudinary.com/diwwqfwjb/image/upload/v1777217990/image_32_zir7lg.png",
+    ],
+    links: [
+      { type: "source", url: "https://github.com/nathanielfaborada/ai-driven-post-creator", label: "Source" },
+      { type: "visit", url: "https://www.facebook.com/profile.php?id=61561184012011", label: "Visit" },
+    ],
+    stars: "⭐",
+  },
+];
+
+export const CATEGORY_FILTERS = [
+  { key: "all", label: "All" },
+  { key: "personal", label: "Personal Projects" },
+  { key: "organization", label: "Organization" },
+  { key: "internship", label: "Internship" },
+];
