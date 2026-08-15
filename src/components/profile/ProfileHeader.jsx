@@ -56,10 +56,10 @@ export default function ProfileHeader({
             </div>
           </div>
 
-          <div className="profile-actions-wrapper flex items-center gap-2 w-full mt-3">
+          <div className="profile-actions-wrapper flex items-center justify-start gap-2 w-full sm:w-auto mt-3">
             <Button
               href={profile.resumeUrl}
-              className="resume-btn flex items-center justify-center w-full"
+              className="resume-btn flex items-center justify-center w-full sm:w-auto px-6 py-2.5 rounded-lg"
               target="_blank"
             >
               <ResumeDocIcon size={16} />

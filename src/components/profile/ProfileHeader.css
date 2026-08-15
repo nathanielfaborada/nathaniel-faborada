@@ -121,20 +121,23 @@
 .profile-actions-wrapper {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 8px;
-    width: 100%;
-    margin-top: 14px;
+    width: auto;
+    max-width: 100%;
+    margin-top: 12px;
 }
 
 .resume-btn {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    width: 100%;
-    padding: 8px 16px;
-    height: 38px;
-    min-height: 38px;
+    width: auto;
+    max-width: max-content;
+    padding: 10px 24px;
+    height: 40px;
+    min-height: 40px;
     background: #1877f2;
     color: #ffffff;
     border-radius: 8px;
@@ -347,11 +350,18 @@
         text-align: center;
     }
 
+    .profile-actions-wrapper {
+        width: 100%;
+        justify-content: center;
+        margin-top: 8px;
+    }
+
     .resume-btn {
         width: 100%;
         max-width: 100%;
         justify-content: center;
         height: 38px;
         min-height: 38px;
+        padding: 9px 18px;
     }
 }
