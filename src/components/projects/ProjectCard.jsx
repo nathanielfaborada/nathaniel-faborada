@@ -265,129 +265,115 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
         </div>
       )}
 
-      {/* Certificate Display: HackerRank / External Credential Preview vs Iframe vs Image Carousel */}
-      {isCertificate && isHackerRank ? (
-        <div
-          className="certificate-external-card"
-          style={{
-            margin: '12px 0',
-            padding: '24px 20px',
-            borderRadius: '10px',
-            border: '1px solid #e4e6eb',
-            background: 'linear-gradient(135deg, #f8f9fa 0%, #edf2f7 100%)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textAlign: 'center',
-            gap: '12px',
-          }}
-        >
+      {/* Certificate Display: Image Preview or Credential Box */}
+      {isCertificate ? (
+        <div className="certificate-card-display" style={{ margin: '12px 0' }}>
           {screenshots.length > 0 ? (
             <div
               style={{
-                maxWidth: '340px',
-                width: '100%',
                 borderRadius: '8px',
                 overflow: 'hidden',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                marginBottom: '4px',
+                border: '1px solid #e4e6eb',
+                background: '#ffffff',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                width: '100%',
               }}
             >
               <img
                 src={screenshots[0]}
                 alt={project.title || 'Certificate'}
-                style={{ width: '100%', height: 'auto', display: 'block' }}
+                style={{
+                  width: '100%',
+                  maxHeight: '420px',
+                  objectFit: 'contain',
+                  display: 'block',
+                  background: '#f8f9fa',
+                }}
                 loading="lazy"
               />
             </div>
-          ) : (
+          ) : credUrl ? (
             <div
+              className="certificate-credential-box"
               style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '50%',
-                background: '#e7f3ff',
-                color: '#1877f2',
+                padding: '24px 20px',
+                borderRadius: '10px',
+                border: '1px solid #e4e6eb',
+                background: 'linear-gradient(135deg, #f8f9fa 0%, #edf2f7 100%)',
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '28px',
+                textAlign: 'center',
+                gap: '12px',
               }}
             >
-              🎓
+              <div
+                style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  background: isHackerRank ? '#e6f9ed' : '#e7f3ff',
+                  color: isHackerRank ? '#00ea64' : '#1877f2',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '26px',
+                }}
+              >
+                {isHackerRank ? '🟢' : '🎓'}
+              </div>
+
+              <div>
+                <h4
+                  style={{
+                    margin: '0 0 4px 0',
+                    fontSize: '1.05rem',
+                    fontWeight: 600,
+                    color: '#050505',
+                  }}
+                >
+                  {project.title || project.headline}
+                </h4>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: '#65676b' }}>
+                  {project.issuer
+                    ? `Issued by ${project.issuer}`
+                    : isHackerRank
+                    ? 'Verified on HackerRank'
+                    : 'Verified Credential'}
+                </p>
+              </div>
+
+              <a
+                href={credUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '9px 20px',
+                  background: isHackerRank ? '#00ea64' : '#1877f2',
+                  color: isHackerRank ? '#0e141e' : '#ffffff',
+                  borderRadius: '6px',
+                  fontWeight: 700,
+                  fontSize: '0.88rem',
+                  textDecoration: 'none',
+                  marginTop: '4px',
+                  boxShadow: isHackerRank
+                    ? '0 2px 6px rgba(0, 234, 100, 0.3)'
+                    : '0 2px 6px rgba(24, 119, 242, 0.25)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <span>{isHackerRank ? 'Verify Certificate ↗' : 'View Certificate ↗'}</span>
+              </a>
             </div>
-          )}
-
-          <div>
-            <h4
-              style={{
-                margin: '0 0 6px 0',
-                fontSize: '1.05rem',
-                fontWeight: 600,
-                color: '#050505',
-              }}
-            >
-              {project.title || project.headline}
-            </h4>
-            <p style={{ margin: 0, fontSize: '0.85rem', color: '#65676b' }}>
-              {project.issuer ? `Verified by ${project.issuer}` : 'Verified Credential on HackerRank'}
-            </p>
-          </div>
-
-          <a
-            href={credUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '9px 20px',
-              background: '#00ea64',
-              color: '#0e141e',
-              borderRadius: '6px',
-              fontWeight: 700,
-              fontSize: '0.88rem',
-              textDecoration: 'none',
-              marginTop: '4px',
-              boxShadow: '0 2px 6px rgba(0, 234, 100, 0.3)',
-              transition: 'all 0.2s ease',
-            }}
-          >
-            <span>Verify Certificate</span>
-            <ExternalLinkIcon size={14} />
-          </a>
-        </div>
-      ) : iframeSrc ? (
-        <div
-          className="certificate-iframe-card"
-          style={{
-            margin: '12px 0',
-            borderRadius: '8px',
-            overflow: 'hidden',
-            border: '1px solid #e4e6eb',
-            background: '#f8f9fa',
-            width: '100%',
-          }}
-        >
-          <iframe
-            src={iframeSrc}
-            title={project.title || 'Certificate'}
-            style={{
-              width: '100%',
-              minHeight: '380px',
-              height: '420px',
-              border: 'none',
-              display: 'block',
-            }}
-            loading="lazy"
-            allowFullScreen
-          />
+          ) : null}
         </div>
       ) : screenshots.length > 0 ? (
         <ProjectImageCarousel
           images={screenshots}
-          title={project.headline || project.title || 'Certificate'}
+          title={project.headline || project.title || 'Project'}
         />
       ) : null}
 

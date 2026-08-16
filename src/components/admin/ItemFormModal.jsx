@@ -628,187 +628,132 @@ export default function ItemFormModal({
             {/* CERTIFICATE FORM FIELDS */}
             {type === 'certificate' && (
               <>
-                {/* Title */}
+                {/* Field 1: Certificate Title */}
                 <div className="item-form-group">
                   <label className="item-form-label" htmlFor="cert-title">
-                    Title *
+                    Certificate Title *
                   </label>
                   <input
                     id="cert-title"
                     type="text"
                     name="title"
                     className="item-form-input"
-                    placeholder="e.g. Problem Solving (Basic) / AWS Certified Cloud Practitioner"
+                    placeholder="e.g. Problem Solving (Basic)"
                     value={formData.title || ''}
                     onChange={handleChange}
                     required
                   />
                 </div>
 
-                {/* Display Mode Toggle */}
+                {/* Field 2: Credential / Certificate URL */}
                 <div className="item-form-group">
-                  <label className="item-form-label">Display Mode</label>
-                  <div style={{ display: 'flex', gap: '10px', marginTop: '4px' }}>
-                    <button
-                      type="button"
-                      id="mode-iframe-btn"
-                      onClick={() => setFormData((prev) => ({ ...prev, display_mode: 'iframe' }))}
-                      style={{
-                        flex: 1,
-                        padding: '10px 14px',
-                        borderRadius: '8px',
-                        border: formData.display_mode === 'iframe' ? '2px solid #1877f2' : '1px solid #ced0d4',
-                        background: formData.display_mode === 'iframe' ? '#e7f3ff' : '#f0f2f5',
-                        color: formData.display_mode === 'iframe' ? '#1877f2' : '#65676b',
-                        fontWeight: 600,
-                        fontSize: '0.85rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                        transition: 'all 0.2s ease',
-                      }}
-                    >
-                      <span>🌐</span> Iframe Link
-                    </button>
-                    <button
-                      type="button"
-                      id="mode-image-btn"
-                      onClick={() => setFormData((prev) => ({ ...prev, display_mode: 'image' }))}
-                      style={{
-                        flex: 1,
-                        padding: '10px 14px',
-                        borderRadius: '8px',
-                        border: formData.display_mode === 'image' ? '2px solid #1877f2' : '1px solid #ced0d4',
-                        background: formData.display_mode === 'image' ? '#e7f3ff' : '#f0f2f5',
-                        color: formData.display_mode === 'image' ? '#1877f2' : '#65676b',
-                        fontWeight: 600,
-                        fontSize: '0.85rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '6px',
-                        transition: 'all 0.2s ease',
-                      }}
-                    >
-                      <span>🖼️</span> Upload Image
-                    </button>
+                  <label className="item-form-label" htmlFor="cert-cred-url">
+                    Credential / Certificate URL
+                  </label>
+                  <input
+                    id="cert-cred-url"
+                    type="url"
+                    name="credential_url"
+                    className="item-form-input"
+                    placeholder="e.g. https://www.hackerrank.com/certificates/... or https://coursera.org/verify/..."
+                    value={formData.credential_url || formData.live_demo_url || ''}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFormData((prev) => ({
+                        ...prev,
+                        credential_url: e.target.value,
+                        live_demo_url: e.target.value,
+                      }));
+                    }}
+                  />
+                  <span style={{ display: 'block', fontSize: '0.78rem', color: '#65676b', marginTop: '4px' }}>
+                    💡 External links (e.g., HackerRank) will render as an external verification link button instead of an embedded frame.
+                  </span>
+                </div>
+
+                {/* Field 3: Certificate Image URL or Upload */}
+                <div className="item-form-group image-upload-wrapper">
+                  <label className="item-form-label">Certificate Image or Badge (Optional)</label>
+
+                  {formData.image_url ? (
+                    <div className="image-thumbs-grid" style={{ gridTemplateColumns: '140px' }}>
+                      <div className="image-thumb-card" style={{ aspectRatio: '4/3' }}>
+                        <img
+                          src={formData.image_url}
+                          alt="Certificate preview"
+                          className="image-thumb-img w-full h-full object-cover"
+                          loading="eager"
+                          decoding="async"
+                        />
+                        <button
+                          type="button"
+                          className="image-thumb-delete-btn"
+                          onClick={() => setFormData((prev) => ({ ...prev, image_url: '' }))}
+                          title="Remove image"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="image-upload-box">
+                      <div className="image-upload-dropzone">
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          className="image-file-input"
+                          accept="image/*"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            setIsUploading(true);
+                            setError(null);
+                            try {
+                              const response = await api.upload.image(file);
+                              if (response.success && response.url) {
+                                setFormData((prev) => ({ ...prev, image_url: response.url }));
+                              }
+                            } catch (err) {
+                              setError(err.message || 'Failed to upload certificate image.');
+                            } finally {
+                              setIsUploading(false);
+                              if (fileInputRef.current) fileInputRef.current.value = '';
+                            }
+                          }}
+                          id="cert-image-file"
+                        />
+                        <button
+                          type="button"
+                          className="image-upload-btn"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={isUploading}
+                        >
+                          📁 {isUploading ? 'Uploading...' : 'Upload Image to Cloudinary'}
+                        </button>
+                        <span className="image-upload-status">
+                          {isUploading ? 'Uploading...' : 'Max 5MB'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  <div style={{ marginTop: '8px' }}>
+                    <input
+                      type="url"
+                      name="image_url"
+                      className="item-form-input"
+                      placeholder="Or paste direct image URL (https://...)"
+                      value={formData.image_url || ''}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
 
-                {/* Conditional Input based on Display Mode */}
-                {formData.display_mode === 'iframe' ? (
-                  <div className="item-form-group">
-                    <label className="item-form-label" htmlFor="cert-iframe-url">
-                      Credential / Iframe URL *
-                    </label>
-                    <input
-                      id="cert-iframe-url"
-                      type="url"
-                      name="credential_url"
-                      className="item-form-input"
-                      placeholder="https://www.hackerrank.com/certificates/iframe/... or iframe embed URL"
-                      value={formData.credential_url || formData.live_demo_url || ''}
-                      onChange={(e) => {
-                        handleChange(e);
-                        setFormData((prev) => ({
-                          ...prev,
-                          credential_url: e.target.value,
-                          live_demo_url: e.target.value,
-                        }));
-                      }}
-                      required
-                    />
-                    <span style={{ display: 'block', fontSize: '0.76rem', color: '#65676b', marginTop: '4px' }}>
-                      Paste direct iframe link (e.g. HackerRank certificate iframe URL, Credly embed URL)
-                    </span>
-                  </div>
-                ) : (
-                  <div className="item-form-group image-upload-wrapper">
-                    <label className="item-form-label">Certificate Image or Badge</label>
-
-                    {formData.image_url ? (
-                      <div className="image-thumbs-grid" style={{ gridTemplateColumns: '120px' }}>
-                        <div className="image-thumb-card" style={{ aspectRatio: '4/3' }}>
-                          <img
-                            src={formData.image_url}
-                            alt="Certificate preview"
-                            className="image-thumb-img w-full h-full object-cover"
-                            loading="eager"
-                            decoding="async"
-                          />
-                          <button
-                            type="button"
-                            className="image-thumb-delete-btn"
-                            onClick={() => setFormData((prev) => ({ ...prev, image_url: '' }))}
-                            title="Remove image"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="image-upload-box">
-                        <div className="image-upload-dropzone">
-                          <input
-                            type="file"
-                            ref={fileInputRef}
-                            className="image-file-input"
-                            accept="image/*"
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (!file) return;
-                              setIsUploading(true);
-                              setError(null);
-                              try {
-                                const response = await api.upload.image(file);
-                                if (response.success && response.url) {
-                                  setFormData((prev) => ({ ...prev, image_url: response.url }));
-                                }
-                              } catch (err) {
-                                setError(err.message || 'Failed to upload certificate image.');
-                              } finally {
-                                setIsUploading(false);
-                                if (fileInputRef.current) fileInputRef.current.value = '';
-                              }
-                            }}
-                            id="cert-image-file"
-                          />
-                          <button
-                            type="button"
-                            className="image-upload-btn"
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={isUploading}
-                          >
-                            📁 {isUploading ? 'Uploading...' : 'Upload Image to Cloudinary'}
-                          </button>
-                          <span className="image-upload-status">
-                            {isUploading ? 'Uploading...' : 'Max 5MB'}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    <div style={{ marginTop: '8px' }}>
-                      <input
-                        type="url"
-                        name="image_url"
-                        className="item-form-input"
-                        placeholder="Or paste direct image URL (https://...)"
-                        value={formData.image_url || ''}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Issuer / Description (Optional) */}
+                {/* Field 4: Issuer & Date */}
                 <div className="item-form-row">
                   <div className="item-form-group">
                     <label className="item-form-label" htmlFor="cert-issuer">
-                      Issuer / Organization (Optional)
+                      Issuer / Organization
                     </label>
                     <input
                       id="cert-issuer"
