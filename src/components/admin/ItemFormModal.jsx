@@ -15,12 +15,33 @@ export default function ItemFormModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [showAddImage, setShowAddImage] = useState(false);
+  const [pendingCertFile, setPendingCertFile] = useState(null);
+  const [certPreviewUrl, setCertPreviewUrl] = useState(null);
+  const [uploadStepText, setUploadStepText] = useState('');
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
+    return () => {
+      if (certPreviewUrl) {
+        try {
+          URL.revokeObjectURL(certPreviewUrl);
+        } catch {}
+      }
+    };
+  }, [certPreviewUrl]);
+
+  useEffect(() => {
     if (!isOpen) return;
 
+    if (certPreviewUrl) {
+      try {
+        URL.revokeObjectURL(certPreviewUrl);
+      } catch {}
+    }
+    setPendingCertFile(null);
+    setCertPreviewUrl(null);
+    setUploadStepText('');
     setError(null);
     setIsUploading(false);
     setShowAddImage(false);
@@ -231,6 +252,43 @@ export default function ItemFormModal({
     }));
   };
 
+  const handleCertFileSelected = (file) => {
+    if (!file) return;
+    if (certPreviewUrl) {
+      try {
+        URL.revokeObjectURL(certPreviewUrl);
+      } catch {}
+    }
+    const localUrl = URL.createObjectURL(file);
+    setPendingCertFile(file);
+    setCertPreviewUrl(localUrl);
+    setFormData((prev) => ({ ...prev, image_url: localUrl }));
+  };
+
+  const handleRemoveCertImage = () => {
+    if (certPreviewUrl) {
+      try {
+        URL.revokeObjectURL(certPreviewUrl);
+      } catch {}
+      setCertPreviewUrl(null);
+    }
+    setPendingCertFile(null);
+    setFormData((prev) => ({ ...prev, image_url: '' }));
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleModalClose = () => {
+    if (certPreviewUrl) {
+      try {
+        URL.revokeObjectURL(certPreviewUrl);
+      } catch {}
+      setCertPreviewUrl(null);
+    }
+    setPendingCertFile(null);
+    setUploadStepText('');
+    onClose();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -276,8 +334,7 @@ export default function ItemFormModal({
           await api.creations.create(payload);
         }
       } else if (type === 'certificate') {
-        const isIframe = formData.display_mode === 'iframe';
-        const certImage = formData.image_url?.trim() || null;
+        let certImage = (formData.image_url || '').trim() || null;
         const issuerName = (formData.issuer || '').trim();
         const credUrl = (formData.credential_url || formData.live_demo_url || '').trim();
 
@@ -285,17 +342,31 @@ export default function ItemFormModal({
           throw new Error('Certificate Title is required.');
         }
 
-        if (isIframe && !credUrl) {
-          throw new Error('Iframe/Credential URL is required for Iframe mode.');
+        // DEFERRED CLOUDINARY UPLOAD: Upload raw file on submit
+        if (pendingCertFile) {
+          setUploadStepText('Uploading image to Cloudinary...');
+          try {
+            const uploadRes = await api.upload.image(pendingCertFile);
+            if (uploadRes && uploadRes.url) {
+              certImage = uploadRes.url;
+            }
+          } catch (uploadErr) {
+            throw new Error(`Image upload failed: ${uploadErr.message}`);
+          }
+        } else if (certImage && certImage.startsWith('blob:')) {
+          // In case preview URL wasn't cleared but file was lost
+          certImage = null;
         }
 
         const certPayload = {
           title: formData.title.trim(),
-          display_type: isIframe ? 'iframe' : 'image',
-          credential_url: isIframe ? credUrl : (credUrl || null),
-          image_url: isIframe ? null : certImage,
+          display_type: certImage ? 'image' : 'iframe',
+          credential_url: credUrl || null,
+          image_url: certImage,
           issuer: issuerName || null,
         };
+
+        setUploadStepText('Saving certificate...');
 
         if (isEdit) {
           if (initialData?.is_certificate_model) {
@@ -318,6 +389,15 @@ export default function ItemFormModal({
           await api.certificates.create(certPayload);
           toast.success('Certificate added! 🎉');
         }
+
+        if (certPreviewUrl) {
+          try {
+            URL.revokeObjectURL(certPreviewUrl);
+          } catch {}
+          setCertPreviewUrl(null);
+        }
+        setPendingCertFile(null);
+        setUploadStepText('');
 
         onSuccess && onSuccess('certificate', isEdit ? 'updated' : 'added');
         onClose();
@@ -389,7 +469,7 @@ export default function ItemFormModal({
     <div
       className="item-modal-overlay"
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget && !isSubmitting) handleModalClose();
       }}
     >
       <div className="item-modal-card">
@@ -399,7 +479,8 @@ export default function ItemFormModal({
           <button
             type="button"
             className="item-modal-close-btn"
-            onClick={onClose}
+            onClick={handleModalClose}
+            disabled={isSubmitting}
             aria-label="Close"
           >
             ✕
@@ -661,7 +742,7 @@ export default function ItemFormModal({
                   />
                 </div>
 
-                {/* Field 3: Certificate Image (Automatic Cloudinary File Upload) */}
+                {/* Field 3: Certificate Image (Local Preview, Upload on Submit) */}
                 <div className="item-form-group image-upload-wrapper">
                   <label className="item-form-label">
                     Certificate Image
@@ -689,7 +770,7 @@ export default function ItemFormModal({
                         <button
                           type="button"
                           className="image-thumb-delete-btn"
-                          onClick={() => setFormData((prev) => ({ ...prev, image_url: '' }))}
+                          onClick={handleRemoveCertImage}
                           title="Remove image"
                         >
                           ✕
@@ -703,25 +784,11 @@ export default function ItemFormModal({
                         e.preventDefault();
                         e.stopPropagation();
                       }}
-                      onDrop={async (e) => {
+                      onDrop={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         const file = e.dataTransfer?.files?.[0];
-                        if (!file) return;
-                        setIsUploading(true);
-                        setError(null);
-                        try {
-                          const response = await api.upload.image(file);
-                          if (response.success && response.url) {
-                            setFormData((prev) => ({ ...prev, image_url: response.url }));
-                            toast.success('Image uploaded to Cloudinary! ☁️');
-                          }
-                        } catch (err) {
-                          setError(err.message || 'Failed to upload certificate image.');
-                          toast.error('Failed to upload image. Please try again.');
-                        } finally {
-                          setIsUploading(false);
-                        }
+                        if (file) handleCertFileSelected(file);
                       }}
                     >
                       <div className="image-upload-dropzone">
@@ -730,24 +797,9 @@ export default function ItemFormModal({
                           ref={fileInputRef}
                           className="image-file-input"
                           accept="image/*"
-                          onChange={async (e) => {
+                          onChange={(e) => {
                             const file = e.target.files?.[0];
-                            if (!file) return;
-                            setIsUploading(true);
-                            setError(null);
-                            try {
-                              const response = await api.upload.image(file);
-                              if (response.success && response.url) {
-                                setFormData((prev) => ({ ...prev, image_url: response.url }));
-                                toast.success('Image uploaded to Cloudinary! ☁️');
-                              }
-                            } catch (err) {
-                              setError(err.message || 'Failed to upload certificate image.');
-                              toast.error('Failed to upload image. Please try again.');
-                            } finally {
-                              setIsUploading(false);
-                              if (fileInputRef.current) fileInputRef.current.value = '';
-                            }
+                            if (file) handleCertFileSelected(file);
                           }}
                           id="cert-image-file"
                         />
@@ -755,14 +807,12 @@ export default function ItemFormModal({
                           type="button"
                           className="image-upload-btn"
                           onClick={() => fileInputRef.current?.click()}
-                          disabled={isUploading}
+                          disabled={isSubmitting}
                         >
-                          📁 {isUploading ? 'Uploading to Cloudinary...' : 'Choose Certificate Image File'}
+                          📁 Choose Certificate Image File
                         </button>
                         <span className="image-upload-status">
-                          {isUploading
-                            ? 'Uploading to Cloudinary CDN...'
-                            : 'Supports PNG, JPG, WEBP (Drag & drop or click to upload)'}
+                          Supports PNG, JPG, WEBP (Image will upload to Cloudinary upon clicking submit)
                         </span>
                       </div>
                     </div>
@@ -1094,7 +1144,7 @@ export default function ItemFormModal({
             <button
               type="button"
               className="item-cancel-btn px-4 py-2 text-sm font-medium rounded-lg"
-              onClick={onClose}
+              onClick={handleModalClose}
               disabled={isSubmitting || isUploading}
             >
               Cancel
@@ -1105,7 +1155,7 @@ export default function ItemFormModal({
               disabled={isSubmitting || isUploading}
             >
               {isSubmitting
-                ? 'Saving...'
+                ? uploadStepText || 'Saving...'
                 : isEdit
                 ? 'Save Changes'
                 : type === 'creation'
