@@ -62,6 +62,20 @@ export async function testDbConnection() {
         );
         console.log('✅ Added project_date column to creations table.');
       }
+
+      // Auto-migrate certificates table
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS certificates (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          title VARCHAR(255) NOT NULL,
+          display_type ENUM('iframe', 'image') NOT NULL DEFAULT 'iframe',
+          credential_url TEXT,
+          image_url TEXT,
+          issuer VARCHAR(255),
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+      `);
+      console.log('✅ Verified certificates table schema.');
     } catch (schemaErr) {
       // Ignore if table doesn't exist yet or already altered
     }

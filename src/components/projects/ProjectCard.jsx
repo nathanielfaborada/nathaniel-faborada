@@ -45,20 +45,22 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
     project.is_certificate_model === true ||
     Boolean(project.display_type);
 
+  const credUrl = (project.credential_url || project.live_demo_url || '').trim();
+  const isHackerRank =
+    typeof credUrl === 'string' &&
+    credUrl.toLowerCase().includes('hackerrank.com');
+
   const isIframeCertificate =
     isCertificate &&
+    !isHackerRank &&
     (project.display_type === 'iframe' ||
       project.source_code_url === 'iframe' ||
       project.notice === 'iframe' ||
       (Array.isArray(project.tags) && project.tags.includes('#iframe')) ||
-      (typeof (project.credential_url || project.live_demo_url) === 'string' &&
-        ((project.credential_url || project.live_demo_url).includes('hackerrank.com') ||
-          (project.credential_url || project.live_demo_url).includes('iframe') ||
-          (project.credential_url || project.live_demo_url).includes('embed'))));
+      (typeof credUrl === 'string' &&
+        (credUrl.includes('iframe') || credUrl.includes('embed'))));
 
-  const iframeSrc = isIframeCertificate
-    ? project.credential_url || project.live_demo_url
-    : null;
+  const iframeSrc = isIframeCertificate ? credUrl : null;
 
   // Normalize links
   let links = project.links || [];
@@ -66,7 +68,6 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
     if (project.source_code_url && project.source_code_url !== 'iframe') {
       links.push({ type: 'source', url: project.source_code_url, label: 'Source' });
     }
-    const credUrl = project.credential_url || project.live_demo_url;
     if (credUrl) {
       links.push({
         type: 'visit',
@@ -264,8 +265,100 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
         </div>
       )}
 
-      {/* Certificate Iframe or Interactive Image Carousel */}
-      {iframeSrc ? (
+      {/* Certificate Display: HackerRank / External Credential Preview vs Iframe vs Image Carousel */}
+      {isCertificate && isHackerRank ? (
+        <div
+          className="certificate-external-card"
+          style={{
+            margin: '12px 0',
+            padding: '24px 20px',
+            borderRadius: '10px',
+            border: '1px solid #e4e6eb',
+            background: 'linear-gradient(135deg, #f8f9fa 0%, #edf2f7 100%)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            gap: '12px',
+          }}
+        >
+          {screenshots.length > 0 ? (
+            <div
+              style={{
+                maxWidth: '340px',
+                width: '100%',
+                borderRadius: '8px',
+                overflow: 'hidden',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                marginBottom: '4px',
+              }}
+            >
+              <img
+                src={screenshots[0]}
+                alt={project.title || 'Certificate'}
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+                loading="lazy"
+              />
+            </div>
+          ) : (
+            <div
+              style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: '#e7f3ff',
+                color: '#1877f2',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '28px',
+              }}
+            >
+              🎓
+            </div>
+          )}
+
+          <div>
+            <h4
+              style={{
+                margin: '0 0 6px 0',
+                fontSize: '1.05rem',
+                fontWeight: 600,
+                color: '#050505',
+              }}
+            >
+              {project.title || project.headline}
+            </h4>
+            <p style={{ margin: 0, fontSize: '0.85rem', color: '#65676b' }}>
+              {project.issuer ? `Verified by ${project.issuer}` : 'Verified Credential on HackerRank'}
+            </p>
+          </div>
+
+          <a
+            href={credUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '9px 20px',
+              background: '#00ea64',
+              color: '#0e141e',
+              borderRadius: '6px',
+              fontWeight: 700,
+              fontSize: '0.88rem',
+              textDecoration: 'none',
+              marginTop: '4px',
+              boxShadow: '0 2px 6px rgba(0, 234, 100, 0.3)',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <span>Verify Certificate</span>
+            <ExternalLinkIcon size={14} />
+          </a>
+        </div>
+      ) : iframeSrc ? (
         <div
           className="certificate-iframe-card"
           style={{
