@@ -114,15 +114,15 @@ function MainApp() {
   };
 
   const handleModalSuccess = (type, action) => {
-    const label =
-      type === 'creation'
-        ? 'Project'
-        : type === 'certificate'
-        ? 'Certificate'
-        : type === 'organization'
-        ? 'Organization'
-        : 'Work Experience';
-    toast.success(`${label} ${action} successfully!`);
+    if (type !== 'certificate') {
+      const label =
+        type === 'creation'
+          ? 'Project'
+          : type === 'organization'
+          ? 'Organization'
+          : 'Work Experience';
+      toast.success(`${label} ${action} successfully!`);
+    }
     setRefreshTrigger((prev) => prev + 1);
   };
 

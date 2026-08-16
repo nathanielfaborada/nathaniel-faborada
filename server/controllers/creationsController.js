@@ -13,8 +13,13 @@ export async function getAllCreations(req, res) {
     const conditions = [];
 
     if (category && category !== 'all') {
-      conditions.push('category = ?');
-      params.push(category);
+      const lowerCat = category.toLowerCase();
+      if (lowerCat === 'certificate' || lowerCat === 'certificates') {
+        conditions.push("(LOWER(category) = 'certificate' OR LOWER(category) = 'certificates')");
+      } else {
+        conditions.push('LOWER(category) = ?');
+        params.push(lowerCat);
+      }
     }
 
     if (featured === 'true') {

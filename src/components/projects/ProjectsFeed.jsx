@@ -46,14 +46,16 @@ export default function ProjectsFeed({
 
   // Filter projects by category
   const filteredProjects = projects.filter((project) => {
+    const cat = (project.category || '').toLowerCase();
+    const isCert = cat === 'certificate' || cat === 'certificates';
     if (isCertificatesTab) {
-      return project.category === 'certificates' || project.category === 'certificate';
+      return isCert;
     }
     if (selectedFilter === 'all') return true;
     if (selectedFilter === 'certificates') {
-      return project.category === 'certificates' || project.category === 'certificate';
+      return isCert;
     }
-    return project.category === selectedFilter;
+    return cat === selectedFilter.toLowerCase();
   });
 
   return (
@@ -78,8 +80,8 @@ export default function ProjectsFeed({
             />
           )}
 
-          {/* Dedicated Add Certificate button: appears ONLY when Certificates tab/view is active */}
-          {isLoggedIn && (isCertificatesTab || selectedFilter === 'certificates') && (
+          {/* Dedicated Add Certificate button: appears ONLY when Certificates tab is active */}
+          {isCertificatesTab && (
             <button
               type="button"
               id="add-certificate-btn"
@@ -87,26 +89,27 @@ export default function ProjectsFeed({
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '5px',
-                padding: '6px 12px',
-                height: '34px',
+                gap: '6px',
+                padding: '7px 14px',
+                height: '36px',
                 background: '#1877f2',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '6px',
-                fontSize: '0.8rem',
+                fontSize: '0.85rem',
                 fontWeight: 600,
                 cursor: 'pointer',
                 boxSizing: 'border-box',
                 whiteSpace: 'nowrap',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
               }}
             >
-              <PlusIcon size={13} />
-              Add Certificate
+              <PlusIcon size={14} />
+              + Add Certificate
             </button>
           )}
 
-          {/* Regular Add Project button: shown on other project categories (NOT on Certificates) */}
+          {/* Regular Add Project button: shown on other project categories (NOT on Certificates tab) */}
           {isLoggedIn && !isCertificatesTab && selectedFilter !== 'certificates' && (
             <button
               type="button"

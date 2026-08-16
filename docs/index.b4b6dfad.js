@@ -27064,8 +27064,10 @@ function MainApp() {
         }
     };
     const handleModalSuccess = (type, action)=>{
-        const label = type === "creation" ? "Project" : type === "certificate" ? "Certificate" : type === "organization" ? "Organization" : "Work Experience";
-        (0, _reactToastify.toast).success(`${label} ${action} successfully!`);
+        if (type !== "certificate") {
+            const label = type === "creation" ? "Project" : type === "organization" ? "Organization" : "Work Experience";
+            (0, _reactToastify.toast).success(`${label} ${action} successfully!`);
+        }
         setRefreshTrigger((prev)=>prev + 1);
     };
     // Determine layout visibility
@@ -30672,10 +30674,12 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
     const isCertificatesTab = activeTab === "certificates";
     // Filter projects by category
     const filteredProjects = projects.filter((project)=>{
-        if (isCertificatesTab) return project.category === "certificates" || project.category === "certificate";
+        const cat = (project.category || "").toLowerCase();
+        const isCert = cat === "certificate" || cat === "certificates";
+        if (isCertificatesTab) return isCert;
         if (selectedFilter === "all") return true;
-        if (selectedFilter === "certificates") return project.category === "certificates" || project.category === "certificate";
-        return project.category === selectedFilter;
+        if (selectedFilter === "certificates") return isCert;
+        return cat === selectedFilter.toLowerCase();
     });
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("main", {
         className: "main-content",
@@ -30688,7 +30692,7 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                         children: isCertificatesTab || selectedFilter === "certificates" ? "Certificates" : "My Creations"
                     }, void 0, false, {
                         fileName: "src/components/projects/ProjectsFeed.jsx",
-                        lineNumber: 63,
+                        lineNumber: 65,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -30707,42 +30711,43 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                                 onCloseDropdown: ()=>setIsDropdownOpen(false)
                             }, void 0, false, {
                                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                                lineNumber: 72,
+                                lineNumber: 74,
                                 columnNumber: 13
                             }, this),
-                            isLoggedIn && (isCertificatesTab || selectedFilter === "certificates") && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                            isCertificatesTab && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
                                 type: "button",
                                 id: "add-certificate-btn",
                                 onClick: ()=>onOpenCreateModal && onOpenCreateModal("certificate"),
                                 style: {
                                     display: "inline-flex",
                                     alignItems: "center",
-                                    gap: "5px",
-                                    padding: "6px 12px",
-                                    height: "34px",
+                                    gap: "6px",
+                                    padding: "7px 14px",
+                                    height: "36px",
                                     background: "#1877f2",
                                     color: "#ffffff",
                                     border: "none",
                                     borderRadius: "6px",
-                                    fontSize: "0.8rem",
+                                    fontSize: "0.85rem",
                                     fontWeight: 600,
                                     cursor: "pointer",
                                     boxSizing: "border-box",
-                                    whiteSpace: "nowrap"
+                                    whiteSpace: "nowrap",
+                                    boxShadow: "0 1px 2px rgba(0,0,0,0.08)"
                                 },
                                 children: [
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _icons.PlusIcon), {
-                                        size: 13
+                                        size: 14
                                     }, void 0, false, {
                                         fileName: "src/components/projects/ProjectsFeed.jsx",
-                                        lineNumber: 104,
+                                        lineNumber: 107,
                                         columnNumber: 15
                                     }, this),
-                                    "Add Certificate"
+                                    "+ Add Certificate"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                                lineNumber: 83,
+                                lineNumber: 85,
                                 columnNumber: 13
                             }, this),
                             isLoggedIn && !isCertificatesTab && selectedFilter !== "certificates" && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -30770,26 +30775,26 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                                         size: 13
                                     }, void 0, false, {
                                         fileName: "src/components/projects/ProjectsFeed.jsx",
-                                        lineNumber: 132,
+                                        lineNumber: 135,
                                         columnNumber: 15
                                     }, this),
                                     "Add Project"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                                lineNumber: 111,
+                                lineNumber: 114,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/projects/ProjectsFeed.jsx",
-                        lineNumber: 69,
+                        lineNumber: 71,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                lineNumber: 62,
+                lineNumber: 64,
                 columnNumber: 7
             }, this),
             filteredProjects.length > 0 ? filteredProjects.map((project)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _projectCardDefault.default), {
@@ -30798,7 +30803,7 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                     onDelete: onDeleteProject
                 }, project.id || project.title, false, {
                     fileName: "src/components/projects/ProjectsFeed.jsx",
-                    lineNumber: 142,
+                    lineNumber: 145,
                     columnNumber: 11
                 }, this)) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                 className: "section-card",
@@ -30814,18 +30819,18 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                     children: isCertificatesTab || selectedFilter === "certificates" ? "No certificates added yet." : "No projects found in this category."
                 }, void 0, false, {
                     fileName: "src/components/projects/ProjectsFeed.jsx",
-                    lineNumber: 151,
+                    lineNumber: 154,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                lineNumber: 150,
+                lineNumber: 153,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "src/components/projects/ProjectsFeed.jsx",
-        lineNumber: 60,
+        lineNumber: 62,
         columnNumber: 5
     }, this);
 }
@@ -30883,11 +30888,14 @@ function ProjectCard({ project, onEdit, onDelete }) {
     const previewText = isLongDescription ? `${rawDescription.slice(0, TRUNCATE_LENGTH).trim()}...` : rawDescription;
     const authorName = project.author?.name || "Nathaniel Faborada";
     const authorAvatar = project.author?.avatar || "https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg";
-    const isCertificate = project.category === "certificates" || project.category === "certificate";
+    const categoryStr = (project.category || "").toLowerCase();
+    const isCertificate = categoryStr === "certificate" || categoryStr === "certificates";
+    const isIframeCertificate = isCertificate && (project.source_code_url === "iframe" || project.notice === "iframe" || Array.isArray(project.tags) && project.tags.includes("#iframe") || typeof project.live_demo_url === "string" && (project.live_demo_url.includes("hackerrank.com") || project.live_demo_url.includes("iframe") || project.live_demo_url.includes("embed")));
+    const iframeSrc = isIframeCertificate ? project.live_demo_url || project.credential_url : null;
     // Normalize links
     let links = project.links || [];
     if (!links.length) {
-        if (project.source_code_url) links.push({
+        if (project.source_code_url && project.source_code_url !== "iframe") links.push({
             type: "source",
             url: project.source_code_url,
             label: "Source"
@@ -30948,7 +30956,7 @@ function ProjectCard({ project, onEdit, onDelete }) {
                                 className: "project-avatar"
                             }, void 0, false, {
                                 fileName: "src/components/projects/ProjectCard.jsx",
-                                lineNumber: 102,
+                                lineNumber: 117,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
@@ -30956,7 +30964,7 @@ function ProjectCard({ project, onEdit, onDelete }) {
                                 children: authorName
                             }, void 0, false, {
                                 fileName: "src/components/projects/ProjectCard.jsx",
-                                lineNumber: 107,
+                                lineNumber: 122,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
@@ -30965,12 +30973,12 @@ function ProjectCard({ project, onEdit, onDelete }) {
                                     size: 15
                                 }, void 0, false, {
                                     fileName: "src/components/projects/ProjectCard.jsx",
-                                    lineNumber: 109,
+                                    lineNumber: 124,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "src/components/projects/ProjectCard.jsx",
-                                lineNumber: 108,
+                                lineNumber: 123,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
@@ -30979,18 +30987,18 @@ function ProjectCard({ project, onEdit, onDelete }) {
                                     size: 15
                                 }, void 0, false, {
                                     fileName: "src/components/projects/ProjectCard.jsx",
-                                    lineNumber: 112,
+                                    lineNumber: 127,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "src/components/projects/ProjectCard.jsx",
-                                lineNumber: 111,
+                                lineNumber: 126,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/projects/ProjectCard.jsx",
-                        lineNumber: 101,
+                        lineNumber: 116,
                         columnNumber: 9
                     }, this),
                     isLoggedIn && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -31023,14 +31031,14 @@ function ProjectCard({ project, onEdit, onDelete }) {
                                         size: 12
                                     }, void 0, false, {
                                         fileName: "src/components/projects/ProjectCard.jsx",
-                                        lineNumber: 138,
+                                        lineNumber: 153,
                                         columnNumber: 15
                                     }, this),
                                     "Edit"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/projects/ProjectCard.jsx",
-                                lineNumber: 119,
+                                lineNumber: 134,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -31056,26 +31064,26 @@ function ProjectCard({ project, onEdit, onDelete }) {
                                         size: 12
                                     }, void 0, false, {
                                         fileName: "src/components/projects/ProjectCard.jsx",
-                                        lineNumber: 160,
+                                        lineNumber: 175,
                                         columnNumber: 15
                                     }, this),
                                     "Delete"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/projects/ProjectCard.jsx",
-                                lineNumber: 141,
+                                lineNumber: 156,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/projects/ProjectCard.jsx",
-                        lineNumber: 118,
+                        lineNumber: 133,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "src/components/projects/ProjectCard.jsx",
-                lineNumber: 100,
+                lineNumber: 115,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -31089,14 +31097,14 @@ function ProjectCard({ project, onEdit, onDelete }) {
                                 children: isCertificate ? "\uD83D\uDCDC" : "\uD83D\uDCCC"
                             }, void 0, false, {
                                 fileName: "src/components/projects/ProjectCard.jsx",
-                                lineNumber: 170,
+                                lineNumber: 185,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("strong", {
                                 children: project.headline || project.title
                             }, void 0, false, {
                                 fileName: "src/components/projects/ProjectCard.jsx",
-                                lineNumber: 171,
+                                lineNumber: 186,
                                 columnNumber: 11
                             }, this),
                             project.categoryLabel ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
@@ -31107,20 +31115,20 @@ function ProjectCard({ project, onEdit, onDelete }) {
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/projects/ProjectCard.jsx",
-                                lineNumber: 173,
+                                lineNumber: 188,
                                 columnNumber: 13
                             }, this) : isCertificate ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
                                 className: "project-category",
                                 children: " \xb7 Certificate"
                             }, void 0, false, {
                                 fileName: "src/components/projects/ProjectCard.jsx",
-                                lineNumber: 175,
+                                lineNumber: 190,
                                 columnNumber: 13
                             }, this) : null
                         ]
                     }, void 0, true, {
                         fileName: "src/components/projects/ProjectCard.jsx",
-                        lineNumber: 169,
+                        lineNumber: 184,
                         columnNumber: 9
                     }, this),
                     formattedDate && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
@@ -31131,13 +31139,13 @@ function ProjectCard({ project, onEdit, onDelete }) {
                         ]
                     }, void 0, true, {
                         fileName: "src/components/projects/ProjectCard.jsx",
-                        lineNumber: 179,
+                        lineNumber: 194,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "src/components/projects/ProjectCard.jsx",
-                lineNumber: 168,
+                lineNumber: 183,
                 columnNumber: 7
             }, this),
             rawDescription && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -31148,7 +31156,7 @@ function ProjectCard({ project, onEdit, onDelete }) {
                         children: isCertificate ? "\uD83C\uDF93" : "\uD83D\uDCBB"
                     }, void 0, false, {
                         fileName: "src/components/projects/ProjectCard.jsx",
-                        lineNumber: 188,
+                        lineNumber: 203,
                         columnNumber: 11
                     }, this),
                     isExpanded || !hasExpandableContent ? rawDescription : previewText,
@@ -31159,13 +31167,13 @@ function ProjectCard({ project, onEdit, onDelete }) {
                         children: "See more"
                     }, void 0, false, {
                         fileName: "src/components/projects/ProjectCard.jsx",
-                        lineNumber: 191,
+                        lineNumber: 206,
                         columnNumber: 13
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "src/components/projects/ProjectCard.jsx",
-                lineNumber: 187,
+                lineNumber: 202,
                 columnNumber: 9
             }, this),
             isExpanded && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
@@ -31178,14 +31186,14 @@ function ProjectCard({ project, onEdit, onDelete }) {
                                 children: "\uD83D\uDCE7"
                             }, void 0, false, {
                                 fileName: "src/components/projects/ProjectCard.jsx",
-                                lineNumber: 207,
+                                lineNumber: 222,
                                 columnNumber: 15
                             }, this),
                             project.notice
                         ]
                     }, void 0, true, {
                         fileName: "src/components/projects/ProjectCard.jsx",
-                        lineNumber: 206,
+                        lineNumber: 221,
                         columnNumber: 13
                     }, this),
                     hasContributions && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -31196,17 +31204,17 @@ function ProjectCard({ project, onEdit, onDelete }) {
                                     children: item
                                 }, index, false, {
                                     fileName: "src/components/projects/ProjectCard.jsx",
-                                    lineNumber: 216,
+                                    lineNumber: 231,
                                     columnNumber: 19
                                 }, this))
                         }, void 0, false, {
                             fileName: "src/components/projects/ProjectCard.jsx",
-                            lineNumber: 214,
+                            lineNumber: 229,
                             columnNumber: 15
                         }, this)
                     }, void 0, false, {
                         fileName: "src/components/projects/ProjectCard.jsx",
-                        lineNumber: 213,
+                        lineNumber: 228,
                         columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -31216,7 +31224,7 @@ function ProjectCard({ project, onEdit, onDelete }) {
                         children: "See less"
                     }, void 0, false, {
                         fileName: "src/components/projects/ProjectCard.jsx",
-                        lineNumber: 222,
+                        lineNumber: 237,
                         columnNumber: 11
                     }, this)
                 ]
@@ -31227,22 +31235,53 @@ function ProjectCard({ project, onEdit, onDelete }) {
                         label: tag
                     }, tag, false, {
                         fileName: "src/components/projects/ProjectCard.jsx",
-                        lineNumber: 236,
+                        lineNumber: 251,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "src/components/projects/ProjectCard.jsx",
-                lineNumber: 234,
+                lineNumber: 249,
                 columnNumber: 9
             }, this),
-            screenshots.length > 0 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _projectImageCarouselDefault.default), {
-                images: screenshots,
-                title: project.headline || project.title || "Project"
+            iframeSrc ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                className: "certificate-iframe-card",
+                style: {
+                    margin: "12px 0",
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    border: "1px solid #e4e6eb",
+                    background: "#f8f9fa",
+                    width: "100%"
+                },
+                children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("iframe", {
+                    src: iframeSrc,
+                    title: project.title || "Certificate",
+                    style: {
+                        width: "100%",
+                        minHeight: "380px",
+                        height: "420px",
+                        border: "none",
+                        display: "block"
+                    },
+                    loading: "lazy",
+                    allowFullScreen: true
+                }, void 0, false, {
+                    fileName: "src/components/projects/ProjectCard.jsx",
+                    lineNumber: 269,
+                    columnNumber: 11
+                }, this)
             }, void 0, false, {
                 fileName: "src/components/projects/ProjectCard.jsx",
-                lineNumber: 243,
+                lineNumber: 258,
                 columnNumber: 9
-            }, this),
+            }, this) : screenshots.length > 0 ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _projectImageCarouselDefault.default), {
+                images: screenshots,
+                title: project.headline || project.title || "Certificate"
+            }, void 0, false, {
+                fileName: "src/components/projects/ProjectCard.jsx",
+                lineNumber: 284,
+                columnNumber: 9
+            }, this) : null,
             (project.stars || links && links.length > 0) && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                 className: "project-footer",
                 children: [
@@ -31251,7 +31290,7 @@ function ProjectCard({ project, onEdit, onDelete }) {
                         children: project.stars || ""
                     }, void 0, false, {
                         fileName: "src/components/projects/ProjectCard.jsx",
-                        lineNumber: 252,
+                        lineNumber: 293,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -31268,32 +31307,32 @@ function ProjectCard({ project, onEdit, onDelete }) {
                                         size: 14
                                     }, void 0, false, {
                                         fileName: "src/components/projects/ProjectCard.jsx",
-                                        lineNumber: 268,
+                                        lineNumber: 309,
                                         columnNumber: 21
                                     }, this),
                                     link.label
                                 ]
                             }, link.label, true, {
                                 fileName: "src/components/projects/ProjectCard.jsx",
-                                lineNumber: 260,
+                                lineNumber: 301,
                                 columnNumber: 19
                             }, this);
                         })
                     }, void 0, false, {
                         fileName: "src/components/projects/ProjectCard.jsx",
-                        lineNumber: 253,
+                        lineNumber: 294,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "src/components/projects/ProjectCard.jsx",
-                lineNumber: 251,
+                lineNumber: 292,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "src/components/projects/ProjectCard.jsx",
-        lineNumber: 98,
+        lineNumber: 113,
         columnNumber: 5
     }, this);
 }
@@ -32797,6 +32836,7 @@ parcelHelpers.export(exports, "default", ()=>ItemFormModal);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
+var _reactToastify = require("react-toastify");
 var _api = require("../../services/api");
 var _itemFormModalCss = require("./ItemFormModal.css");
 var _s = $RefreshSig$();
@@ -32815,11 +32855,14 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
         setIsUploading(false);
         setShowAddImage(false);
         if (initialData) {
-            const isCert = type === "certificate" || initialData.category === "certificates" || initialData.category === "certificate";
-            const issuerName = initialData.issuer || (initialData.notice ? initialData.notice.replace(/^Issuer:\s*/i, "") : "") || (Array.isArray(initialData.contributions) && initialData.contributions[0] ? initialData.contributions[0].replace(/^Issued by\s*/i, "") : "");
+            const isCert = type === "certificate" || initialData.category === "certificates" || initialData.category === "certificate" || initialData.category === "Certificate";
+            const issuerName = initialData.issuer || (initialData.notice && initialData.notice !== "iframe" ? initialData.notice.replace(/^Issuer:\s*/i, "") : "") || (Array.isArray(initialData.contributions) && initialData.contributions[0] ? initialData.contributions[0].replace(/^Issued by\s*/i, "") : "");
+            const isIframe = initialData.source_code_url === "iframe" || initialData.notice === "iframe" || Array.isArray(initialData.tags) && initialData.tags.includes("#iframe") || typeof initialData.live_demo_url === "string" && (initialData.live_demo_url.includes("hackerrank.com") || initialData.live_demo_url.includes("iframe") || initialData.live_demo_url.includes("embed"));
+            const displayMode = isIframe ? "iframe" : initialData.image_url ? "image" : "iframe";
             setFormData({
                 ...initialData,
                 title: initialData.title || initialData.headline || "",
+                display_mode: displayMode,
                 issuer: issuerName,
                 credential_url: initialData.credential_url || initialData.live_demo_url || initialData.links?.find((l)=>l.type === "visit" || l.type === "credential")?.url || "",
                 company_name: initialData.company_name || initialData.company || "",
@@ -32833,7 +32876,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                 screenshots: Array.isArray(initialData.screenshots) ? initialData.screenshots.join("\n") : typeof initialData.screenshots === "string" ? initialData.screenshots : "",
                 project_date: initialData.project_date || "",
                 image_url: initialData.image_url || (Array.isArray(initialData.screenshots) ? initialData.screenshots[0] : initialData.screenshots) || "",
-                category: isCert ? "certificates" : initialData.category || "personal",
+                category: isCert ? "Certificate" : initialData.category || "personal",
                 is_featured: Boolean(initialData.is_featured)
             });
         } else {
@@ -32855,11 +32898,12 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
             });
             else if (type === "certificate") setFormData({
                 title: "",
-                issuer: "",
-                project_date: "",
+                display_mode: "iframe",
                 credential_url: "",
                 image_url: "",
+                issuer: "",
                 description: "",
+                project_date: "",
                 is_featured: false
             });
             else if (type === "organization") setFormData({
@@ -32987,28 +33031,39 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                 if (isEdit) await (0, _api.api).creations.update(initialData.id, payload);
                 else await (0, _api.api).creations.create(payload);
             } else if (type === "certificate") {
+                const isIframe = formData.display_mode === "iframe";
                 const certImage = formData.image_url?.trim() || null;
                 const issuerName = formData.issuer?.trim() || "";
                 const credUrl = (formData.credential_url || formData.live_demo_url || "").trim();
                 if (!formData.title?.trim()) throw new Error("Certificate Title is required.");
+                if (isIframe && !credUrl) throw new Error("Iframe/Credential URL is required for Iframe mode.");
                 const payload = {
                     title: formData.title.trim(),
-                    category: "certificates",
+                    category: "Certificate",
                     categoryLabel: "Certificate",
-                    description: formData.description?.trim() || (issuerName ? `Certificate of Completion issued by ${issuerName}.` : "Certificate of Completion"),
-                    notice: issuerName ? `Issuer: ${issuerName}` : "",
+                    description: formData.description?.trim() || (issuerName ? `Issued by ${issuerName}.` : "Certificate of Completion"),
+                    notice: isIframe ? "iframe" : issuerName ? `Issuer: ${issuerName}` : "",
                     project_date: formData.project_date?.trim() || "",
                     live_demo_url: credUrl,
-                    source_code_url: "",
-                    image_url: certImage,
-                    screenshots: certImage ? [
+                    source_code_url: isIframe ? "iframe" : "",
+                    image_url: isIframe ? null : certImage,
+                    screenshots: isIframe ? credUrl ? [
+                        credUrl
+                    ] : [] : certImage ? [
                         certImage
                     ] : [],
-                    tags: issuerName ? [
-                        `#${issuerName.replace(/[^a-zA-Z0-9]/g, "")}`,
-                        "#certificate"
+                    tags: isIframe ? [
+                        "#iframe",
+                        "#certificate",
+                        ...issuerName ? [
+                            `#${issuerName.replace(/[^a-zA-Z0-9]/g, "")}`
+                        ] : []
                     ] : [
-                        "#certificate"
+                        "#image",
+                        "#certificate",
+                        ...issuerName ? [
+                            `#${issuerName.replace(/[^a-zA-Z0-9]/g, "")}`
+                        ] : []
                     ],
                     contributions: issuerName ? [
                         `Issued by ${issuerName}`
@@ -33016,8 +33071,16 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                     is_featured: Boolean(formData.is_featured),
                     stars: "\uD83C\uDFC6"
                 };
-                if (isEdit) await (0, _api.api).creations.update(initialData.id, payload);
-                else await (0, _api.api).creations.create(payload);
+                if (isEdit) {
+                    await (0, _api.api).creations.update(initialData.id, payload);
+                    (0, _reactToastify.toast).success("Certificate updated successfully! \uD83C\uDF89");
+                } else {
+                    await (0, _api.api).creations.create(payload);
+                    (0, _reactToastify.toast).success("Certificate posted successfully! \uD83C\uDF89");
+                }
+                onSuccess && onSuccess("certificate", isEdit ? "updated" : "posted");
+                onClose();
+                return;
             } else if (type === "organization") {
                 const payload = {
                     ...formData,
@@ -33043,7 +33106,9 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
             onClose();
         } catch (err) {
             console.error(`Error saving ${type}:`, err);
-            setError(err.data?.message || err.message || "Failed to save changes.");
+            const errMsg = err.data?.message || err.message || (type === "certificate" ? "Failed to save certificate. Please try again." : "Failed to save changes.");
+            setError(errMsg);
+            (0, _reactToastify.toast).error(errMsg);
         } finally{
             setIsSubmitting(false);
         }
@@ -33074,7 +33139,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                             children: getTitle()
                         }, void 0, false, {
                             fileName: "src/components/admin/ItemFormModal.jsx",
-                            lineNumber: 368,
+                            lineNumber: 399,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -33085,13 +33150,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                             children: "\u2715"
                         }, void 0, false, {
                             fileName: "src/components/admin/ItemFormModal.jsx",
-                            lineNumber: 369,
+                            lineNumber: 400,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/admin/ItemFormModal.jsx",
-                    lineNumber: 367,
+                    lineNumber: 398,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("form", {
@@ -33107,7 +33172,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                     children: error
                                 }, void 0, false, {
                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                    lineNumber: 382,
+                                    lineNumber: 413,
                                     columnNumber: 23
                                 }, this),
                                 type === "creation" && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
@@ -33120,7 +33185,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "Project Title *"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 388,
+                                                    lineNumber: 419,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -33132,13 +33197,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 389,
+                                                    lineNumber: 420,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 387,
+                                            lineNumber: 418,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33152,7 +33217,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             children: "Category"
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 401,
+                                                            lineNumber: 432,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("select", {
@@ -33166,7 +33231,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: "Personal Project"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 408,
+                                                                    lineNumber: 439,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
@@ -33174,7 +33239,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: "Organization"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 409,
+                                                                    lineNumber: 440,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
@@ -33182,19 +33247,19 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: "Internship"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 410,
+                                                                    lineNumber: 441,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 402,
+                                                            lineNumber: 433,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 400,
+                                                    lineNumber: 431,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33205,7 +33270,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             children: "Project Date / Timeline"
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 415,
+                                                            lineNumber: 446,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -33217,19 +33282,19 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             onChange: handleChange
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 416,
+                                                            lineNumber: 447,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 414,
+                                                    lineNumber: 445,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 399,
+                                            lineNumber: 430,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33240,7 +33305,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "Tech Tags (comma separated)"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 428,
+                                                    lineNumber: 459,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -33252,13 +33317,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     onChange: handleChange
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 429,
+                                                    lineNumber: 460,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 427,
+                                            lineNumber: 458,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33269,7 +33334,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "Description"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 440,
+                                                    lineNumber: 471,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("textarea", {
@@ -33279,13 +33344,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     onChange: handleChange
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 441,
+                                                    lineNumber: 472,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 439,
+                                            lineNumber: 470,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33296,7 +33361,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "Key Contributions (one per line)"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 450,
+                                                    lineNumber: 481,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("textarea", {
@@ -33307,13 +33372,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     onChange: handleChange
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 451,
+                                                    lineNumber: 482,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 449,
+                                            lineNumber: 480,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33327,7 +33392,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             children: "Source Code URL"
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 462,
+                                                            lineNumber: 493,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -33339,13 +33404,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             onChange: handleChange
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 463,
+                                                            lineNumber: 494,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 461,
+                                                    lineNumber: 492,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33356,7 +33421,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             children: "Live Demo URL"
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 474,
+                                                            lineNumber: 505,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -33368,19 +33433,19 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             onChange: handleChange
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 475,
+                                                            lineNumber: 506,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 473,
+                                                    lineNumber: 504,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 460,
+                                            lineNumber: 491,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33406,13 +33471,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 491,
+                                                            lineNumber: 522,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 488,
+                                                    lineNumber: 519,
                                                     columnNumber: 19
                                                 }, this),
                                                 creationImages.length > 0 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33428,7 +33493,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     decoding: "async"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 502,
+                                                                    lineNumber: 533,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -33439,7 +33504,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: "\u2715"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 509,
+                                                                    lineNumber: 540,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 idx === 0 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
@@ -33447,18 +33512,18 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: "Primary"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 518,
+                                                                    lineNumber: 549,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, idx, true, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 501,
+                                                            lineNumber: 532,
                                                             columnNumber: 25
                                                         }, this))
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 499,
+                                                    lineNumber: 530,
                                                     columnNumber: 21
                                                 }, this),
                                                 creationImages.length > 0 && !showAddImage && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -33468,7 +33533,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "+ Add Another Image"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 527,
+                                                    lineNumber: 558,
                                                     columnNumber: 21
                                                 }, this),
                                                 (creationImages.length === 0 || showAddImage) && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33486,7 +33551,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     id: "creation-image-file"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 540,
+                                                                    lineNumber: 571,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -33500,7 +33565,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 548,
+                                                                    lineNumber: 579,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
@@ -33508,13 +33573,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: isUploading ? "Please wait..." : "PNG, JPG, WEBP up to 5MB"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 556,
+                                                                    lineNumber: 587,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 539,
+                                                            lineNumber: 570,
                                                             columnNumber: 23
                                                         }, this),
                                                         creationImages.length > 0 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -33527,19 +33592,19 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             children: "Cancel"
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 561,
+                                                            lineNumber: 592,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 538,
+                                                    lineNumber: 569,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 487,
+                                            lineNumber: 518,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33550,7 +33615,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "Notice / Access Info"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 575,
+                                                    lineNumber: 606,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -33562,13 +33627,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     onChange: handleChange
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 576,
+                                                    lineNumber: 607,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 574,
+                                            lineNumber: 605,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
@@ -33581,14 +33646,14 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     onChange: handleChange
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 587,
+                                                    lineNumber: 618,
                                                     columnNumber: 19
                                                 }, this),
                                                 "Feature this project on top"
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 586,
+                                            lineNumber: 617,
                                             columnNumber: 17
                                         }, this)
                                     ]
@@ -33601,10 +33666,10 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
                                                     className: "item-form-label",
                                                     htmlFor: "cert-title",
-                                                    children: "Certificate Title *"
+                                                    children: "Title *"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 602,
+                                                    lineNumber: 634,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -33612,90 +33677,19 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     type: "text",
                                                     name: "title",
                                                     className: "item-form-input",
-                                                    placeholder: "e.g. AWS Certified Cloud Practitioner / Meta Frontend Developer",
+                                                    placeholder: "e.g. Problem Solving (Basic) / AWS Certified Cloud Practitioner",
                                                     value: formData.title || "",
                                                     onChange: handleChange,
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 605,
+                                                    lineNumber: 637,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 601,
-                                            columnNumber: 17
-                                        }, this),
-                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                            className: "item-form-row",
-                                            children: [
-                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                                    className: "item-form-group",
-                                                    children: [
-                                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
-                                                            className: "item-form-label",
-                                                            htmlFor: "cert-issuer",
-                                                            children: "Issuing Organization / Issuer"
-                                                        }, void 0, false, {
-                                                            fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 619,
-                                                            columnNumber: 21
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
-                                                            id: "cert-issuer",
-                                                            type: "text",
-                                                            name: "issuer",
-                                                            className: "item-form-input",
-                                                            placeholder: "e.g. Coursera, AWS, Udemy, Harvard",
-                                                            value: formData.issuer || "",
-                                                            onChange: handleChange
-                                                        }, void 0, false, {
-                                                            fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 622,
-                                                            columnNumber: 21
-                                                        }, this)
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 618,
-                                                    columnNumber: 19
-                                                }, this),
-                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                                    className: "item-form-group",
-                                                    children: [
-                                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
-                                                            className: "item-form-label",
-                                                            htmlFor: "cert-date",
-                                                            children: "Issue Date / Timeline"
-                                                        }, void 0, false, {
-                                                            fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 634,
-                                                            columnNumber: 21
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
-                                                            id: "cert-date",
-                                                            type: "text",
-                                                            name: "project_date",
-                                                            className: "item-form-input",
-                                                            placeholder: "e.g. Aug 2026 / 2025",
-                                                            value: formData.project_date || "",
-                                                            onChange: handleChange
-                                                        }, void 0, false, {
-                                                            fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 637,
-                                                            columnNumber: 21
-                                                        }, this)
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 633,
-                                                    columnNumber: 19
-                                                }, this)
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 617,
+                                            lineNumber: 633,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33703,19 +33697,125 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                             children: [
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
                                                     className: "item-form-label",
-                                                    htmlFor: "cert-url",
-                                                    children: "Credential URL / Verification Link"
+                                                    children: "Display Mode"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 650,
+                                                    lineNumber: 651,
                                                     columnNumber: 19
                                                 }, this),
+                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                                                    style: {
+                                                        display: "flex",
+                                                        gap: "10px",
+                                                        marginTop: "4px"
+                                                    },
+                                                    children: [
+                                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                                            type: "button",
+                                                            id: "mode-iframe-btn",
+                                                            onClick: ()=>setFormData((prev)=>({
+                                                                        ...prev,
+                                                                        display_mode: "iframe"
+                                                                    })),
+                                                            style: {
+                                                                flex: 1,
+                                                                padding: "10px 14px",
+                                                                borderRadius: "8px",
+                                                                border: formData.display_mode === "iframe" ? "2px solid #1877f2" : "1px solid #ced0d4",
+                                                                background: formData.display_mode === "iframe" ? "#e7f3ff" : "#f0f2f5",
+                                                                color: formData.display_mode === "iframe" ? "#1877f2" : "#65676b",
+                                                                fontWeight: 600,
+                                                                fontSize: "0.85rem",
+                                                                cursor: "pointer",
+                                                                display: "flex",
+                                                                alignItems: "center",
+                                                                justifyContent: "center",
+                                                                gap: "6px",
+                                                                transition: "all 0.2s ease"
+                                                            },
+                                                            children: [
+                                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                                                    children: "\uD83C\uDF10"
+                                                                }, void 0, false, {
+                                                                    fileName: "src/components/admin/ItemFormModal.jsx",
+                                                                    lineNumber: 674,
+                                                                    columnNumber: 23
+                                                                }, this),
+                                                                " Iframe Link"
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "src/components/admin/ItemFormModal.jsx",
+                                                            lineNumber: 653,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                                            type: "button",
+                                                            id: "mode-image-btn",
+                                                            onClick: ()=>setFormData((prev)=>({
+                                                                        ...prev,
+                                                                        display_mode: "image"
+                                                                    })),
+                                                            style: {
+                                                                flex: 1,
+                                                                padding: "10px 14px",
+                                                                borderRadius: "8px",
+                                                                border: formData.display_mode === "image" ? "2px solid #1877f2" : "1px solid #ced0d4",
+                                                                background: formData.display_mode === "image" ? "#e7f3ff" : "#f0f2f5",
+                                                                color: formData.display_mode === "image" ? "#1877f2" : "#65676b",
+                                                                fontWeight: 600,
+                                                                fontSize: "0.85rem",
+                                                                cursor: "pointer",
+                                                                display: "flex",
+                                                                alignItems: "center",
+                                                                justifyContent: "center",
+                                                                gap: "6px",
+                                                                transition: "all 0.2s ease"
+                                                            },
+                                                            children: [
+                                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                                                    children: "\uD83D\uDDBC\uFE0F"
+                                                                }, void 0, false, {
+                                                                    fileName: "src/components/admin/ItemFormModal.jsx",
+                                                                    lineNumber: 697,
+                                                                    columnNumber: 23
+                                                                }, this),
+                                                                " Upload Image"
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "src/components/admin/ItemFormModal.jsx",
+                                                            lineNumber: 676,
+                                                            columnNumber: 21
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "src/components/admin/ItemFormModal.jsx",
+                                                    lineNumber: 652,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "src/components/admin/ItemFormModal.jsx",
+                                            lineNumber: 650,
+                                            columnNumber: 17
+                                        }, this),
+                                        formData.display_mode === "iframe" ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                                            className: "item-form-group",
+                                            children: [
+                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                                                    className: "item-form-label",
+                                                    htmlFor: "cert-iframe-url",
+                                                    children: "Credential / Iframe URL *"
+                                                }, void 0, false, {
+                                                    fileName: "src/components/admin/ItemFormModal.jsx",
+                                                    lineNumber: 705,
+                                                    columnNumber: 21
+                                                }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
-                                                    id: "cert-url",
+                                                    id: "cert-iframe-url",
                                                     type: "url",
                                                     name: "credential_url",
                                                     className: "item-form-input",
-                                                    placeholder: "https://coursera.org/verify/... or verification link",
+                                                    placeholder: "https://www.hackerrank.com/certificates/iframe/... or iframe embed URL",
                                                     value: formData.credential_url || formData.live_demo_url || "",
                                                     onChange: (e)=>{
                                                         handleChange(e);
@@ -33724,50 +33824,32 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 credential_url: e.target.value,
                                                                 live_demo_url: e.target.value
                                                             }));
-                                                    }
+                                                    },
+                                                    required: true
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 653,
-                                                    columnNumber: 19
-                                                }, this)
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 649,
-                                            columnNumber: 17
-                                        }, this),
-                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                            className: "item-form-group",
-                                            children: [
-                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
-                                                    className: "item-form-label",
-                                                    htmlFor: "cert-desc",
-                                                    children: "Description / Skills Learned (Optional)"
-                                                }, void 0, false, {
-                                                    fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 672,
-                                                    columnNumber: 19
+                                                    lineNumber: 708,
+                                                    columnNumber: 21
                                                 }, this),
-                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("textarea", {
-                                                    id: "cert-desc",
-                                                    name: "description",
-                                                    className: "item-form-textarea",
-                                                    rows: 3,
-                                                    placeholder: "Brief description of the certificate, topics covered, or verified skills...",
-                                                    value: formData.description || "",
-                                                    onChange: handleChange
+                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                                    style: {
+                                                        display: "block",
+                                                        fontSize: "0.76rem",
+                                                        color: "#65676b",
+                                                        marginTop: "4px"
+                                                    },
+                                                    children: "Paste direct iframe link (e.g. HackerRank certificate iframe URL, Credly embed URL)"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 675,
-                                                    columnNumber: 19
+                                                    lineNumber: 725,
+                                                    columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 671,
-                                            columnNumber: 17
-                                        }, this),
-                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                                            lineNumber: 704,
+                                            columnNumber: 19
+                                        }, this) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                                             className: "item-form-group image-upload-wrapper",
                                             children: [
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
@@ -33775,8 +33857,8 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "Certificate Image or Badge"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 688,
-                                                    columnNumber: 19
+                                                    lineNumber: 731,
+                                                    columnNumber: 21
                                                 }, this),
                                                 formData.image_url ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                                                     className: "image-thumbs-grid",
@@ -33797,8 +33879,8 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 decoding: "async"
                                                             }, void 0, false, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 693,
-                                                                columnNumber: 25
+                                                                lineNumber: 736,
+                                                                columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
                                                                 type: "button",
@@ -33811,19 +33893,19 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 children: "\u2715"
                                                             }, void 0, false, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 700,
-                                                                columnNumber: 25
+                                                                lineNumber: 743,
+                                                                columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "src/components/admin/ItemFormModal.jsx",
-                                                        lineNumber: 692,
-                                                        columnNumber: 23
+                                                        lineNumber: 735,
+                                                        columnNumber: 25
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 691,
-                                                    columnNumber: 21
+                                                    lineNumber: 734,
+                                                    columnNumber: 23
                                                 }, this) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                                                     className: "image-upload-box",
                                                     children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33852,11 +33934,11 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                         if (fileInputRef.current) fileInputRef.current.value = "";
                                                                     }
                                                                 },
-                                                                id: "cert-logo-file"
+                                                                id: "cert-image-file"
                                                             }, void 0, false, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 713,
-                                                                columnNumber: 25
+                                                                lineNumber: 756,
+                                                                columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
                                                                 type: "button",
@@ -33865,31 +33947,31 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 disabled: isUploading,
                                                                 children: [
                                                                     "\uD83D\uDCC1 ",
-                                                                    isUploading ? "Uploading..." : "Upload Certificate Image"
+                                                                    isUploading ? "Uploading..." : "Upload Image to Cloudinary"
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 737,
-                                                                columnNumber: 25
+                                                                lineNumber: 780,
+                                                                columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
                                                                 className: "image-upload-status",
                                                                 children: isUploading ? "Uploading..." : "Max 5MB"
                                                             }, void 0, false, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 745,
-                                                                columnNumber: 25
+                                                                lineNumber: 788,
+                                                                columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "src/components/admin/ItemFormModal.jsx",
-                                                        lineNumber: 712,
-                                                        columnNumber: 23
+                                                        lineNumber: 755,
+                                                        columnNumber: 25
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 711,
-                                                    columnNumber: 21
+                                                    lineNumber: 754,
+                                                    columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                                                     style: {
@@ -33904,18 +33986,120 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                         onChange: handleChange
                                                     }, void 0, false, {
                                                         fileName: "src/components/admin/ItemFormModal.jsx",
-                                                        lineNumber: 753,
-                                                        columnNumber: 21
+                                                        lineNumber: 796,
+                                                        columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 752,
+                                                    lineNumber: 795,
+                                                    columnNumber: 21
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "src/components/admin/ItemFormModal.jsx",
+                                            lineNumber: 730,
+                                            columnNumber: 19
+                                        }, this),
+                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                                            className: "item-form-row",
+                                            children: [
+                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                                                    className: "item-form-group",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                                                            className: "item-form-label",
+                                                            htmlFor: "cert-issuer",
+                                                            children: "Issuer / Organization (Optional)"
+                                                        }, void 0, false, {
+                                                            fileName: "src/components/admin/ItemFormModal.jsx",
+                                                            lineNumber: 811,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                                                            id: "cert-issuer",
+                                                            type: "text",
+                                                            name: "issuer",
+                                                            className: "item-form-input",
+                                                            placeholder: "e.g. HackerRank, AWS, Coursera, Meta",
+                                                            value: formData.issuer || "",
+                                                            onChange: handleChange
+                                                        }, void 0, false, {
+                                                            fileName: "src/components/admin/ItemFormModal.jsx",
+                                                            lineNumber: 814,
+                                                            columnNumber: 21
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "src/components/admin/ItemFormModal.jsx",
+                                                    lineNumber: 810,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                                                    className: "item-form-group",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                                                            className: "item-form-label",
+                                                            htmlFor: "cert-date",
+                                                            children: "Issue Date / Timeline (Optional)"
+                                                        }, void 0, false, {
+                                                            fileName: "src/components/admin/ItemFormModal.jsx",
+                                                            lineNumber: 826,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                                                            id: "cert-date",
+                                                            type: "text",
+                                                            name: "project_date",
+                                                            className: "item-form-input",
+                                                            placeholder: "e.g. Aug 2026 / 2025",
+                                                            value: formData.project_date || "",
+                                                            onChange: handleChange
+                                                        }, void 0, false, {
+                                                            fileName: "src/components/admin/ItemFormModal.jsx",
+                                                            lineNumber: 829,
+                                                            columnNumber: 21
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "src/components/admin/ItemFormModal.jsx",
+                                                    lineNumber: 825,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 687,
+                                            lineNumber: 809,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                                            className: "item-form-group",
+                                            children: [
+                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                                                    className: "item-form-label",
+                                                    htmlFor: "cert-desc",
+                                                    children: "Description / Key Skills (Optional)"
+                                                }, void 0, false, {
+                                                    fileName: "src/components/admin/ItemFormModal.jsx",
+                                                    lineNumber: 842,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("textarea", {
+                                                    id: "cert-desc",
+                                                    name: "description",
+                                                    className: "item-form-textarea",
+                                                    rows: 2,
+                                                    placeholder: "Brief description or verified skills...",
+                                                    value: formData.description || "",
+                                                    onChange: handleChange
+                                                }, void 0, false, {
+                                                    fileName: "src/components/admin/ItemFormModal.jsx",
+                                                    lineNumber: 845,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "src/components/admin/ItemFormModal.jsx",
+                                            lineNumber: 841,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
@@ -33928,14 +34112,14 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     onChange: handleChange
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 765,
+                                                    lineNumber: 857,
                                                     columnNumber: 19
                                                 }, this),
                                                 "Feature this certificate on top"
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 764,
+                                            lineNumber: 856,
                                             columnNumber: 17
                                         }, this)
                                     ]
@@ -33950,7 +34134,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "Organization Name *"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 780,
+                                                    lineNumber: 872,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -33962,13 +34146,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 781,
+                                                    lineNumber: 873,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 779,
+                                            lineNumber: 871,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33982,7 +34166,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             children: "Visibility"
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 793,
+                                                            lineNumber: 885,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("select", {
@@ -33996,7 +34180,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: "Public"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 800,
+                                                                    lineNumber: 892,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
@@ -34004,19 +34188,19 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: "Private"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 801,
+                                                                    lineNumber: 893,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 794,
+                                                            lineNumber: 886,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 792,
+                                                    lineNumber: 884,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34027,7 +34211,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             children: "Public Repositories Count"
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 806,
+                                                            lineNumber: 898,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -34038,19 +34222,19 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             onChange: handleChange
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 807,
+                                                            lineNumber: 899,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 805,
+                                                    lineNumber: 897,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 791,
+                                            lineNumber: 883,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34061,7 +34245,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "Organization Logo"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 819,
+                                                    lineNumber: 911,
                                                     columnNumber: 19
                                                 }, this),
                                                 formData.logo_url ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34083,7 +34267,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 decoding: "async"
                                                             }, void 0, false, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 824,
+                                                                lineNumber: 916,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -34094,18 +34278,18 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 children: "\u2715"
                                                             }, void 0, false, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 831,
+                                                                lineNumber: 923,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "src/components/admin/ItemFormModal.jsx",
-                                                        lineNumber: 823,
+                                                        lineNumber: 915,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 822,
+                                                    lineNumber: 914,
                                                     columnNumber: 21
                                                 }, this) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                                                     className: "image-upload-box",
@@ -34121,7 +34305,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 id: "org-logo-file"
                                                             }, void 0, false, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 844,
+                                                                lineNumber: 936,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -34135,7 +34319,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 852,
+                                                                lineNumber: 944,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
@@ -34143,24 +34327,24 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 children: isUploading ? "Uploading..." : "Max 5MB"
                                                             }, void 0, false, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 860,
+                                                                lineNumber: 952,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "src/components/admin/ItemFormModal.jsx",
-                                                        lineNumber: 843,
+                                                        lineNumber: 935,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 842,
+                                                    lineNumber: 934,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 818,
+                                            lineNumber: 910,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34171,7 +34355,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "Visit URL"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 869,
+                                                    lineNumber: 961,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -34183,13 +34367,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     onChange: handleChange
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 870,
+                                                    lineNumber: 962,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 868,
+                                            lineNumber: 960,
                                             columnNumber: 17
                                         }, this)
                                     ]
@@ -34204,7 +34388,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "Company Name *"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 886,
+                                                    lineNumber: 978,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -34216,13 +34400,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 887,
+                                                    lineNumber: 979,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 885,
+                                            lineNumber: 977,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34236,7 +34420,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             children: "Role Title *"
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 899,
+                                                            lineNumber: 991,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -34249,13 +34433,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             required: true
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 900,
+                                                            lineNumber: 992,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 898,
+                                                    lineNumber: 990,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34266,7 +34450,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             children: "Employment Type"
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 912,
+                                                            lineNumber: 1004,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("select", {
@@ -34280,7 +34464,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: "Full-time"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 919,
+                                                                    lineNumber: 1011,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
@@ -34288,7 +34472,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: "Internship"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 920,
+                                                                    lineNumber: 1012,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
@@ -34296,7 +34480,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: "Freelance"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 921,
+                                                                    lineNumber: 1013,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
@@ -34304,7 +34488,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: "Contract"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 922,
+                                                                    lineNumber: 1014,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
@@ -34312,25 +34496,25 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                     children: "Part-time"
                                                                 }, void 0, false, {
                                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                    lineNumber: 923,
+                                                                    lineNumber: 1015,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 913,
+                                                            lineNumber: 1005,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 911,
+                                                    lineNumber: 1003,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 897,
+                                            lineNumber: 989,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34344,7 +34528,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             children: "Start Date *"
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 930,
+                                                            lineNumber: 1022,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -34356,13 +34540,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             required: true
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 931,
+                                                            lineNumber: 1023,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 929,
+                                                    lineNumber: 1021,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34373,7 +34557,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             children: "End Date (Leave blank if Present)"
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 946,
+                                                            lineNumber: 1038,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -34384,19 +34568,19 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                             onChange: handleChange
                                                         }, void 0, false, {
                                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                                            lineNumber: 947,
+                                                            lineNumber: 1039,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 945,
+                                                    lineNumber: 1037,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 928,
+                                            lineNumber: 1020,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34407,7 +34591,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "Company Logo (Optional)"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 963,
+                                                    lineNumber: 1055,
                                                     columnNumber: 19
                                                 }, this),
                                                 formData.company_logo_url ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34429,7 +34613,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 decoding: "async"
                                                             }, void 0, false, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 968,
+                                                                lineNumber: 1060,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -34440,18 +34624,18 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 children: "\u2715"
                                                             }, void 0, false, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 975,
+                                                                lineNumber: 1067,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "src/components/admin/ItemFormModal.jsx",
-                                                        lineNumber: 967,
+                                                        lineNumber: 1059,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 966,
+                                                    lineNumber: 1058,
                                                     columnNumber: 21
                                                 }, this) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                                                     className: "image-upload-box",
@@ -34467,7 +34651,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 id: "company-logo-file"
                                                             }, void 0, false, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 988,
+                                                                lineNumber: 1080,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -34481,7 +34665,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 996,
+                                                                lineNumber: 1088,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
@@ -34489,24 +34673,24 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                                 children: isUploading ? "Uploading..." : "Max 5MB"
                                                             }, void 0, false, {
                                                                 fileName: "src/components/admin/ItemFormModal.jsx",
-                                                                lineNumber: 1004,
+                                                                lineNumber: 1096,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "src/components/admin/ItemFormModal.jsx",
-                                                        lineNumber: 987,
+                                                        lineNumber: 1079,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 986,
+                                                    lineNumber: 1078,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 962,
+                                            lineNumber: 1054,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34517,7 +34701,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     children: "Description"
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 1013,
+                                                    lineNumber: 1105,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("textarea", {
@@ -34527,13 +34711,13 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                                     onChange: handleChange
                                                 }, void 0, false, {
                                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                                    lineNumber: 1014,
+                                                    lineNumber: 1106,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/components/admin/ItemFormModal.jsx",
-                                            lineNumber: 1012,
+                                            lineNumber: 1104,
                                             columnNumber: 17
                                         }, this)
                                     ]
@@ -34541,7 +34725,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                             ]
                         }, void 0, true, {
                             fileName: "src/components/admin/ItemFormModal.jsx",
-                            lineNumber: 381,
+                            lineNumber: 412,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -34555,7 +34739,7 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                     children: "Cancel"
                                 }, void 0, false, {
                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                    lineNumber: 1027,
+                                    lineNumber: 1119,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -34565,30 +34749,30 @@ function ItemFormModal({ isOpen, type, initialData = null, onClose, onSuccess })
                                     children: isSubmitting ? "Saving..." : isEdit ? "Save Changes" : type === "creation" ? "Save Creation" : type === "certificate" ? "Add Certificate" : type === "organization" ? "Add Organization" : "Add Experience"
                                 }, void 0, false, {
                                     fileName: "src/components/admin/ItemFormModal.jsx",
-                                    lineNumber: 1035,
+                                    lineNumber: 1127,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "src/components/admin/ItemFormModal.jsx",
-                            lineNumber: 1026,
+                            lineNumber: 1118,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/admin/ItemFormModal.jsx",
-                    lineNumber: 380,
+                    lineNumber: 411,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "src/components/admin/ItemFormModal.jsx",
-            lineNumber: 365,
+            lineNumber: 396,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/components/admin/ItemFormModal.jsx",
-        lineNumber: 359,
+        lineNumber: 390,
         columnNumber: 5
     }, this);
 }
@@ -34602,758 +34786,7 @@ $RefreshReg$(_c, "ItemFormModal");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","../../services/api":"9Olq6","./ItemFormModal.css":"eX4wE","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"eX4wE":[function() {},{}],"c50nc":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$d50b = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$d50b.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useGithubUsers", ()=>useGithubUsers);
-var _react = require("react");
-var _githubService = require("../services/githubService");
-var _s = $RefreshSig$();
-function useGithubUsers(usernames) {
-    _s();
-    const [profileMap, setProfileMap] = (0, _react.useState)({});
-    const [isLoading, setIsLoading] = (0, _react.useState)(true);
-    const [error, setError] = (0, _react.useState)(null);
-    const loadUsers = (0, _react.useCallback)(async ()=>{
-        setIsLoading(true);
-        setError(null);
-        try {
-            const data = await (0, _githubService.fetchGithubUsers)(usernames);
-            setProfileMap(data);
-        } catch (err) {
-            console.error("Failed to load GitHub users:", err);
-            setError(err);
-        } finally{
-            setIsLoading(false);
-        }
-    }, [
-        usernames
-    ]);
-    (0, _react.useEffect)(()=>{
-        loadUsers();
-    }, [
-        loadUsers
-    ]);
-    return {
-        profileMap,
-        isLoading,
-        error,
-        refreshUsers: loadUsers
-    };
-}
-_s(useGithubUsers, "mnaOkwDB8h1QOVBLxvqtJIyzv2g=");
-
-  $parcel$ReactRefreshHelpers$d50b.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react":"21dqq","../services/githubService":"eCTqa","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"eCTqa":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "GITHUB_USERS_CACHE_KEY", ()=>GITHUB_USERS_CACHE_KEY);
-parcelHelpers.export(exports, "GITHUB_ORGS_CACHE_KEY", ()=>GITHUB_ORGS_CACHE_KEY);
-/**
- * Fetch GitHub user profiles by username list with caching.
- * @param {string[]} usernames
- * @returns {Promise<Record<string, any>>}
- */ parcelHelpers.export(exports, "fetchGithubUsers", ()=>fetchGithubUsers);
-/**
- * Fetch GitHub organizations by organization name list with caching.
- * @param {string[]} orgs
- * @returns {Promise<any[]>}
- */ parcelHelpers.export(exports, "fetchGithubOrganizations", ()=>fetchGithubOrganizations);
-var _cacheService = require("./cacheService");
-var _collaboratorsData = require("../data/collaboratorsData");
-const GITHUB_USERS_CACHE_KEY = "github_users_cache_v2";
-const GITHUB_ORGS_CACHE_KEY = "github_orgs_cache_v1";
-async function fetchGithubUsers(usernames = (0, _collaboratorsData.GITHUB_USERS)) {
-    // 1. Check local cache first
-    const cached = (0, _cacheService.getCache)(GITHUB_USERS_CACHE_KEY);
-    if (cached) return cached;
-    // 2. Fetch from GitHub REST API concurrently
-    const results = await Promise.allSettled(usernames.map((username)=>fetch(`https://api.github.com/users/${username}`).then((res)=>{
-            if (!res.ok) throw new Error(`Failed to fetch user ${username}`);
-            return res.json();
-        })));
-    // 3. Build username -> profile map
-    const profileMap = {};
-    results.forEach((result, index)=>{
-        const username = usernames[index];
-        if (result.status === "fulfilled" && result.value && result.value.avatar_url) profileMap[username] = result.value;
-    });
-    // 4. Save to cache and return
-    (0, _cacheService.setCache)(GITHUB_USERS_CACHE_KEY, profileMap);
-    return profileMap;
-}
-async function fetchGithubOrganizations(orgs = (0, _collaboratorsData.GITHUB_ORGANIZATIONS)) {
-    // 1. Check local cache first
-    const cached = (0, _cacheService.getCache)(GITHUB_ORGS_CACHE_KEY);
-    if (cached) return cached;
-    // 2. Fetch from GitHub REST API concurrently
-    const results = await Promise.allSettled(orgs.map((org)=>fetch(`https://api.github.com/orgs/${org}`).then((res)=>{
-            if (!res.ok) throw new Error(`Failed to fetch org ${org}`);
-            return res.json();
-        })));
-    // 3. Filter successful responses with avatar_url
-    const validOrgs = results.filter((result)=>result.status === "fulfilled" && result.value && result.value.avatar_url).map((result)=>result.value);
-    // 4. Save to cache and return
-    (0, _cacheService.setCache)(GITHUB_ORGS_CACHE_KEY, validOrgs);
-    return validOrgs;
-}
-
-},{"./cacheService":"d7cM4","../data/collaboratorsData":"jKtZ0","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"d7cM4":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "DEFAULT_CACHE_TTL", ()=>DEFAULT_CACHE_TTL);
-/**
- * Retrieve data from localStorage with TTL validation.
- * @param {string} key 
- * @param {number} [ttlMs=DEFAULT_CACHE_TTL] 
- * @returns {any | null}
- */ parcelHelpers.export(exports, "getCache", ()=>getCache);
-/**
- * Save data to localStorage with a timestamp.
- * @param {string} key 
- * @param {any} data 
- */ parcelHelpers.export(exports, "setCache", ()=>setCache);
-/**
- * Remove an item from localStorage cache.
- * @param {string} key 
- */ parcelHelpers.export(exports, "removeCache", ()=>removeCache);
-const DEFAULT_CACHE_TTL = 86400000; // 24 hours
-function getCache(key, ttlMs = DEFAULT_CACHE_TTL) {
-    try {
-        const raw = localStorage.getItem(key);
-        if (!raw) return null;
-        const { data, timestamp } = JSON.parse(raw);
-        if (Date.now() - timestamp > ttlMs) {
-            localStorage.removeItem(key);
-            return null;
-        }
-        return data;
-    } catch (err) {
-        console.warn(`Error reading cache for key "${key}":`, err);
-        return null;
-    }
-}
-function setCache(key, data) {
-    try {
-        localStorage.setItem(key, JSON.stringify({
-            data,
-            timestamp: Date.now()
-        }));
-    } catch (err) {
-        console.warn(`Error saving cache for key "${key}":`, err);
-    }
-}
-function removeCache(key) {
-    try {
-        localStorage.removeItem(key);
-    } catch (err) {
-        console.warn(`Error removing cache for key "${key}":`, err);
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6OreU":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$ecb3 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$ecb3.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useGithubOrganizations", ()=>useGithubOrganizations);
-var _react = require("react");
-var _githubService = require("../services/githubService");
-var _s = $RefreshSig$();
-function useGithubOrganizations(orgs) {
-    _s();
-    const [organizations, setOrganizations] = (0, _react.useState)([]);
-    const [isLoading, setIsLoading] = (0, _react.useState)(true);
-    const [error, setError] = (0, _react.useState)(null);
-    const loadOrgs = (0, _react.useCallback)(async ()=>{
-        setIsLoading(true);
-        setError(null);
-        try {
-            const data = await (0, _githubService.fetchGithubOrganizations)(orgs);
-            setOrganizations(data);
-        } catch (err) {
-            console.error("Failed to load GitHub organizations:", err);
-            setError(err);
-        } finally{
-            setIsLoading(false);
-        }
-    }, [
-        orgs
-    ]);
-    (0, _react.useEffect)(()=>{
-        loadOrgs();
-    }, [
-        loadOrgs
-    ]);
-    return {
-        organizations,
-        isLoading,
-        error,
-        refreshOrganizations: loadOrgs
-    };
-}
-_s(useGithubOrganizations, "PkqjqTdOh9Wv/nt3McsuHohzxHk=");
-
-  $parcel$ReactRefreshHelpers$ecb3.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react":"21dqq","../services/githubService":"eCTqa","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"7U4gq":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$8e19 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$8e19.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useWindowSize", ()=>useWindowSize);
-var _react = require("react");
-var _s = $RefreshSig$();
-function useWindowSize() {
-    _s();
-    const [windowSize, setWindowSize] = (0, _react.useState)({
-        width: typeof window !== "undefined" ? window.innerWidth : 1024,
-        height: typeof window !== "undefined" ? window.innerHeight : 768
-    });
-    (0, _react.useEffect)(()=>{
-        function handleResize() {
-            setWindowSize({
-                width: window.innerWidth,
-                height: window.innerHeight
-            });
-        }
-        window.addEventListener("resize", handleResize);
-        return ()=>window.removeEventListener("resize", handleResize);
-    }, []);
-    const isMobile = windowSize.width <= 768;
-    return {
-        ...windowSize,
-        isMobile
-    };
-}
-_s(useWindowSize, "5eZz/EyBZhe/JAQtKdTw+E07upY=");
-
-  $parcel$ReactRefreshHelpers$8e19.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"gT9I1":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$5fb7 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$5fb7.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>ResetPasswordModal);
-var _jsxDevRuntime = require("react/jsx-dev-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _reactRouterDom = require("react-router-dom");
-var _authContext = require("../../context/AuthContext");
-var _icons = require("../common/Icons");
-var _api = require("../../services/api");
-var _resetPasswordModalCss = require("./ResetPasswordModal.css");
-var _s = $RefreshSig$();
-function ResetPasswordModal() {
-    _s();
-    const [searchParams] = (0, _reactRouterDom.useSearchParams)();
-    const navigate = (0, _reactRouterDom.useNavigate)();
-    const { openLoginModal } = (0, _authContext.useAuth)();
-    // Helper to extract token from query parameters or hash
-    const getTokenFromLocation = ()=>{
-        const fromRouter = searchParams.get("token");
-        if (fromRouter) return fromRouter;
-        if (typeof window !== "undefined" && window.location.search) {
-            const fromSearch = new URLSearchParams(window.location.search).get("token");
-            if (fromSearch) return fromSearch;
-        }
-        if (typeof window !== "undefined" && window.location.hash && window.location.hash.includes("token=")) {
-            const queryIdx = window.location.hash.indexOf("?");
-            if (queryIdx !== -1) {
-                const fromHash = new URLSearchParams(window.location.hash.substring(queryIdx)).get("token");
-                if (fromHash) return fromHash;
-            }
-        }
-        return "";
-    };
-    const [token, setToken] = (0, _react.useState)(getTokenFromLocation);
-    const [isValidating, setIsValidating] = (0, _react.useState)(true);
-    const [isTokenValid, setIsTokenValid] = (0, _react.useState)(false);
-    const [newPassword, setNewPassword] = (0, _react.useState)("");
-    const [confirmPassword, setConfirmPassword] = (0, _react.useState)("");
-    const [showPassword, setShowPassword] = (0, _react.useState)(false);
-    const [error, setError] = (0, _react.useState)(null);
-    const [isSubmitting, setIsSubmitting] = (0, _react.useState)(false);
-    const [isSuccess, setIsSuccess] = (0, _react.useState)(false);
-    (0, _react.useEffect)(()=>{
-        const currentToken = getTokenFromLocation();
-        setToken(currentToken);
-        if (!currentToken) {
-            setIsValidating(false);
-            setIsTokenValid(false);
-            setError("Missing or invalid password reset token. Please check the link from your email.");
-            return;
-        }
-        let isMounted = true;
-        setIsValidating(true);
-        setError(null);
-        (0, _api.api).auth.verifyResetToken(currentToken).then((res)=>{
-            if (isMounted) {
-                if (res.success) {
-                    setIsTokenValid(true);
-                    setError(null);
-                } else {
-                    setIsTokenValid(false);
-                    setError(res.message || "This password reset link has expired or is invalid.");
-                }
-            }
-        }).catch((err)=>{
-            if (isMounted) {
-                const isNetworkError = err.message?.includes("Failed to fetch") || err.message?.includes("NetworkError");
-                if (isNetworkError) {
-                    // If server check couldn't be reached due to network, allow user to try submitting
-                    setIsTokenValid(true);
-                    setError(null);
-                } else {
-                    setIsTokenValid(false);
-                    setError(err.data?.message || err.message || "This password reset link has expired. Please request a new one.");
-                }
-            }
-        }).finally(()=>{
-            if (isMounted) setIsValidating(false);
-        });
-        return ()=>{
-            isMounted = false;
-        };
-    }, [
-        searchParams
-    ]);
-    const handleSubmit = async (e)=>{
-        e.preventDefault();
-        setError(null);
-        const currentToken = token || getTokenFromLocation();
-        if (!currentToken) {
-            setError("Password reset token is missing.");
-            return;
-        }
-        if (!newPassword || newPassword.length < 6) {
-            setError("Password must be at least 6 characters long.");
-            return;
-        }
-        if (newPassword !== confirmPassword) {
-            setError("Passwords do not match. Please re-enter.");
-            return;
-        }
-        setIsSubmitting(true);
-        try {
-            await (0, _api.api).auth.resetPassword({
-                token: currentToken,
-                newPassword
-            });
-            setIsSubmitting(false);
-            setIsSuccess(true);
-        } catch (err) {
-            setIsSubmitting(false);
-            setError(err.data?.message || err.message || "Failed to reset password. The link may have expired.");
-        }
-    };
-    const handleGoToLogin = ()=>{
-        navigate("/admin_nathaniel");
-        setTimeout(()=>{
-            openLoginModal();
-        }, 100);
-    };
-    const handleGoHome = ()=>{
-        navigate("/");
-    };
-    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-        className: "reset-modal-overlay",
-        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-            className: "reset-modal-card",
-            children: [
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                    className: "reset-modal-header",
-                    children: [
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            className: "reset-modal-icon",
-                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _icons.LockIcon), {
-                                size: 20
-                            }, void 0, false, {
-                                fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                lineNumber: 153,
-                                columnNumber: 13
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 152,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
-                            className: "reset-modal-title",
-                            children: "Reset Admin Password"
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 155,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                            className: "reset-modal-subtitle",
-                            children: "Create a secure new password for your administrator account."
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 156,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "src/components/auth/ResetPasswordModal.jsx",
-                    lineNumber: 151,
-                    columnNumber: 9
-                }, this),
-                isValidating ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                    className: "reset-loading-container",
-                    children: [
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            className: "reset-spinner"
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 164,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            className: "reset-loading-text",
-                            children: "Verifying reset link..."
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 165,
-                            columnNumber: 13
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "src/components/auth/ResetPasswordModal.jsx",
-                    lineNumber: 163,
-                    columnNumber: 11
-                }, this) : isSuccess ? /* Success State */ /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                    className: "reset-success-container",
-                    children: [
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            className: "reset-success-badge",
-                            children: "\u2713"
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 170,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h3", {
-                            className: "reset-success-title",
-                            children: "Password Reset Complete!"
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 171,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                            className: "reset-success-text",
-                            children: "Your password has been successfully updated. You can now sign in using your new password."
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 172,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                            type: "button",
-                            className: "reset-primary-btn",
-                            onClick: handleGoToLogin,
-                            children: "Sign In to Admin"
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 175,
-                            columnNumber: 13
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "src/components/auth/ResetPasswordModal.jsx",
-                    lineNumber: 169,
-                    columnNumber: 11
-                }, this) : !isTokenValid && error ? /* Invalid / Expired Token Error Screen */ /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                    className: "reset-modal-form",
-                    children: [
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            className: "reset-error-alert",
-                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                                children: [
-                                    "\u26A0\uFE0F ",
-                                    error
-                                ]
-                            }, void 0, true, {
-                                fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                lineNumber: 187,
-                                columnNumber: 15
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 186,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                            className: "reset-instruction-text",
-                            style: {
-                                textAlign: "center",
-                                fontSize: "0.9rem",
-                                color: "#65676b"
-                            },
-                            children: 'Password reset links expire for security reasons. Please return to the login screen and click "Forgot password" to generate a fresh link.'
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 189,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                            type: "button",
-                            className: "reset-primary-btn",
-                            onClick: handleGoToLogin,
-                            children: "Request New Reset Link"
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 192,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            className: "reset-secondary-actions",
-                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                                type: "button",
-                                className: "reset-text-btn",
-                                onClick: handleGoHome,
-                                children: "Cancel & Return Home"
-                            }, void 0, false, {
-                                fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                lineNumber: 200,
-                                columnNumber: 15
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 199,
-                            columnNumber: 13
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "src/components/auth/ResetPasswordModal.jsx",
-                    lineNumber: 185,
-                    columnNumber: 11
-                }, this) : /* Form State */ /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("form", {
-                    className: "reset-modal-form",
-                    onSubmit: handleSubmit,
-                    children: [
-                        error && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            className: "reset-error-alert",
-                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                                children: [
-                                    "\u26A0\uFE0F ",
-                                    error
-                                ]
-                            }, void 0, true, {
-                                fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                lineNumber: 214,
-                                columnNumber: 17
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 213,
-                            columnNumber: 15
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            className: "reset-form-group",
-                            children: [
-                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
-                                    className: "reset-form-label",
-                                    htmlFor: "new-password",
-                                    children: "New Password"
-                                }, void 0, false, {
-                                    fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                    lineNumber: 219,
-                                    columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                    className: "reset-input-wrapper",
-                                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
-                                        id: "new-password",
-                                        type: showPassword ? "text" : "password",
-                                        className: "reset-form-input",
-                                        value: newPassword,
-                                        onChange: (e)=>setNewPassword(e.target.value),
-                                        placeholder: "At least 6 characters",
-                                        autoComplete: "new-password",
-                                        disabled: !token || isSubmitting,
-                                        required: true
-                                    }, void 0, false, {
-                                        fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                        lineNumber: 223,
-                                        columnNumber: 17
-                                    }, this)
-                                }, void 0, false, {
-                                    fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                    lineNumber: 222,
-                                    columnNumber: 15
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 218,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            className: "reset-form-group",
-                            children: [
-                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
-                                    className: "reset-form-label",
-                                    htmlFor: "confirm-password",
-                                    children: "Confirm New Password"
-                                }, void 0, false, {
-                                    fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                    lineNumber: 238,
-                                    columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                    className: "reset-input-wrapper",
-                                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
-                                        id: "confirm-password",
-                                        type: showPassword ? "text" : "password",
-                                        className: "reset-form-input",
-                                        value: confirmPassword,
-                                        onChange: (e)=>setConfirmPassword(e.target.value),
-                                        placeholder: "Re-enter new password",
-                                        autoComplete: "new-password",
-                                        disabled: !token || isSubmitting,
-                                        required: true
-                                    }, void 0, false, {
-                                        fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                        lineNumber: 242,
-                                        columnNumber: 17
-                                    }, this)
-                                }, void 0, false, {
-                                    fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                    lineNumber: 241,
-                                    columnNumber: 15
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 237,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            className: "reset-show-password-row",
-                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
-                                className: "reset-checkbox-label",
-                                children: [
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
-                                        type: "checkbox",
-                                        checked: showPassword,
-                                        onChange: (e)=>setShowPassword(e.target.checked)
-                                    }, void 0, false, {
-                                        fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                        lineNumber: 258,
-                                        columnNumber: 17
-                                    }, this),
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                                        children: "Show passwords"
-                                    }, void 0, false, {
-                                        fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                        lineNumber: 263,
-                                        columnNumber: 17
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                lineNumber: 257,
-                                columnNumber: 15
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 256,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                            type: "submit",
-                            className: "reset-primary-btn",
-                            disabled: !token || isSubmitting,
-                            children: isSubmitting ? "Updating Password..." : "Save New Password"
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 267,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            className: "reset-secondary-actions",
-                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
-                                type: "button",
-                                className: "reset-text-btn",
-                                onClick: handleGoHome,
-                                children: "Cancel & Return Home"
-                            }, void 0, false, {
-                                fileName: "src/components/auth/ResetPasswordModal.jsx",
-                                lineNumber: 276,
-                                columnNumber: 15
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "src/components/auth/ResetPasswordModal.jsx",
-                            lineNumber: 275,
-                            columnNumber: 13
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "src/components/auth/ResetPasswordModal.jsx",
-                    lineNumber: 211,
-                    columnNumber: 11
-                }, this)
-            ]
-        }, void 0, true, {
-            fileName: "src/components/auth/ResetPasswordModal.jsx",
-            lineNumber: 149,
-            columnNumber: 7
-        }, this)
-    }, void 0, false, {
-        fileName: "src/components/auth/ResetPasswordModal.jsx",
-        lineNumber: 148,
-        columnNumber: 5
-    }, this);
-}
-_s(ResetPasswordModal, "I5FnIiJIdf9F7CYNSmznXs8iyeQ=", false, function() {
-    return [
-        (0, _reactRouterDom.useSearchParams),
-        (0, _reactRouterDom.useNavigate),
-        (0, _authContext.useAuth)
-    ];
-});
-_c = ResetPasswordModal;
-var _c;
-$RefreshReg$(_c, "ResetPasswordModal");
-
-  $parcel$ReactRefreshHelpers$5fb7.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","react-router-dom":"9xmpe","../../context/AuthContext":"j7XIj","../common/Icons":"4L2vB","../../services/api":"9Olq6","./ResetPasswordModal.css":"9Oy2E","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"9Oy2E":[function() {},{}],"lV1rO":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","../../services/api":"9Olq6","./ItemFormModal.css":"eX4wE","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","react-toastify":"lV1rO"}],"eX4wE":[function() {},{}],"lV1rO":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Bounce", ()=>ft);
@@ -36907,7 +36340,758 @@ function clsx() {
 }
 exports.default = clsx;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gJP2Y":[function() {},{}],"19A8B":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"c50nc":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$d50b = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$d50b.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "useGithubUsers", ()=>useGithubUsers);
+var _react = require("react");
+var _githubService = require("../services/githubService");
+var _s = $RefreshSig$();
+function useGithubUsers(usernames) {
+    _s();
+    const [profileMap, setProfileMap] = (0, _react.useState)({});
+    const [isLoading, setIsLoading] = (0, _react.useState)(true);
+    const [error, setError] = (0, _react.useState)(null);
+    const loadUsers = (0, _react.useCallback)(async ()=>{
+        setIsLoading(true);
+        setError(null);
+        try {
+            const data = await (0, _githubService.fetchGithubUsers)(usernames);
+            setProfileMap(data);
+        } catch (err) {
+            console.error("Failed to load GitHub users:", err);
+            setError(err);
+        } finally{
+            setIsLoading(false);
+        }
+    }, [
+        usernames
+    ]);
+    (0, _react.useEffect)(()=>{
+        loadUsers();
+    }, [
+        loadUsers
+    ]);
+    return {
+        profileMap,
+        isLoading,
+        error,
+        refreshUsers: loadUsers
+    };
+}
+_s(useGithubUsers, "mnaOkwDB8h1QOVBLxvqtJIyzv2g=");
+
+  $parcel$ReactRefreshHelpers$d50b.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react":"21dqq","../services/githubService":"eCTqa","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"eCTqa":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "GITHUB_USERS_CACHE_KEY", ()=>GITHUB_USERS_CACHE_KEY);
+parcelHelpers.export(exports, "GITHUB_ORGS_CACHE_KEY", ()=>GITHUB_ORGS_CACHE_KEY);
+/**
+ * Fetch GitHub user profiles by username list with caching.
+ * @param {string[]} usernames
+ * @returns {Promise<Record<string, any>>}
+ */ parcelHelpers.export(exports, "fetchGithubUsers", ()=>fetchGithubUsers);
+/**
+ * Fetch GitHub organizations by organization name list with caching.
+ * @param {string[]} orgs
+ * @returns {Promise<any[]>}
+ */ parcelHelpers.export(exports, "fetchGithubOrganizations", ()=>fetchGithubOrganizations);
+var _cacheService = require("./cacheService");
+var _collaboratorsData = require("../data/collaboratorsData");
+const GITHUB_USERS_CACHE_KEY = "github_users_cache_v2";
+const GITHUB_ORGS_CACHE_KEY = "github_orgs_cache_v1";
+async function fetchGithubUsers(usernames = (0, _collaboratorsData.GITHUB_USERS)) {
+    // 1. Check local cache first
+    const cached = (0, _cacheService.getCache)(GITHUB_USERS_CACHE_KEY);
+    if (cached) return cached;
+    // 2. Fetch from GitHub REST API concurrently
+    const results = await Promise.allSettled(usernames.map((username)=>fetch(`https://api.github.com/users/${username}`).then((res)=>{
+            if (!res.ok) throw new Error(`Failed to fetch user ${username}`);
+            return res.json();
+        })));
+    // 3. Build username -> profile map
+    const profileMap = {};
+    results.forEach((result, index)=>{
+        const username = usernames[index];
+        if (result.status === "fulfilled" && result.value && result.value.avatar_url) profileMap[username] = result.value;
+    });
+    // 4. Save to cache and return
+    (0, _cacheService.setCache)(GITHUB_USERS_CACHE_KEY, profileMap);
+    return profileMap;
+}
+async function fetchGithubOrganizations(orgs = (0, _collaboratorsData.GITHUB_ORGANIZATIONS)) {
+    // 1. Check local cache first
+    const cached = (0, _cacheService.getCache)(GITHUB_ORGS_CACHE_KEY);
+    if (cached) return cached;
+    // 2. Fetch from GitHub REST API concurrently
+    const results = await Promise.allSettled(orgs.map((org)=>fetch(`https://api.github.com/orgs/${org}`).then((res)=>{
+            if (!res.ok) throw new Error(`Failed to fetch org ${org}`);
+            return res.json();
+        })));
+    // 3. Filter successful responses with avatar_url
+    const validOrgs = results.filter((result)=>result.status === "fulfilled" && result.value && result.value.avatar_url).map((result)=>result.value);
+    // 4. Save to cache and return
+    (0, _cacheService.setCache)(GITHUB_ORGS_CACHE_KEY, validOrgs);
+    return validOrgs;
+}
+
+},{"./cacheService":"d7cM4","../data/collaboratorsData":"jKtZ0","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"d7cM4":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "DEFAULT_CACHE_TTL", ()=>DEFAULT_CACHE_TTL);
+/**
+ * Retrieve data from localStorage with TTL validation.
+ * @param {string} key 
+ * @param {number} [ttlMs=DEFAULT_CACHE_TTL] 
+ * @returns {any | null}
+ */ parcelHelpers.export(exports, "getCache", ()=>getCache);
+/**
+ * Save data to localStorage with a timestamp.
+ * @param {string} key 
+ * @param {any} data 
+ */ parcelHelpers.export(exports, "setCache", ()=>setCache);
+/**
+ * Remove an item from localStorage cache.
+ * @param {string} key 
+ */ parcelHelpers.export(exports, "removeCache", ()=>removeCache);
+const DEFAULT_CACHE_TTL = 86400000; // 24 hours
+function getCache(key, ttlMs = DEFAULT_CACHE_TTL) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const { data, timestamp } = JSON.parse(raw);
+        if (Date.now() - timestamp > ttlMs) {
+            localStorage.removeItem(key);
+            return null;
+        }
+        return data;
+    } catch (err) {
+        console.warn(`Error reading cache for key "${key}":`, err);
+        return null;
+    }
+}
+function setCache(key, data) {
+    try {
+        localStorage.setItem(key, JSON.stringify({
+            data,
+            timestamp: Date.now()
+        }));
+    } catch (err) {
+        console.warn(`Error saving cache for key "${key}":`, err);
+    }
+}
+function removeCache(key) {
+    try {
+        localStorage.removeItem(key);
+    } catch (err) {
+        console.warn(`Error removing cache for key "${key}":`, err);
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6OreU":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$ecb3 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$ecb3.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "useGithubOrganizations", ()=>useGithubOrganizations);
+var _react = require("react");
+var _githubService = require("../services/githubService");
+var _s = $RefreshSig$();
+function useGithubOrganizations(orgs) {
+    _s();
+    const [organizations, setOrganizations] = (0, _react.useState)([]);
+    const [isLoading, setIsLoading] = (0, _react.useState)(true);
+    const [error, setError] = (0, _react.useState)(null);
+    const loadOrgs = (0, _react.useCallback)(async ()=>{
+        setIsLoading(true);
+        setError(null);
+        try {
+            const data = await (0, _githubService.fetchGithubOrganizations)(orgs);
+            setOrganizations(data);
+        } catch (err) {
+            console.error("Failed to load GitHub organizations:", err);
+            setError(err);
+        } finally{
+            setIsLoading(false);
+        }
+    }, [
+        orgs
+    ]);
+    (0, _react.useEffect)(()=>{
+        loadOrgs();
+    }, [
+        loadOrgs
+    ]);
+    return {
+        organizations,
+        isLoading,
+        error,
+        refreshOrganizations: loadOrgs
+    };
+}
+_s(useGithubOrganizations, "PkqjqTdOh9Wv/nt3McsuHohzxHk=");
+
+  $parcel$ReactRefreshHelpers$ecb3.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react":"21dqq","../services/githubService":"eCTqa","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"7U4gq":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$8e19 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$8e19.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "useWindowSize", ()=>useWindowSize);
+var _react = require("react");
+var _s = $RefreshSig$();
+function useWindowSize() {
+    _s();
+    const [windowSize, setWindowSize] = (0, _react.useState)({
+        width: typeof window !== "undefined" ? window.innerWidth : 1024,
+        height: typeof window !== "undefined" ? window.innerHeight : 768
+    });
+    (0, _react.useEffect)(()=>{
+        function handleResize() {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+        }
+        window.addEventListener("resize", handleResize);
+        return ()=>window.removeEventListener("resize", handleResize);
+    }, []);
+    const isMobile = windowSize.width <= 768;
+    return {
+        ...windowSize,
+        isMobile
+    };
+}
+_s(useWindowSize, "5eZz/EyBZhe/JAQtKdTw+E07upY=");
+
+  $parcel$ReactRefreshHelpers$8e19.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"gT9I1":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$5fb7 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$5fb7.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>ResetPasswordModal);
+var _jsxDevRuntime = require("react/jsx-dev-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _reactRouterDom = require("react-router-dom");
+var _authContext = require("../../context/AuthContext");
+var _icons = require("../common/Icons");
+var _api = require("../../services/api");
+var _resetPasswordModalCss = require("./ResetPasswordModal.css");
+var _s = $RefreshSig$();
+function ResetPasswordModal() {
+    _s();
+    const [searchParams] = (0, _reactRouterDom.useSearchParams)();
+    const navigate = (0, _reactRouterDom.useNavigate)();
+    const { openLoginModal } = (0, _authContext.useAuth)();
+    // Helper to extract token from query parameters or hash
+    const getTokenFromLocation = ()=>{
+        const fromRouter = searchParams.get("token");
+        if (fromRouter) return fromRouter;
+        if (typeof window !== "undefined" && window.location.search) {
+            const fromSearch = new URLSearchParams(window.location.search).get("token");
+            if (fromSearch) return fromSearch;
+        }
+        if (typeof window !== "undefined" && window.location.hash && window.location.hash.includes("token=")) {
+            const queryIdx = window.location.hash.indexOf("?");
+            if (queryIdx !== -1) {
+                const fromHash = new URLSearchParams(window.location.hash.substring(queryIdx)).get("token");
+                if (fromHash) return fromHash;
+            }
+        }
+        return "";
+    };
+    const [token, setToken] = (0, _react.useState)(getTokenFromLocation);
+    const [isValidating, setIsValidating] = (0, _react.useState)(true);
+    const [isTokenValid, setIsTokenValid] = (0, _react.useState)(false);
+    const [newPassword, setNewPassword] = (0, _react.useState)("");
+    const [confirmPassword, setConfirmPassword] = (0, _react.useState)("");
+    const [showPassword, setShowPassword] = (0, _react.useState)(false);
+    const [error, setError] = (0, _react.useState)(null);
+    const [isSubmitting, setIsSubmitting] = (0, _react.useState)(false);
+    const [isSuccess, setIsSuccess] = (0, _react.useState)(false);
+    (0, _react.useEffect)(()=>{
+        const currentToken = getTokenFromLocation();
+        setToken(currentToken);
+        if (!currentToken) {
+            setIsValidating(false);
+            setIsTokenValid(false);
+            setError("Missing or invalid password reset token. Please check the link from your email.");
+            return;
+        }
+        let isMounted = true;
+        setIsValidating(true);
+        setError(null);
+        (0, _api.api).auth.verifyResetToken(currentToken).then((res)=>{
+            if (isMounted) {
+                if (res.success) {
+                    setIsTokenValid(true);
+                    setError(null);
+                } else {
+                    setIsTokenValid(false);
+                    setError(res.message || "This password reset link has expired or is invalid.");
+                }
+            }
+        }).catch((err)=>{
+            if (isMounted) {
+                const isNetworkError = err.message?.includes("Failed to fetch") || err.message?.includes("NetworkError");
+                if (isNetworkError) {
+                    // If server check couldn't be reached due to network, allow user to try submitting
+                    setIsTokenValid(true);
+                    setError(null);
+                } else {
+                    setIsTokenValid(false);
+                    setError(err.data?.message || err.message || "This password reset link has expired. Please request a new one.");
+                }
+            }
+        }).finally(()=>{
+            if (isMounted) setIsValidating(false);
+        });
+        return ()=>{
+            isMounted = false;
+        };
+    }, [
+        searchParams
+    ]);
+    const handleSubmit = async (e)=>{
+        e.preventDefault();
+        setError(null);
+        const currentToken = token || getTokenFromLocation();
+        if (!currentToken) {
+            setError("Password reset token is missing.");
+            return;
+        }
+        if (!newPassword || newPassword.length < 6) {
+            setError("Password must be at least 6 characters long.");
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            setError("Passwords do not match. Please re-enter.");
+            return;
+        }
+        setIsSubmitting(true);
+        try {
+            await (0, _api.api).auth.resetPassword({
+                token: currentToken,
+                newPassword
+            });
+            setIsSubmitting(false);
+            setIsSuccess(true);
+        } catch (err) {
+            setIsSubmitting(false);
+            setError(err.data?.message || err.message || "Failed to reset password. The link may have expired.");
+        }
+    };
+    const handleGoToLogin = ()=>{
+        navigate("/admin_nathaniel");
+        setTimeout(()=>{
+            openLoginModal();
+        }, 100);
+    };
+    const handleGoHome = ()=>{
+        navigate("/");
+    };
+    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+        className: "reset-modal-overlay",
+        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+            className: "reset-modal-card",
+            children: [
+                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                    className: "reset-modal-header",
+                    children: [
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-modal-icon",
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _icons.LockIcon), {
+                                size: 20
+                            }, void 0, false, {
+                                fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                lineNumber: 153,
+                                columnNumber: 13
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 152,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
+                            className: "reset-modal-title",
+                            children: "Reset Admin Password"
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 155,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                            className: "reset-modal-subtitle",
+                            children: "Create a secure new password for your administrator account."
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 156,
+                            columnNumber: 11
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/components/auth/ResetPasswordModal.jsx",
+                    lineNumber: 151,
+                    columnNumber: 9
+                }, this),
+                isValidating ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                    className: "reset-loading-container",
+                    children: [
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-spinner"
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 164,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-loading-text",
+                            children: "Verifying reset link..."
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 165,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/components/auth/ResetPasswordModal.jsx",
+                    lineNumber: 163,
+                    columnNumber: 11
+                }, this) : isSuccess ? /* Success State */ /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                    className: "reset-success-container",
+                    children: [
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-success-badge",
+                            children: "\u2713"
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 170,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h3", {
+                            className: "reset-success-title",
+                            children: "Password Reset Complete!"
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 171,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                            className: "reset-success-text",
+                            children: "Your password has been successfully updated. You can now sign in using your new password."
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 172,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                            type: "button",
+                            className: "reset-primary-btn",
+                            onClick: handleGoToLogin,
+                            children: "Sign In to Admin"
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 175,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/components/auth/ResetPasswordModal.jsx",
+                    lineNumber: 169,
+                    columnNumber: 11
+                }, this) : !isTokenValid && error ? /* Invalid / Expired Token Error Screen */ /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                    className: "reset-modal-form",
+                    children: [
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-error-alert",
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                children: [
+                                    "\u26A0\uFE0F ",
+                                    error
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                lineNumber: 187,
+                                columnNumber: 15
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 186,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                            className: "reset-instruction-text",
+                            style: {
+                                textAlign: "center",
+                                fontSize: "0.9rem",
+                                color: "#65676b"
+                            },
+                            children: 'Password reset links expire for security reasons. Please return to the login screen and click "Forgot password" to generate a fresh link.'
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 189,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                            type: "button",
+                            className: "reset-primary-btn",
+                            onClick: handleGoToLogin,
+                            children: "Request New Reset Link"
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 192,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-secondary-actions",
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                type: "button",
+                                className: "reset-text-btn",
+                                onClick: handleGoHome,
+                                children: "Cancel & Return Home"
+                            }, void 0, false, {
+                                fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                lineNumber: 200,
+                                columnNumber: 15
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 199,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/components/auth/ResetPasswordModal.jsx",
+                    lineNumber: 185,
+                    columnNumber: 11
+                }, this) : /* Form State */ /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("form", {
+                    className: "reset-modal-form",
+                    onSubmit: handleSubmit,
+                    children: [
+                        error && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-error-alert",
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                children: [
+                                    "\u26A0\uFE0F ",
+                                    error
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                lineNumber: 214,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 213,
+                            columnNumber: 15
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-form-group",
+                            children: [
+                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                                    className: "reset-form-label",
+                                    htmlFor: "new-password",
+                                    children: "New Password"
+                                }, void 0, false, {
+                                    fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                    lineNumber: 219,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                                    className: "reset-input-wrapper",
+                                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                                        id: "new-password",
+                                        type: showPassword ? "text" : "password",
+                                        className: "reset-form-input",
+                                        value: newPassword,
+                                        onChange: (e)=>setNewPassword(e.target.value),
+                                        placeholder: "At least 6 characters",
+                                        autoComplete: "new-password",
+                                        disabled: !token || isSubmitting,
+                                        required: true
+                                    }, void 0, false, {
+                                        fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                        lineNumber: 223,
+                                        columnNumber: 17
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                    lineNumber: 222,
+                                    columnNumber: 15
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 218,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-form-group",
+                            children: [
+                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                                    className: "reset-form-label",
+                                    htmlFor: "confirm-password",
+                                    children: "Confirm New Password"
+                                }, void 0, false, {
+                                    fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                    lineNumber: 238,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                                    className: "reset-input-wrapper",
+                                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                                        id: "confirm-password",
+                                        type: showPassword ? "text" : "password",
+                                        className: "reset-form-input",
+                                        value: confirmPassword,
+                                        onChange: (e)=>setConfirmPassword(e.target.value),
+                                        placeholder: "Re-enter new password",
+                                        autoComplete: "new-password",
+                                        disabled: !token || isSubmitting,
+                                        required: true
+                                    }, void 0, false, {
+                                        fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                        lineNumber: 242,
+                                        columnNumber: 17
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                    lineNumber: 241,
+                                    columnNumber: 15
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 237,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-show-password-row",
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                                className: "reset-checkbox-label",
+                                children: [
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                                        type: "checkbox",
+                                        checked: showPassword,
+                                        onChange: (e)=>setShowPassword(e.target.checked)
+                                    }, void 0, false, {
+                                        fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                        lineNumber: 258,
+                                        columnNumber: 17
+                                    }, this),
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
+                                        children: "Show passwords"
+                                    }, void 0, false, {
+                                        fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                        lineNumber: 263,
+                                        columnNumber: 17
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                lineNumber: 257,
+                                columnNumber: 15
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 256,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                            type: "submit",
+                            className: "reset-primary-btn",
+                            disabled: !token || isSubmitting,
+                            children: isSubmitting ? "Updating Password..." : "Save New Password"
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 267,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "reset-secondary-actions",
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                type: "button",
+                                className: "reset-text-btn",
+                                onClick: handleGoHome,
+                                children: "Cancel & Return Home"
+                            }, void 0, false, {
+                                fileName: "src/components/auth/ResetPasswordModal.jsx",
+                                lineNumber: 276,
+                                columnNumber: 15
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "src/components/auth/ResetPasswordModal.jsx",
+                            lineNumber: 275,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/components/auth/ResetPasswordModal.jsx",
+                    lineNumber: 211,
+                    columnNumber: 11
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "src/components/auth/ResetPasswordModal.jsx",
+            lineNumber: 149,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "src/components/auth/ResetPasswordModal.jsx",
+        lineNumber: 148,
+        columnNumber: 5
+    }, this);
+}
+_s(ResetPasswordModal, "I5FnIiJIdf9F7CYNSmznXs8iyeQ=", false, function() {
+    return [
+        (0, _reactRouterDom.useSearchParams),
+        (0, _reactRouterDom.useNavigate),
+        (0, _authContext.useAuth)
+    ];
+});
+_c = ResetPasswordModal;
+var _c;
+$RefreshReg$(_c, "ResetPasswordModal");
+
+  $parcel$ReactRefreshHelpers$5fb7.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","react-router-dom":"9xmpe","../../context/AuthContext":"j7XIj","../common/Icons":"4L2vB","../../services/api":"9Olq6","./ResetPasswordModal.css":"9Oy2E","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"9Oy2E":[function() {},{}],"gJP2Y":[function() {},{}],"19A8B":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$ca4f = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;

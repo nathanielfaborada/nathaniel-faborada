@@ -38,13 +38,28 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
     project.author?.avatar ||
     'https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg';
 
+  const categoryStr = (project.category || '').toLowerCase();
   const isCertificate =
-    project.category === 'certificates' || project.category === 'certificate';
+    categoryStr === 'certificate' || categoryStr === 'certificates';
+
+  const isIframeCertificate =
+    isCertificate &&
+    (project.source_code_url === 'iframe' ||
+      project.notice === 'iframe' ||
+      (Array.isArray(project.tags) && project.tags.includes('#iframe')) ||
+      (typeof project.live_demo_url === 'string' &&
+        (project.live_demo_url.includes('hackerrank.com') ||
+          project.live_demo_url.includes('iframe') ||
+          project.live_demo_url.includes('embed'))));
+
+  const iframeSrc = isIframeCertificate
+    ? project.live_demo_url || project.credential_url
+    : null;
 
   // Normalize links
   let links = project.links || [];
   if (!links.length) {
-    if (project.source_code_url) {
+    if (project.source_code_url && project.source_code_url !== 'iframe') {
       links.push({ type: 'source', url: project.source_code_url, label: 'Source' });
     }
     if (project.live_demo_url) {
@@ -238,13 +253,39 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
         </div>
       )}
 
-      {/* Interactive Image Carousel */}
-      {screenshots.length > 0 && (
+      {/* Certificate Iframe or Interactive Image Carousel */}
+      {iframeSrc ? (
+        <div
+          className="certificate-iframe-card"
+          style={{
+            margin: '12px 0',
+            borderRadius: '8px',
+            overflow: 'hidden',
+            border: '1px solid #e4e6eb',
+            background: '#f8f9fa',
+            width: '100%',
+          }}
+        >
+          <iframe
+            src={iframeSrc}
+            title={project.title || 'Certificate'}
+            style={{
+              width: '100%',
+              minHeight: '380px',
+              height: '420px',
+              border: 'none',
+              display: 'block',
+            }}
+            loading="lazy"
+            allowFullScreen
+          />
+        </div>
+      ) : screenshots.length > 0 ? (
         <ProjectImageCarousel
           images={screenshots}
-          title={project.headline || project.title || 'Project'}
+          title={project.headline || project.title || 'Certificate'}
         />
-      )}
+      ) : null}
 
       {/* Footer */}
       {(project.stars || (links && links.length > 0)) && (
