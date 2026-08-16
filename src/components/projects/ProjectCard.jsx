@@ -119,7 +119,7 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
   const currentPathname = typeof window !== 'undefined' ? window.location.pathname : '';
   const currentHash = typeof window !== 'undefined' ? window.location.hash : '';
   const isAdminRoute = currentPathname.includes('/admin_nathaniel') || currentHash.includes('/admin_nathaniel');
-  const showAdminActions = isLoggedIn && isAdminRoute;
+  const showAdminActions = isAdminRoute || isLoggedIn;
 
   return (
     <div className="project-card" data-category={project.category}>
@@ -140,14 +140,14 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
           </span>
         </div>
 
-        {/* Admin Action Buttons (Rendered ONLY on /admin_nathaniel route) */}
+        {/* Admin Action Buttons (Rendered ONLY on /admin_nathaniel route or logged in) */}
         {showAdminActions && (
           <div className="card-admin-actions" style={{ display: 'flex', gap: '6px' }}>
             <button
               type="button"
               className="admin-edit-btn"
               onClick={() => onEdit && onEdit(project)}
-              title="Edit project"
+              title={isCertificate ? 'Edit Certificate' : 'Edit Project'}
               style={{
                 background: '#f0f2f5',
                 border: '1px solid #ced0d4',
@@ -160,6 +160,7 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
                 fontSize: '0.78rem',
                 fontWeight: 600,
                 color: '#1877f2',
+                transition: 'all 0.2s ease',
               }}
             >
               <EditIcon size={12} />
@@ -169,7 +170,7 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
               type="button"
               className="admin-delete-btn"
               onClick={() => onDelete && onDelete(project)}
-              title="Delete project"
+              title={isCertificate ? 'Delete Certificate' : 'Delete Project'}
               style={{
                 background: '#ffebe8',
                 border: '1px solid #f2ab99',
@@ -182,6 +183,7 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
                 fontSize: '0.78rem',
                 fontWeight: 600,
                 color: '#c92a2a',
+                transition: 'all 0.2s ease',
               }}
             >
               <TrashIcon size={12} />

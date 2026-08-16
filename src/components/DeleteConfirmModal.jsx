@@ -41,7 +41,9 @@ export default function DeleteConfirmModal({
     (item.role_title ? `${item.role_title} at ${item.company_name || item.company}` : 'Item');
 
   const typeLabel =
-    type === 'creation'
+    type === 'certificate'
+      ? 'Certificate'
+      : type === 'creation'
       ? 'Project Creation'
       : type === 'organization'
       ? 'Organization'
