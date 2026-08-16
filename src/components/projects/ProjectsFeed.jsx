@@ -7,7 +7,13 @@ import { PlusIcon } from '../common/Icons';
 import { PROJECTS_DATA } from '../../data/projectsData';
 import './ProjectsFeed.css';
 
-export default function ProjectsFeed({ onOpenCreateModal, onEditProject, onDeleteProject, refreshTrigger }) {
+export default function ProjectsFeed({
+  activeTab = 'all',
+  onOpenCreateModal,
+  onEditProject,
+  onDeleteProject,
+  refreshTrigger,
+}) {
   const { isLoggedIn } = useAuth();
   const [projects, setProjects] = useState(PROJECTS_DATA);
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -36,8 +42,13 @@ export default function ProjectsFeed({ onOpenCreateModal, onEditProject, onDelet
     fetchCreations();
   }, [fetchCreations, refreshTrigger]);
 
+  const isCertificatesTab = activeTab === 'certificates';
+
   // Filter projects by category
   const filteredProjects = projects.filter((project) => {
+    if (isCertificatesTab) {
+      return project.category === 'certificates' || project.category === 'certificate';
+    }
     if (selectedFilter === 'all') return true;
     if (selectedFilter === 'certificates') {
       return project.category === 'certificates' || project.category === 'certificate';
@@ -50,20 +61,25 @@ export default function ProjectsFeed({ onOpenCreateModal, onEditProject, onDelet
       {/* Creations Header & Controls */}
       <div className="creations-header">
         <h2 className="creations-title">
-          {selectedFilter === 'certificates' ? 'Certificates' : 'My Creations'}
+          {isCertificatesTab || selectedFilter === 'certificates'
+            ? 'Certificates'
+            : 'My Creations'}
         </h2>
 
         <div className="creations-controls" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <ProjectFilter
-            selectedFilter={selectedFilter}
-            onSelectFilter={setSelectedFilter}
-            isOpen={isDropdownOpen}
-            onToggleDropdown={() => setIsDropdownOpen((prev) => !prev)}
-            onCloseDropdown={() => setIsDropdownOpen(false)}
-          />
+          {/* Show filter dropdown only on All view */}
+          {!isCertificatesTab && (
+            <ProjectFilter
+              selectedFilter={selectedFilter}
+              onSelectFilter={setSelectedFilter}
+              isOpen={isDropdownOpen}
+              onToggleDropdown={() => setIsDropdownOpen((prev) => !prev)}
+              onCloseDropdown={() => setIsDropdownOpen(false)}
+            />
+          )}
 
-          {/* Dedicated Add Certificate button: appears ONLY when Certificates tab is active */}
-          {isLoggedIn && selectedFilter === 'certificates' && (
+          {/* Dedicated Add Certificate button: appears ONLY when Certificates tab/view is active */}
+          {isLoggedIn && (isCertificatesTab || selectedFilter === 'certificates') && (
             <button
               type="button"
               id="add-certificate-btn"
@@ -91,7 +107,7 @@ export default function ProjectsFeed({ onOpenCreateModal, onEditProject, onDelet
           )}
 
           {/* Regular Add Project button: shown on other project categories (NOT on Certificates) */}
-          {isLoggedIn && selectedFilter !== 'certificates' && (
+          {isLoggedIn && !isCertificatesTab && selectedFilter !== 'certificates' && (
             <button
               type="button"
               id="add-project-btn"
@@ -133,7 +149,7 @@ export default function ProjectsFeed({ onOpenCreateModal, onEditProject, onDelet
       ) : (
         <div className="section-card" style={{ textAlign: 'center', padding: '30px' }}>
           <p style={{ color: '#666', fontSize: '0.9rem' }}>
-            {selectedFilter === 'certificates'
+            {isCertificatesTab || selectedFilter === 'certificates'
               ? 'No certificates added yet.'
               : 'No projects found in this category.'}
           </p>

@@ -129,7 +129,7 @@ function MainApp() {
   // Determine layout visibility
   const isCollaboratorsView = activeTab === 'collaborators';
   const showSidebar = !isMobile || activeTab === 'about';
-  const showFeed = !isMobile || activeTab === 'all';
+  const showFeed = !isMobile || activeTab === 'all' || activeTab === 'certificates';
 
   return (
     <>
@@ -160,9 +160,10 @@ function MainApp() {
               }}
             />
 
-            {/* Right: Projects Feed */}
+            {/* Right: Projects & Certificates Feed */}
             {showFeed && (
               <ProjectsFeed
+                activeTab={activeTab}
                 refreshTrigger={refreshTrigger}
                 onOpenCreateModal={handleOpenCreate}
                 onEditProject={(item) =>

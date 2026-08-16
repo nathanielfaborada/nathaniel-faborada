@@ -51,6 +51,18 @@ export default function ProfileNav({
             Collaborators
           </a>
         </li>
+        <li
+          className={activeTab === 'certificates' ? 'active' : ''}
+          data-tab="certificates"
+        >
+          <a
+            href="#certificates"
+            className={activeTab === 'certificates' ? 'active' : ''}
+            onClick={(e) => handleTabClick(e, 'certificates')}
+          >
+            Certificates
+          </a>
+        </li>
       </ul>
     </nav>
   );
