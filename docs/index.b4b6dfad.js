@@ -30653,10 +30653,10 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
     const [selectedFilter, setSelectedFilter] = (0, _react.useState)("all");
     const [isDropdownOpen, setIsDropdownOpen] = (0, _react.useState)(false);
     const [isLoading, setIsLoading] = (0, _react.useState)(true);
-    // Check if current route is /admin_nathaniel (via pathname or hash) or user has active admin session
-    const normalizedPath = (location.pathname || "").replace(/\/+$/, "");
-    const normalizedHash = (location.hash || "").replace(/^#\/?/, "/").replace(/\/+$/, "");
-    const isAdminRoute = normalizedPath === "/admin_nathaniel" || normalizedHash === "/admin_nathaniel" || Boolean(isLoggedIn);
+    // STRICT ROUTE CHECK: Render button ONLY if the path explicitly includes /admin_nathaniel
+    const currentPathname = typeof window !== "undefined" ? window.location.pathname : location.pathname || "";
+    const currentHash = typeof window !== "undefined" ? window.location.hash : location.hash || "";
+    const isAdminRoute = currentPathname.includes("/admin_nathaniel") || currentHash.includes("/admin_nathaniel");
     // Fetch creations from API
     const fetchCreations = (0, _react.useCallback)(async ()=>{
         setIsLoading(true);
@@ -30698,7 +30698,7 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                         children: isCertificatesTab || selectedFilter === "certificates" ? "Certificates" : "My Creations"
                     }, void 0, false, {
                         fileName: "src/components/projects/ProjectsFeed.jsx",
-                        lineNumber: 75,
+                        lineNumber: 72,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -30717,7 +30717,7 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                                 onCloseDropdown: ()=>setIsDropdownOpen(false)
                             }, void 0, false, {
                                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                                lineNumber: 84,
+                                lineNumber: 81,
                                 columnNumber: 13
                             }, this),
                             isAdminRoute && isCertificatesTab && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -30746,14 +30746,14 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                                         size: 14
                                     }, void 0, false, {
                                         fileName: "src/components/projects/ProjectsFeed.jsx",
-                                        lineNumber: 117,
+                                        lineNumber: 114,
                                         columnNumber: 15
                                     }, this),
                                     "+ Add Certificate"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                                lineNumber: 95,
+                                lineNumber: 92,
                                 columnNumber: 13
                             }, this),
                             isAdminRoute && !isCertificatesTab && selectedFilter !== "certificates" && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -30781,26 +30781,26 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                                         size: 13
                                     }, void 0, false, {
                                         fileName: "src/components/projects/ProjectsFeed.jsx",
-                                        lineNumber: 145,
+                                        lineNumber: 142,
                                         columnNumber: 15
                                     }, this),
                                     "Add Project"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                                lineNumber: 124,
+                                lineNumber: 121,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/projects/ProjectsFeed.jsx",
-                        lineNumber: 81,
+                        lineNumber: 78,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                lineNumber: 74,
+                lineNumber: 71,
                 columnNumber: 7
             }, this),
             filteredProjects.length > 0 ? filteredProjects.map((project)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _projectCardDefault.default), {
@@ -30809,7 +30809,7 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                     onDelete: onDeleteProject
                 }, project.id || project.title, false, {
                     fileName: "src/components/projects/ProjectsFeed.jsx",
-                    lineNumber: 155,
+                    lineNumber: 152,
                     columnNumber: 11
                 }, this)) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                 className: "section-card",
@@ -30825,18 +30825,18 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                     children: isCertificatesTab || selectedFilter === "certificates" ? "No certificates added yet." : "No projects found in this category."
                 }, void 0, false, {
                     fileName: "src/components/projects/ProjectsFeed.jsx",
-                    lineNumber: 164,
+                    lineNumber: 161,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                lineNumber: 163,
+                lineNumber: 160,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "src/components/projects/ProjectsFeed.jsx",
-        lineNumber: 72,
+        lineNumber: 69,
         columnNumber: 5
     }, this);
 }

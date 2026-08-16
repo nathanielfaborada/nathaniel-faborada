@@ -22,13 +22,10 @@ export default function ProjectsFeed({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check if current route is /admin_nathaniel (via pathname or hash) or user has active admin session
-  const normalizedPath = (location.pathname || '').replace(/\/+$/, '');
-  const normalizedHash = (location.hash || '').replace(/^#\/?/, '/').replace(/\/+$/, '');
-  const isAdminRoute =
-    normalizedPath === '/admin_nathaniel' ||
-    normalizedHash === '/admin_nathaniel' ||
-    Boolean(isLoggedIn);
+  // STRICT ROUTE CHECK: Render button ONLY if the path explicitly includes /admin_nathaniel
+  const currentPathname = typeof window !== 'undefined' ? window.location.pathname : location.pathname || '';
+  const currentHash = typeof window !== 'undefined' ? window.location.hash : location.hash || '';
+  const isAdminRoute = currentPathname.includes('/admin_nathaniel') || currentHash.includes('/admin_nathaniel');
 
   // Fetch creations from API
   const fetchCreations = useCallback(async () => {
