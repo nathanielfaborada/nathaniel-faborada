@@ -24,8 +24,26 @@ export default function ItemFormModal({
     setIsUploading(false);
     setShowAddImage(false);
     if (initialData) {
+      const isCert =
+        type === 'certificate' ||
+        initialData.category === 'certificates' ||
+        initialData.category === 'certificate';
+      const issuerName =
+        initialData.issuer ||
+        (initialData.notice ? initialData.notice.replace(/^Issuer:\s*/i, '') : '') ||
+        (Array.isArray(initialData.contributions) && initialData.contributions[0]
+          ? initialData.contributions[0].replace(/^Issued by\s*/i, '')
+          : '');
+
       setFormData({
         ...initialData,
+        title: initialData.title || initialData.headline || '',
+        issuer: issuerName,
+        credential_url:
+          initialData.credential_url ||
+          initialData.live_demo_url ||
+          (initialData.links?.find((l) => l.type === 'visit' || l.type === 'credential')?.url) ||
+          '',
         company_name: initialData.company_name || initialData.company || '',
         role_title:
           initialData.role_title ||
@@ -49,6 +67,14 @@ export default function ItemFormModal({
           ? initialData.screenshots
           : '',
         project_date: initialData.project_date || '',
+        image_url:
+          initialData.image_url ||
+          (Array.isArray(initialData.screenshots)
+            ? initialData.screenshots[0]
+            : initialData.screenshots) ||
+          '',
+        category: isCert ? 'certificates' : initialData.category || 'personal',
+        is_featured: Boolean(initialData.is_featured),
       });
     } else {
       // Defaults based on type
@@ -67,6 +93,16 @@ export default function ItemFormModal({
           screenshots: '',
           is_featured: false,
           stars: '⭐',
+        });
+      } else if (type === 'certificate') {
+        setFormData({
+          title: '',
+          issuer: '',
+          project_date: '',
+          credential_url: '',
+          image_url: '',
+          description: '',
+          is_featured: false,
         });
       } else if (type === 'organization') {
         setFormData({
@@ -225,6 +261,39 @@ export default function ItemFormModal({
         } else {
           await api.creations.create(payload);
         }
+      } else if (type === 'certificate') {
+        const certImage = formData.image_url?.trim() || null;
+        const issuerName = formData.issuer?.trim() || '';
+        const credUrl = (formData.credential_url || formData.live_demo_url || '').trim();
+
+        if (!formData.title?.trim()) {
+          throw new Error('Certificate Title is required.');
+        }
+
+        const payload = {
+          title: formData.title.trim(),
+          category: 'certificates',
+          categoryLabel: 'Certificate',
+          description:
+            formData.description?.trim() ||
+            (issuerName ? `Certificate of Completion issued by ${issuerName}.` : 'Certificate of Completion'),
+          notice: issuerName ? `Issuer: ${issuerName}` : '',
+          project_date: formData.project_date?.trim() || '',
+          live_demo_url: credUrl,
+          source_code_url: '',
+          image_url: certImage,
+          screenshots: certImage ? [certImage] : [],
+          tags: issuerName ? [`#${issuerName.replace(/[^a-zA-Z0-9]/g, '')}`, '#certificate'] : ['#certificate'],
+          contributions: issuerName ? [`Issued by ${issuerName}`] : [],
+          is_featured: Boolean(formData.is_featured),
+          stars: '🏆',
+        };
+
+        if (isEdit) {
+          await api.creations.update(initialData.id, payload);
+        } else {
+          await api.creations.create(payload);
+        }
       } else if (type === 'organization') {
         const payload = {
           ...formData,
@@ -271,13 +340,14 @@ export default function ItemFormModal({
   const getTitle = () => {
     const action = isEdit ? 'Edit' : 'Add';
     if (type === 'creation') return `${action} Project Creation`;
+    if (type === 'certificate') return `${action} Certificate`;
     if (type === 'organization') return `${action} Organization`;
     if (type === 'workExperience') return `${action} Work Experience`;
     return `${action} Item`;
   };
 
   const currentImageUrl =
-    type === 'creation'
+    type === 'creation' || type === 'certificate'
       ? formData.image_url
       : type === 'organization'
       ? formData.logo_url
@@ -521,6 +591,184 @@ export default function ItemFormModal({
                     onChange={handleChange}
                   />
                   Feature this project on top
+                </label>
+              </>
+            )}
+
+            {/* CERTIFICATE FORM FIELDS */}
+            {type === 'certificate' && (
+              <>
+                <div className="item-form-group">
+                  <label className="item-form-label" htmlFor="cert-title">
+                    Certificate Title *
+                  </label>
+                  <input
+                    id="cert-title"
+                    type="text"
+                    name="title"
+                    className="item-form-input"
+                    placeholder="e.g. AWS Certified Cloud Practitioner / Meta Frontend Developer"
+                    value={formData.title || ''}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="item-form-row">
+                  <div className="item-form-group">
+                    <label className="item-form-label" htmlFor="cert-issuer">
+                      Issuing Organization / Issuer
+                    </label>
+                    <input
+                      id="cert-issuer"
+                      type="text"
+                      name="issuer"
+                      className="item-form-input"
+                      placeholder="e.g. Coursera, AWS, Udemy, Harvard"
+                      value={formData.issuer || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="item-form-group">
+                    <label className="item-form-label" htmlFor="cert-date">
+                      Issue Date / Timeline
+                    </label>
+                    <input
+                      id="cert-date"
+                      type="text"
+                      name="project_date"
+                      className="item-form-input"
+                      placeholder="e.g. Aug 2026 / 2025"
+                      value={formData.project_date || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+                <div className="item-form-group">
+                  <label className="item-form-label" htmlFor="cert-url">
+                    Credential URL / Verification Link
+                  </label>
+                  <input
+                    id="cert-url"
+                    type="url"
+                    name="credential_url"
+                    className="item-form-input"
+                    placeholder="https://coursera.org/verify/... or verification link"
+                    value={formData.credential_url || formData.live_demo_url || ''}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFormData((prev) => ({
+                        ...prev,
+                        credential_url: e.target.value,
+                        live_demo_url: e.target.value,
+                      }));
+                    }}
+                  />
+                </div>
+
+                <div className="item-form-group">
+                  <label className="item-form-label" htmlFor="cert-desc">
+                    Description / Skills Learned (Optional)
+                  </label>
+                  <textarea
+                    id="cert-desc"
+                    name="description"
+                    className="item-form-textarea"
+                    rows={3}
+                    placeholder="Brief description of the certificate, topics covered, or verified skills..."
+                    value={formData.description || ''}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                {/* Certificate Image / Badge Upload & Preview */}
+                <div className="item-form-group image-upload-wrapper">
+                  <label className="item-form-label">Certificate Image or Badge</label>
+
+                  {formData.image_url ? (
+                    <div className="image-thumbs-grid" style={{ gridTemplateColumns: '120px' }}>
+                      <div className="image-thumb-card" style={{ aspectRatio: '4/3' }}>
+                        <img
+                          src={formData.image_url}
+                          alt="Certificate preview"
+                          className="image-thumb-img w-full h-full object-cover"
+                          loading="eager"
+                          decoding="async"
+                        />
+                        <button
+                          type="button"
+                          className="image-thumb-delete-btn"
+                          onClick={() => setFormData((prev) => ({ ...prev, image_url: '' }))}
+                          title="Remove image"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="image-upload-box">
+                      <div className="image-upload-dropzone">
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          className="image-file-input"
+                          accept="image/*"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            setIsUploading(true);
+                            setError(null);
+                            try {
+                              const response = await api.upload.image(file);
+                              if (response.success && response.url) {
+                                setFormData((prev) => ({ ...prev, image_url: response.url }));
+                              }
+                            } catch (err) {
+                              setError(err.message || 'Failed to upload certificate image.');
+                            } finally {
+                              setIsUploading(false);
+                              if (fileInputRef.current) fileInputRef.current.value = '';
+                            }
+                          }}
+                          id="cert-logo-file"
+                        />
+                        <button
+                          type="button"
+                          className="image-upload-btn"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={isUploading}
+                        >
+                          📁 {isUploading ? 'Uploading...' : 'Upload Certificate Image'}
+                        </button>
+                        <span className="image-upload-status">
+                          {isUploading ? 'Uploading...' : 'Max 5MB'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  <div style={{ marginTop: '8px' }}>
+                    <input
+                      type="url"
+                      name="image_url"
+                      className="item-form-input"
+                      placeholder="Or paste direct image URL (https://...)"
+                      value={formData.image_url || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+                <label className="item-form-checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="is_featured"
+                    checked={Boolean(formData.is_featured)}
+                    onChange={handleChange}
+                  />
+                  Feature this certificate on top
                 </label>
               </>
             )}
@@ -795,6 +1043,8 @@ export default function ItemFormModal({
                 ? 'Save Changes'
                 : type === 'creation'
                 ? 'Save Creation'
+                : type === 'certificate'
+                ? 'Add Certificate'
                 : type === 'organization'
                 ? 'Add Organization'
                 : 'Add Experience'}

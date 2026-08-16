@@ -117,6 +117,8 @@ function MainApp() {
     const label =
       type === 'creation'
         ? 'Project'
+        : type === 'certificate'
+        ? 'Certificate'
         : type === 'organization'
         ? 'Organization'
         : 'Work Experience';
@@ -163,7 +165,14 @@ function MainApp() {
               <ProjectsFeed
                 refreshTrigger={refreshTrigger}
                 onOpenCreateModal={handleOpenCreate}
-                onEditProject={(item) => handleOpenEdit('creation', item)}
+                onEditProject={(item) =>
+                  handleOpenEdit(
+                    item.category === 'certificates' || item.category === 'certificate'
+                      ? 'certificate'
+                      : 'creation',
+                    item
+                  )
+                }
                 onDeleteProject={(item) => handleRequestDelete('creation', item)}
               />
             )}

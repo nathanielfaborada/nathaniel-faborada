@@ -191,4 +191,5 @@ export const CATEGORY_FILTERS = [
   { key: "personal", label: "Personal Projects" },
   { key: "organization", label: "Organization" },
   { key: "internship", label: "Internship" },
+  { key: "certificates", label: "Certificates" },
 ];

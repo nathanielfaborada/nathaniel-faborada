@@ -39,6 +39,9 @@ export default function ProjectsFeed({ onOpenCreateModal, onEditProject, onDelet
   // Filter projects by category
   const filteredProjects = projects.filter((project) => {
     if (selectedFilter === 'all') return true;
+    if (selectedFilter === 'certificates') {
+      return project.category === 'certificates' || project.category === 'certificate';
+    }
     return project.category === selectedFilter;
   });
 
@@ -46,7 +49,9 @@ export default function ProjectsFeed({ onOpenCreateModal, onEditProject, onDelet
     <main className="main-content">
       {/* Creations Header & Controls */}
       <div className="creations-header">
-        <h2 className="creations-title">My Creations</h2>
+        <h2 className="creations-title">
+          {selectedFilter === 'certificates' ? 'Certificates' : 'My Creations'}
+        </h2>
 
         <div className="creations-controls" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <ProjectFilter
@@ -57,9 +62,39 @@ export default function ProjectsFeed({ onOpenCreateModal, onEditProject, onDelet
             onCloseDropdown={() => setIsDropdownOpen(false)}
           />
 
-          {isLoggedIn && (
+          {/* Dedicated Add Certificate button: appears ONLY when Certificates tab is active */}
+          {isLoggedIn && selectedFilter === 'certificates' && (
             <button
               type="button"
+              id="add-certificate-btn"
+              onClick={() => onOpenCreateModal && onOpenCreateModal('certificate')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '6px 12px',
+                height: '34px',
+                background: '#1877f2',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '6px',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                boxSizing: 'border-box',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <PlusIcon size={13} />
+              Add Certificate
+            </button>
+          )}
+
+          {/* Regular Add Project button: shown on other project categories (NOT on Certificates) */}
+          {isLoggedIn && selectedFilter !== 'certificates' && (
+            <button
+              type="button"
+              id="add-project-btn"
               onClick={() => onOpenCreateModal && onOpenCreateModal('creation')}
               style={{
                 display: 'inline-flex',
@@ -98,7 +133,9 @@ export default function ProjectsFeed({ onOpenCreateModal, onEditProject, onDelet
       ) : (
         <div className="section-card" style={{ textAlign: 'center', padding: '30px' }}>
           <p style={{ color: '#666', fontSize: '0.9rem' }}>
-            No projects found in this category.
+            {selectedFilter === 'certificates'
+              ? 'No certificates added yet.'
+              : 'No projects found in this category.'}
           </p>
         </div>
       )}

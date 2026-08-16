@@ -38,6 +38,9 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
     project.author?.avatar ||
     'https://res.cloudinary.com/diwwqfwjb/image/upload/v1776094289/542451323_122191510964372800_7390414124574237799_n_kg4uvt.jpg';
 
+  const isCertificate =
+    project.category === 'certificates' || project.category === 'certificate';
+
   // Normalize links
   let links = project.links || [];
   if (!links.length) {
@@ -45,7 +48,11 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
       links.push({ type: 'source', url: project.source_code_url, label: 'Source' });
     }
     if (project.live_demo_url) {
-      links.push({ type: 'visit', url: project.live_demo_url, label: 'Visit' });
+      links.push({
+        type: 'visit',
+        url: project.live_demo_url,
+        label: isCertificate ? 'Verify Credential' : 'Visit',
+      });
     }
   }
 
@@ -160,11 +167,13 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
       {/* Primary Headline & Secondary Category Meta + Date Badge */}
       <div className="project-headline-row">
         <p className="project-headline">
-          <span className="pin">📌</span>
+          <span className="pin">{isCertificate ? '📜' : '📌'}</span>
           <strong>{project.headline || project.title}</strong>
-          {project.categoryLabel && (
+          {project.categoryLabel ? (
             <span className="project-category"> · {project.categoryLabel}</span>
-          )}
+          ) : isCertificate ? (
+            <span className="project-category"> · Certificate</span>
+          ) : null}
         </p>
         {formattedDate && (
           <span className="project-date-badge">
@@ -176,7 +185,7 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
       {/* Body Description with See More / See Less Toggle */}
       {rawDescription && (
         <p className="project-desc">
-          <span className="monitor">💻</span>
+          <span className="monitor">{isCertificate ? '🎓' : '💻'}</span>
           {isExpanded || !hasExpandableContent ? rawDescription : previewText}
           {!isExpanded && hasExpandableContent && (
             <button
