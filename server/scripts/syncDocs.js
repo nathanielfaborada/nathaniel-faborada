@@ -10,13 +10,14 @@ const distDir = path.join(rootDir, 'dist');
 const docsDir = path.join(rootDir, 'docs');
 const publicDir = path.join(rootDir, 'public');
 
-// Copy dist to docs for GitHub Pages compatibility
+// Clean and copy dist to docs for GitHub Pages compatibility
 if (fs.existsSync(distDir)) {
-  if (!fs.existsSync(docsDir)) {
-    fs.mkdirSync(docsDir, { recursive: true });
+  if (fs.existsSync(docsDir)) {
+    fs.rmSync(docsDir, { recursive: true, force: true });
   }
+  fs.mkdirSync(docsDir, { recursive: true });
   fs.cpSync(distDir, docsDir, { recursive: true });
-  console.log('✅ Synchronized dist/ to docs/ for GitHub Pages.');
+  console.log('✅ Clean synchronized dist/ to docs/ for GitHub Pages.');
 }
 
 // Ensure public/assets are copied to dist and docs

@@ -122,9 +122,9 @@
     "process": "^0.11.10"
   },
   "scripts": {
-    "build": "parcel build --public-url / --dist-dir dist src/index.html && node server/scripts/syncDocs.js",
-    "start": "parcel serve --port 1234 src/index.html",
-    "dev": "parcel serve --port 1234 src/index.html",
+    "build": "parcel build --no-cache --public-url / --dist-dir dist src/index.html && node server/scripts/syncDocs.js",
+    "start": "parcel serve --dist-dir .dev-dist --port 1234 src/index.html",
+    "dev": "parcel serve --dist-dir .dev-dist --port 1234 src/index.html",
     "server": "node server/index.js",
     "server:dev": "node --watch server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"

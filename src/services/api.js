@@ -1,20 +1,36 @@
 import { PROJECTS_DATA } from '../data/projectsData';
 import { PROFILE_DATA } from '../data/profileData';
 
+const RAILWAY_BACKEND_URL = 'https://nathanielfaboradagithubio-production.up.railway.app';
+
 /**
- * Resolves and sanitizes API Base URL from environment variables
+ * Resolves and sanitizes API Base URL from environment variables or live host detection
  */
 function resolveApiBaseUrl() {
+  // 1. If running in browser on GitHub Pages or remote host, point directly to live Railway backend
+  if (typeof window !== 'undefined') {
+    const hostname = (window.location.hostname || '').toLowerCase();
+    const isLocalhost =
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname === '0.0.0.0' ||
+      hostname === '';
+
+    if (hostname.includes('github.io') || hostname.includes('netlify.app') || !isLocalhost) {
+      return `${RAILWAY_BACKEND_URL}/api`;
+    }
+  }
+
   let envUrl = '';
 
-  // 1. Check Vite / ESM standard import.meta.env
+  // 2. Check Vite / ESM standard import.meta.env
   try {
     if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL) {
       envUrl = import.meta.env.VITE_API_URL;
     }
   } catch (e) {}
 
-  // 2. Check Node / Bundler process.env fallback
+  // 3. Check Node / Bundler process.env fallback
   if (!envUrl && typeof process !== 'undefined' && process.env) {
     envUrl =
       process.env.VITE_API_URL ||
@@ -30,16 +46,6 @@ function resolveApiBaseUrl() {
       clean = `${clean}/api`;
     }
     return clean;
-  }
-
-  // 3. Fallback for localhost in dev vs default remote URL in production
-  if (typeof window !== 'undefined') {
-    const isLocalhost =
-      window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1';
-    if (!isLocalhost) {
-      return '/api';
-    }
   }
 
   return 'http://localhost:5000/api';
