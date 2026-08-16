@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import ProjectCard from './ProjectCard';
 import ProjectFilter from './ProjectFilter';
 import { useAuth } from '../../context/AuthContext';
@@ -15,10 +16,19 @@ export default function ProjectsFeed({
   refreshTrigger,
 }) {
   const { isLoggedIn } = useAuth();
+  const location = useLocation();
   const [projects, setProjects] = useState(PROJECTS_DATA);
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Check if current route is /admin_nathaniel (via pathname or hash) or user has active admin session
+  const normalizedPath = (location.pathname || '').replace(/\/+$/, '');
+  const normalizedHash = (location.hash || '').replace(/^#\/?/, '/').replace(/\/+$/, '');
+  const isAdminRoute =
+    normalizedPath === '/admin_nathaniel' ||
+    normalizedHash === '/admin_nathaniel' ||
+    Boolean(isLoggedIn);
 
   // Fetch creations from API
   const fetchCreations = useCallback(async () => {
@@ -80,8 +90,8 @@ export default function ProjectsFeed({
             />
           )}
 
-          {/* Dedicated Add Certificate button: appears ONLY when Certificates tab is active */}
-          {isCertificatesTab && (
+          {/* Dedicated Add Certificate button: appears ONLY on /admin_nathaniel route (and when Certificates tab is active) */}
+          {isAdminRoute && isCertificatesTab && (
             <button
               type="button"
               id="add-certificate-btn"
@@ -109,8 +119,8 @@ export default function ProjectsFeed({
             </button>
           )}
 
-          {/* Regular Add Project button: shown on other project categories (NOT on Certificates tab) */}
-          {isLoggedIn && !isCertificatesTab && selectedFilter !== 'certificates' && (
+          {/* Regular Add Project button: shown on other project categories on admin route (NOT on Certificates tab) */}
+          {isAdminRoute && !isCertificatesTab && selectedFilter !== 'certificates' && (
             <button
               type="button"
               id="add-project-btn"

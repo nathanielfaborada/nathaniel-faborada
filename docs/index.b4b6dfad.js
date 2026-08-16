@@ -30634,6 +30634,7 @@ parcelHelpers.export(exports, "default", ()=>ProjectsFeed);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
+var _reactRouterDom = require("react-router-dom");
 var _projectCard = require("./ProjectCard");
 var _projectCardDefault = parcelHelpers.interopDefault(_projectCard);
 var _projectFilter = require("./ProjectFilter");
@@ -30647,10 +30648,15 @@ var _s = $RefreshSig$();
 function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onDeleteProject, refreshTrigger }) {
     _s();
     const { isLoggedIn } = (0, _authContext.useAuth)();
+    const location = (0, _reactRouterDom.useLocation)();
     const [projects, setProjects] = (0, _react.useState)((0, _projectsData.PROJECTS_DATA));
     const [selectedFilter, setSelectedFilter] = (0, _react.useState)("all");
     const [isDropdownOpen, setIsDropdownOpen] = (0, _react.useState)(false);
     const [isLoading, setIsLoading] = (0, _react.useState)(true);
+    // Check if current route is /admin_nathaniel (via pathname or hash) or user has active admin session
+    const normalizedPath = (location.pathname || "").replace(/\/+$/, "");
+    const normalizedHash = (location.hash || "").replace(/^#\/?/, "/").replace(/\/+$/, "");
+    const isAdminRoute = normalizedPath === "/admin_nathaniel" || normalizedHash === "/admin_nathaniel" || Boolean(isLoggedIn);
     // Fetch creations from API
     const fetchCreations = (0, _react.useCallback)(async ()=>{
         setIsLoading(true);
@@ -30692,7 +30698,7 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                         children: isCertificatesTab || selectedFilter === "certificates" ? "Certificates" : "My Creations"
                     }, void 0, false, {
                         fileName: "src/components/projects/ProjectsFeed.jsx",
-                        lineNumber: 65,
+                        lineNumber: 75,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -30711,10 +30717,10 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                                 onCloseDropdown: ()=>setIsDropdownOpen(false)
                             }, void 0, false, {
                                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                                lineNumber: 74,
+                                lineNumber: 84,
                                 columnNumber: 13
                             }, this),
-                            isCertificatesTab && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                            isAdminRoute && isCertificatesTab && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
                                 type: "button",
                                 id: "add-certificate-btn",
                                 onClick: ()=>onOpenCreateModal && onOpenCreateModal("certificate"),
@@ -30740,17 +30746,17 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                                         size: 14
                                     }, void 0, false, {
                                         fileName: "src/components/projects/ProjectsFeed.jsx",
-                                        lineNumber: 107,
+                                        lineNumber: 117,
                                         columnNumber: 15
                                     }, this),
                                     "+ Add Certificate"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                                lineNumber: 85,
+                                lineNumber: 95,
                                 columnNumber: 13
                             }, this),
-                            isLoggedIn && !isCertificatesTab && selectedFilter !== "certificates" && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                            isAdminRoute && !isCertificatesTab && selectedFilter !== "certificates" && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
                                 type: "button",
                                 id: "add-project-btn",
                                 onClick: ()=>onOpenCreateModal && onOpenCreateModal("creation"),
@@ -30775,26 +30781,26 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                                         size: 13
                                     }, void 0, false, {
                                         fileName: "src/components/projects/ProjectsFeed.jsx",
-                                        lineNumber: 135,
+                                        lineNumber: 145,
                                         columnNumber: 15
                                     }, this),
                                     "Add Project"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                                lineNumber: 114,
+                                lineNumber: 124,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/projects/ProjectsFeed.jsx",
-                        lineNumber: 71,
+                        lineNumber: 81,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                lineNumber: 64,
+                lineNumber: 74,
                 columnNumber: 7
             }, this),
             filteredProjects.length > 0 ? filteredProjects.map((project)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _projectCardDefault.default), {
@@ -30803,7 +30809,7 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                     onDelete: onDeleteProject
                 }, project.id || project.title, false, {
                     fileName: "src/components/projects/ProjectsFeed.jsx",
-                    lineNumber: 145,
+                    lineNumber: 155,
                     columnNumber: 11
                 }, this)) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                 className: "section-card",
@@ -30819,24 +30825,25 @@ function ProjectsFeed({ activeTab = "all", onOpenCreateModal, onEditProject, onD
                     children: isCertificatesTab || selectedFilter === "certificates" ? "No certificates added yet." : "No projects found in this category."
                 }, void 0, false, {
                     fileName: "src/components/projects/ProjectsFeed.jsx",
-                    lineNumber: 154,
+                    lineNumber: 164,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "src/components/projects/ProjectsFeed.jsx",
-                lineNumber: 153,
+                lineNumber: 163,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "src/components/projects/ProjectsFeed.jsx",
-        lineNumber: 62,
+        lineNumber: 72,
         columnNumber: 5
     }, this);
 }
-_s(ProjectsFeed, "GZ2td10zpGSI33ViQC/VSfbP/BA=", false, function() {
+_s(ProjectsFeed, "lET2J6GSBGhDJIj5riDOBv5pn8Y=", false, function() {
     return [
-        (0, _authContext.useAuth)
+        (0, _authContext.useAuth),
+        (0, _reactRouterDom.useLocation)
     ];
 });
 _c = ProjectsFeed;
@@ -30848,7 +30855,7 @@ $RefreshReg$(_c, "ProjectsFeed");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./ProjectCard":"dTZsG","./ProjectFilter":"76XI1","../../context/AuthContext":"j7XIj","../../services/api":"9Olq6","../common/Icons":"4L2vB","../../data/projectsData":"lJCRJ","./ProjectsFeed.css":"jHdmc","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"dTZsG":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","./ProjectCard":"dTZsG","./ProjectFilter":"76XI1","../../context/AuthContext":"j7XIj","../../services/api":"9Olq6","../common/Icons":"4L2vB","../../data/projectsData":"lJCRJ","./ProjectsFeed.css":"jHdmc","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","react-router-dom":"9xmpe"}],"dTZsG":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$3d21 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
