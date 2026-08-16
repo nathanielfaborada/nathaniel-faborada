@@ -24,8 +24,15 @@
     list-style: none;
     padding: 0 24px;
     margin: 0;
-    gap: 8px;
+    gap: 1.5rem;
     box-sizing: border-box;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+}
+
+.profile-nav ul::-webkit-scrollbar {
+    display: none;
 }
 
 .profile-nav ul li {
@@ -34,13 +41,14 @@
     padding: 0;
     position: relative;
     box-sizing: border-box;
+    flex: 0 0 auto;
 }
 
 .profile-nav ul li a {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 14px 20px;
+    padding: 14px 16px;
     min-height: 48px;
     font-size: 0.95rem;
     font-weight: 500;
@@ -76,27 +84,20 @@
     }
 
     .profile-nav ul {
-        padding: 0 8px;
-        gap: 4px;
+        padding: 0 12px;
+        gap: 0.75rem;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
     }
 
-    .profile-nav ul::-webkit-scrollbar {
-        display: none;
-    }
-
     .profile-nav ul li {
-        flex: 1;
-        min-width: 80px;
-        text-align: center;
+        flex: 0 0 auto;
     }
 
     .profile-nav ul li a {
-        padding: 12px 8px;
-        font-size: 0.875rem;
+        padding: 12px 10px;
+        font-size: 0.88rem;
         min-height: 44px;
-        width: 100%;
     }
 }

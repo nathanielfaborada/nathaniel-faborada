@@ -27,15 +27,41 @@ export default function ProjectsFeed({
   const currentHash = typeof window !== 'undefined' ? window.location.hash : location.hash || '';
   const isAdminRoute = currentPathname.includes('/admin_nathaniel') || currentHash.includes('/admin_nathaniel');
 
-  // Fetch creations from API
-  const fetchCreations = useCallback(async () => {
+  const [certificates, setCertificates] = useState([]);
+
+  // Fetch creations & certificates from API
+  const fetchAllData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await api.creations.getAll();
-      if (Array.isArray(data) && data.length > 0) {
-        setProjects(data);
+      const [creationsData, certsData] = await Promise.all([
+        api.creations.getAll().catch(() => PROJECTS_DATA),
+        api.certificates.getAll().catch(() => []),
+      ]);
+
+      if (Array.isArray(creationsData) && creationsData.length > 0) {
+        setProjects(creationsData);
       } else {
         setProjects(PROJECTS_DATA);
+      }
+
+      if (Array.isArray(certsData)) {
+        const normalizedCerts = certsData.map((c) => ({
+          ...c,
+          category: 'Certificate',
+          categoryLabel: 'Certificate',
+          headline: c.title,
+          description: c.issuer ? `Issued by ${c.issuer}` : 'Certificate of Completion',
+          live_demo_url: c.credential_url,
+          source_code_url: c.display_type === 'iframe' ? 'iframe' : '',
+          notice: c.display_type === 'iframe' ? 'iframe' : (c.issuer ? `Issuer: ${c.issuer}` : ''),
+          image_url: c.image_url,
+          screenshots: c.image_url ? [c.image_url] : (c.credential_url ? [c.credential_url] : []),
+          tags: [c.display_type === 'iframe' ? '#iframe' : '#image', '#certificate'],
+          created_at: c.created_at,
+          stars: '🏆',
+          is_certificate_model: true,
+        }));
+        setCertificates(normalizedCerts);
       }
     } catch (err) {
       console.warn('Using static projects data fallback:', err.message);
@@ -46,24 +72,27 @@ export default function ProjectsFeed({
   }, []);
 
   useEffect(() => {
-    fetchCreations();
-  }, [fetchCreations, refreshTrigger]);
+    fetchAllData();
+  }, [fetchAllData, refreshTrigger]);
 
   const isCertificatesTab = activeTab === 'certificates';
 
-  // Filter projects by category
-  const filteredProjects = projects.filter((project) => {
-    const cat = (project.category || '').toLowerCase();
-    const isCert = cat === 'certificate' || cat === 'certificates';
-    if (isCertificatesTab) {
-      return isCert;
-    }
-    if (selectedFilter === 'all') return true;
-    if (selectedFilter === 'certificates') {
-      return isCert;
-    }
-    return cat === selectedFilter.toLowerCase();
-  });
+  // Filter projects by category or return certificates
+  const filteredProjects = isCertificatesTab
+    ? (certificates.length > 0
+        ? certificates
+        : projects.filter((p) => {
+            const cat = (p.category || '').toLowerCase();
+            return cat === 'certificate' || cat === 'certificates';
+          }))
+    : projects.filter((project) => {
+        const cat = (project.category || '').toLowerCase();
+        if (selectedFilter === 'all') return true;
+        if (selectedFilter === 'certificates') {
+          return cat === 'certificate' || cat === 'certificates';
+        }
+        return cat === selectedFilter.toLowerCase();
+      });
 
   return (
     <main className="main-content">

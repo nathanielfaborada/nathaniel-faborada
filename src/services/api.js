@@ -190,6 +190,41 @@ export const api = {
   },
 
   // ==========================================
+  // CERTIFICATES
+  // ==========================================
+  certificates: {
+    getAll: async () => {
+      try {
+        const res = await request('/certificates');
+        return res.data || [];
+      } catch (err) {
+        console.warn('Failed to fetch certificates:', err.message);
+        return [];
+      }
+    },
+    getById: async (id) => {
+      return request(`/certificates/${id}`);
+    },
+    create: async (data) => {
+      return request('/certificates', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+    update: async (id, data) => {
+      return request(`/certificates/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+    },
+    delete: async (id) => {
+      return request(`/certificates/${id}`, {
+        method: 'DELETE',
+      });
+    },
+  },
+
+  // ==========================================
   // ORGANIZATIONS
   // ==========================================
   organizations: {

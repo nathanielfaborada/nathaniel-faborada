@@ -7,6 +7,7 @@ import { testDbConnection } from './config/db.js';
 // Route Imports
 import authRoutes from './routes/authRoutes.js';
 import creationsRoutes from './routes/creationsRoutes.js';
+import certificatesRoutes from './routes/certificatesRoutes.js';
 import organizationsRoutes from './routes/organizationsRoutes.js';
 import workExperienceRoutes from './routes/workExperienceRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
@@ -79,6 +80,7 @@ app.get(['/health', '/api/health'], (req, res) => {
 // Mount API Route Endpoints
 app.use('/api/auth', authRoutes);
 app.use('/api/creations', creationsRoutes);
+app.use('/api/certificates', certificatesRoutes);
 app.use('/api/organizations', organizationsRoutes);
 app.use('/api/work-experiences', workExperienceRoutes);
 app.use('/api/upload', uploadRoutes);

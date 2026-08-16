@@ -278,7 +278,7 @@ export default function ItemFormModal({
       } else if (type === 'certificate') {
         const isIframe = formData.display_mode === 'iframe';
         const certImage = formData.image_url?.trim() || null;
-        const issuerName = formData.issuer?.trim() || '';
+        const issuerName = (formData.issuer || '').trim();
         const credUrl = (formData.credential_url || formData.live_demo_url || '').trim();
 
         if (!formData.title?.trim()) {
@@ -289,38 +289,37 @@ export default function ItemFormModal({
           throw new Error('Iframe/Credential URL is required for Iframe mode.');
         }
 
-        const payload = {
+        const certPayload = {
           title: formData.title.trim(),
-          category: 'Certificate',
-          categoryLabel: 'Certificate',
-          description:
-            formData.description?.trim() ||
-            (issuerName ? `Issued by ${issuerName}.` : 'Certificate of Completion'),
-          notice: isIframe ? 'iframe' : (issuerName ? `Issuer: ${issuerName}` : ''),
-          project_date: formData.project_date?.trim() || '',
-          live_demo_url: credUrl,
-          source_code_url: isIframe ? 'iframe' : '',
+          display_type: isIframe ? 'iframe' : 'image',
+          credential_url: isIframe ? credUrl : (credUrl || null),
           image_url: isIframe ? null : certImage,
-          screenshots: isIframe
-            ? (credUrl ? [credUrl] : [])
-            : (certImage ? [certImage] : []),
-          tags: isIframe
-            ? ['#iframe', '#certificate', ...(issuerName ? [`#${issuerName.replace(/[^a-zA-Z0-9]/g, '')}`] : [])]
-            : ['#image', '#certificate', ...(issuerName ? [`#${issuerName.replace(/[^a-zA-Z0-9]/g, '')}`] : [])],
-          contributions: issuerName ? [`Issued by ${issuerName}`] : [],
-          is_featured: Boolean(formData.is_featured),
-          stars: '🏆',
+          issuer: issuerName || null,
         };
 
         if (isEdit) {
-          await api.creations.update(initialData.id, payload);
-          toast.success('Certificate updated successfully! 🎉');
+          if (initialData?.is_certificate_model) {
+            await api.certificates.update(initialData.id, certPayload);
+          } else {
+            try {
+              await api.certificates.update(initialData.id, certPayload);
+            } catch {
+              await api.creations.update(initialData.id, {
+                title: formData.title.trim(),
+                category: 'Certificate',
+                description: issuerName ? `Issued by ${issuerName}.` : 'Certificate of Completion',
+                live_demo_url: credUrl,
+                image_url: certImage,
+              });
+            }
+          }
+          toast.success('Certificate updated! ✏️');
         } else {
-          await api.creations.create(payload);
-          toast.success('Certificate posted successfully! 🎉');
+          await api.certificates.create(certPayload);
+          toast.success('Certificate added! 🎉');
         }
 
-        onSuccess && onSuccess('certificate', isEdit ? 'updated' : 'posted');
+        onSuccess && onSuccess('certificate', isEdit ? 'updated' : 'added');
         onClose();
         return;
       } else if (type === 'organization') {

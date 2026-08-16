@@ -95,15 +95,24 @@ function MainApp() {
     setDeleteModal((prev) => ({ ...prev, isDeleting: true }));
 
     try {
-      if (type === 'creation') {
+      if (type === 'certificate' || item.is_certificate_model) {
+        try {
+          await api.certificates.delete(item.id);
+        } catch {
+          await api.creations.delete(item.id);
+        }
+        toast.success('Certificate deleted! 🗑️');
+      } else if (type === 'creation') {
         await api.creations.delete(item.id);
+        toast.success(`Deleted "${title}" successfully!`);
       } else if (type === 'organization') {
         await api.organizations.delete(item.id);
+        toast.success(`Deleted "${title}" successfully!`);
       } else if (type === 'workExperience') {
         await api.workExperiences.delete(item.id);
+        toast.success(`Deleted "${title}" successfully!`);
       }
 
-      toast.success(`Deleted "${title}" successfully!`);
       setDeleteModal({ isOpen: false, type: null, item: null, isDeleting: false });
       setRefreshTrigger((prev) => prev + 1);
     } catch (err) {
@@ -168,13 +177,26 @@ function MainApp() {
                 onOpenCreateModal={handleOpenCreate}
                 onEditProject={(item) =>
                   handleOpenEdit(
-                    item.category === 'certificates' || item.category === 'certificate'
+                    item.category === 'certificates' ||
+                    item.category === 'certificate' ||
+                    item.is_certificate_model ||
+                    activeTab === 'certificates'
                       ? 'certificate'
                       : 'creation',
                     item
                   )
                 }
-                onDeleteProject={(item) => handleRequestDelete('creation', item)}
+                onDeleteProject={(item) =>
+                  handleRequestDelete(
+                    item.category === 'certificates' ||
+                    item.category === 'certificate' ||
+                    item.is_certificate_model ||
+                    activeTab === 'certificates'
+                      ? 'certificate'
+                      : 'creation',
+                    item
+                  )
+                }
               />
             )}
           </div>

@@ -40,20 +40,24 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
 
   const categoryStr = (project.category || '').toLowerCase();
   const isCertificate =
-    categoryStr === 'certificate' || categoryStr === 'certificates';
+    categoryStr === 'certificate' ||
+    categoryStr === 'certificates' ||
+    project.is_certificate_model === true ||
+    Boolean(project.display_type);
 
   const isIframeCertificate =
     isCertificate &&
-    (project.source_code_url === 'iframe' ||
+    (project.display_type === 'iframe' ||
+      project.source_code_url === 'iframe' ||
       project.notice === 'iframe' ||
       (Array.isArray(project.tags) && project.tags.includes('#iframe')) ||
-      (typeof project.live_demo_url === 'string' &&
-        (project.live_demo_url.includes('hackerrank.com') ||
-          project.live_demo_url.includes('iframe') ||
-          project.live_demo_url.includes('embed'))));
+      (typeof (project.credential_url || project.live_demo_url) === 'string' &&
+        ((project.credential_url || project.live_demo_url).includes('hackerrank.com') ||
+          (project.credential_url || project.live_demo_url).includes('iframe') ||
+          (project.credential_url || project.live_demo_url).includes('embed'))));
 
   const iframeSrc = isIframeCertificate
-    ? project.live_demo_url || project.credential_url
+    ? project.credential_url || project.live_demo_url
     : null;
 
   // Normalize links
@@ -62,10 +66,11 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
     if (project.source_code_url && project.source_code_url !== 'iframe') {
       links.push({ type: 'source', url: project.source_code_url, label: 'Source' });
     }
-    if (project.live_demo_url) {
+    const credUrl = project.credential_url || project.live_demo_url;
+    if (credUrl) {
       links.push({
         type: 'visit',
-        url: project.live_demo_url,
+        url: credUrl,
         label: isCertificate ? 'Verify Credential' : 'Visit',
       });
     }
@@ -109,6 +114,12 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
     return null;
   }, [project.project_date, project.created_at]);
 
+  // STRICT ROUTE CHECK for admin actions
+  const currentPathname = typeof window !== 'undefined' ? window.location.pathname : '';
+  const currentHash = typeof window !== 'undefined' ? window.location.hash : '';
+  const isAdminRoute = currentPathname.includes('/admin_nathaniel') || currentHash.includes('/admin_nathaniel');
+  const showAdminActions = isLoggedIn && isAdminRoute;
+
   return (
     <div className="project-card" data-category={project.category}>
       {/* Author Section & Admin Actions */}
@@ -128,8 +139,8 @@ export default function ProjectCard({ project, onEdit, onDelete }) {
           </span>
         </div>
 
-        {/* Admin Action Buttons */}
-        {isLoggedIn && (
+        {/* Admin Action Buttons (Rendered ONLY on /admin_nathaniel route) */}
+        {showAdminActions && (
           <div className="card-admin-actions" style={{ display: 'flex', gap: '6px' }}>
             <button
               type="button"
