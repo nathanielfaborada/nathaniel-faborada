@@ -661,15 +661,24 @@ export default function ItemFormModal({
                   />
                 </div>
 
-                {/* Field 3: Certificate Image (Cloudinary File Upload or URL) */}
+                {/* Field 3: Certificate Image (Automatic Cloudinary File Upload) */}
                 <div className="item-form-group image-upload-wrapper">
                   <label className="item-form-label">
-                    Certificate Image (Upload or Paste URL)
+                    Certificate Image
                   </label>
 
                   {formData.image_url ? (
-                    <div className="image-thumbs-grid" style={{ gridTemplateColumns: '160px' }}>
-                      <div className="image-thumb-card" style={{ aspectRatio: '4/3' }}>
+                    <div className="image-thumbs-grid" style={{ gridTemplateColumns: '180px' }}>
+                      <div
+                        className="image-thumb-card"
+                        style={{
+                          aspectRatio: '4/3',
+                          borderRadius: '8px',
+                          overflow: 'hidden',
+                          position: 'relative',
+                          border: '1px solid #e4e6eb',
+                        }}
+                      >
                         <img
                           src={formData.image_url}
                           alt="Certificate preview"
@@ -688,7 +697,33 @@ export default function ItemFormModal({
                       </div>
                     </div>
                   ) : (
-                    <div className="image-upload-box">
+                    <div
+                      className="image-upload-box"
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onDrop={async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const file = e.dataTransfer?.files?.[0];
+                        if (!file) return;
+                        setIsUploading(true);
+                        setError(null);
+                        try {
+                          const response = await api.upload.image(file);
+                          if (response.success && response.url) {
+                            setFormData((prev) => ({ ...prev, image_url: response.url }));
+                            toast.success('Image uploaded to Cloudinary! ☁️');
+                          }
+                        } catch (err) {
+                          setError(err.message || 'Failed to upload certificate image.');
+                          toast.error('Failed to upload image. Please try again.');
+                        } finally {
+                          setIsUploading(false);
+                        }
+                      }}
+                    >
                       <div className="image-upload-dropzone">
                         <input
                           type="file"
@@ -708,7 +743,7 @@ export default function ItemFormModal({
                               }
                             } catch (err) {
                               setError(err.message || 'Failed to upload certificate image.');
-                              toast.error('Failed to upload image. Please try again or paste image URL.');
+                              toast.error('Failed to upload image. Please try again.');
                             } finally {
                               setIsUploading(false);
                               if (fileInputRef.current) fileInputRef.current.value = '';
@@ -722,25 +757,16 @@ export default function ItemFormModal({
                           onClick={() => fileInputRef.current?.click()}
                           disabled={isUploading}
                         >
-                          📁 {isUploading ? 'Uploading to Cloudinary...' : 'Choose Image File (Upload to Cloudinary)'}
+                          📁 {isUploading ? 'Uploading to Cloudinary...' : 'Choose Certificate Image File'}
                         </button>
                         <span className="image-upload-status">
-                          {isUploading ? 'Uploading to Cloudinary CDN...' : 'Supports PNG, JPG, WEBP (Max 5MB)'}
+                          {isUploading
+                            ? 'Uploading to Cloudinary CDN...'
+                            : 'Supports PNG, JPG, WEBP (Drag & drop or click to upload)'}
                         </span>
                       </div>
                     </div>
                   )}
-
-                  <div style={{ marginTop: '8px' }}>
-                    <input
-                      type="url"
-                      name="image_url"
-                      className="item-form-input"
-                      placeholder="Or paste direct Cloudinary / Image URL (https://res.cloudinary.com/...)"
-                      value={formData.image_url || ''}
-                      onChange={handleChange}
-                    />
-                  </div>
                 </div>
 
                 {/* Field 4: Verification Link */}
