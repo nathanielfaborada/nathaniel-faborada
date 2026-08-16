@@ -645,38 +645,30 @@ export default function ItemFormModal({
                   />
                 </div>
 
-                {/* Field 2: Credential / Certificate URL */}
+                {/* Field 2: Issuer */}
                 <div className="item-form-group">
-                  <label className="item-form-label" htmlFor="cert-cred-url">
-                    Credential / Certificate URL
+                  <label className="item-form-label" htmlFor="cert-issuer">
+                    Issuer (Optional)
                   </label>
                   <input
-                    id="cert-cred-url"
-                    type="url"
-                    name="credential_url"
+                    id="cert-issuer"
+                    type="text"
+                    name="issuer"
                     className="item-form-input"
-                    placeholder="e.g. https://www.hackerrank.com/certificates/... or https://coursera.org/verify/..."
-                    value={formData.credential_url || formData.live_demo_url || ''}
-                    onChange={(e) => {
-                      handleChange(e);
-                      setFormData((prev) => ({
-                        ...prev,
-                        credential_url: e.target.value,
-                        live_demo_url: e.target.value,
-                      }));
-                    }}
+                    placeholder="e.g. HackerRank, AWS, Coursera, Meta"
+                    value={formData.issuer || ''}
+                    onChange={handleChange}
                   />
-                  <span style={{ display: 'block', fontSize: '0.78rem', color: '#65676b', marginTop: '4px' }}>
-                    💡 External links (e.g., HackerRank) will render as an external verification link button instead of an embedded frame.
-                  </span>
                 </div>
 
-                {/* Field 3: Certificate Image URL or Upload */}
+                {/* Field 3: Certificate Image (Cloudinary File Upload or URL) */}
                 <div className="item-form-group image-upload-wrapper">
-                  <label className="item-form-label">Certificate Image or Badge (Optional)</label>
+                  <label className="item-form-label">
+                    Certificate Image (Upload or Paste URL)
+                  </label>
 
                   {formData.image_url ? (
-                    <div className="image-thumbs-grid" style={{ gridTemplateColumns: '140px' }}>
+                    <div className="image-thumbs-grid" style={{ gridTemplateColumns: '160px' }}>
                       <div className="image-thumb-card" style={{ aspectRatio: '4/3' }}>
                         <img
                           src={formData.image_url}
@@ -712,9 +704,11 @@ export default function ItemFormModal({
                               const response = await api.upload.image(file);
                               if (response.success && response.url) {
                                 setFormData((prev) => ({ ...prev, image_url: response.url }));
+                                toast.success('Image uploaded to Cloudinary! ☁️');
                               }
                             } catch (err) {
                               setError(err.message || 'Failed to upload certificate image.');
+                              toast.error('Failed to upload image. Please try again or paste image URL.');
                             } finally {
                               setIsUploading(false);
                               if (fileInputRef.current) fileInputRef.current.value = '';
@@ -728,10 +722,10 @@ export default function ItemFormModal({
                           onClick={() => fileInputRef.current?.click()}
                           disabled={isUploading}
                         >
-                          📁 {isUploading ? 'Uploading...' : 'Upload Image to Cloudinary'}
+                          📁 {isUploading ? 'Uploading to Cloudinary...' : 'Choose Image File (Upload to Cloudinary)'}
                         </button>
                         <span className="image-upload-status">
-                          {isUploading ? 'Uploading...' : 'Max 5MB'}
+                          {isUploading ? 'Uploading to Cloudinary CDN...' : 'Supports PNG, JPG, WEBP (Max 5MB)'}
                         </span>
                       </div>
                     </div>
@@ -742,30 +736,41 @@ export default function ItemFormModal({
                       type="url"
                       name="image_url"
                       className="item-form-input"
-                      placeholder="Or paste direct image URL (https://...)"
+                      placeholder="Or paste direct Cloudinary / Image URL (https://res.cloudinary.com/...)"
                       value={formData.image_url || ''}
                       onChange={handleChange}
                     />
                   </div>
                 </div>
 
-                {/* Field 4: Issuer & Date */}
-                <div className="item-form-row">
-                  <div className="item-form-group">
-                    <label className="item-form-label" htmlFor="cert-issuer">
-                      Issuer / Organization
-                    </label>
-                    <input
-                      id="cert-issuer"
-                      type="text"
-                      name="issuer"
-                      className="item-form-input"
-                      placeholder="e.g. HackerRank, AWS, Coursera, Meta"
-                      value={formData.issuer || ''}
-                      onChange={handleChange}
-                    />
-                  </div>
+                {/* Field 4: Verification Link */}
+                <div className="item-form-group">
+                  <label className="item-form-label" htmlFor="cert-cred-url">
+                    Verification Link (Optional)
+                  </label>
+                  <input
+                    id="cert-cred-url"
+                    type="url"
+                    name="credential_url"
+                    className="item-form-input"
+                    placeholder="e.g. https://www.hackerrank.com/certificates/..."
+                    value={formData.credential_url || formData.live_demo_url || ''}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setFormData((prev) => ({
+                        ...prev,
+                        credential_url: e.target.value,
+                        live_demo_url: e.target.value,
+                      }));
+                    }}
+                  />
+                  <span style={{ display: 'block', fontSize: '0.78rem', color: '#65676b', marginTop: '4px' }}>
+                    💡 External links (e.g., HackerRank) will render as an external verification link button instead of an embedded frame.
+                  </span>
+                </div>
 
+                {/* Optional Issue Date & Details */}
+                <div className="item-form-row">
                   <div className="item-form-group">
                     <label className="item-form-label" htmlFor="cert-date">
                       Issue Date / Timeline (Optional)

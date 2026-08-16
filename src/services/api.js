@@ -307,10 +307,14 @@ export const api = {
       });
 
       const data = await response.json().catch(() => null);
-      if (!response.ok) {
+      if (!response.ok || !data?.url) {
         throw new Error(data?.message || 'Failed to upload image to Cloudinary.');
       }
-      return data;
+      return {
+        success: true,
+        url: data.url,
+        public_id: data.public_id,
+      };
     },
   },
 };
